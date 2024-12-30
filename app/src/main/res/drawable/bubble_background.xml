@@ -1,0 +1,9 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#E0E0E0" /> <!-- צבע הרקע של הבועה -->
+    <corners android:radius="16dp" /> <!-- פינות מעוגלות -->
+    <padding
+        android:left="12dp"
+        android:top="8dp"
+        android:right="12dp"
+        android:bottom="8dp" /> <!-- ריווח פנימי -->
+</shape>
