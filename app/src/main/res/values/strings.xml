@@ -1,3 +1,30 @@
 <resources>
-    <string name="app_name">Project2</string>
+    <string name="app_name">RecoMate</string>
+    <string name="add_recommendation">Add Recommendation</string>
+    <string name="item_name">Item name</string>
+    <string name="price">Price</string>
+    <string name="link">Link</string>
+    <string name="rate">Rate</string>
+    <string name="comments">Comments</string>
+    <string name="star_1">Star 1</string>
+    <string name="star_2">Star 2</string>
+    <string name="star_3">Star 3</string>
+    <string name="star_4">Star 4</string>
+    <string name="star_5">Star 5</string>
+    <string name="_0_00" translatable="false">0.00</string>
+    <string name="enter_item_title">Enter item Title</string>
+    <string name="enter_link_of_item">Enter Link of item</string>
+    <string name="pick_image">Pick Image</string>
+    <string name="sport">Sport</string>
+    <string name="tech">Tech</string>
+    <string name="home">Home</string>
+    <string name="game">Game</string>
+    <string name="food">Food</string>
+    <string name="fashion">Fashion</string>
+    <string name="category">Category</string>
+    <string name="add_a_comment">Add a comment</string>
+    <string name="finish">Finish</string>
+    <string name="item_title" translatable="false">Item Title</string>
+    <string name="price_0_00" translatable="false">Price: 0.00</string>
+    <string name="item_comment" translatable="false">Item Comment</string>
 </resources>

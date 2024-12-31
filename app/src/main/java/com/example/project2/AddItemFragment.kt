@@ -71,12 +71,12 @@ class AddItemFragment : Fragment() {
     }
     private fun setupCategoryButtons() {
         val buttons = listOf(
-            binding.alertDialogBtn to "Fashion",
-            binding.dateDialogBtn to "Food",
-            binding.customDialogBtn1 to "Game",
-            binding.customDialogBtn2 to "Home",
-            binding.customDialogBtn3 to "Tech",
-            binding.customDialogBtn4 to "Sport"
+            binding.alertDialogBtn to getString(R.string.fashion),
+            binding.dateDialogBtn to getString(R.string.food),
+            binding.customDialogBtn1 to getString(R.string.game),
+            binding.customDialogBtn2 to getString(R.string.home),
+            binding.customDialogBtn3 to getString(R.string.tech),
+            binding.customDialogBtn4 to getString(R.string.sport)
         )
 
         buttons.forEach { (button, category) ->

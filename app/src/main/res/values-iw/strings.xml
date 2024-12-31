@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RecoMate</string>
+    <string name="add_recommendation">הוסף המלצה</string>
+    <string name="item_name">שם</string>
+    <string name="price">מחיר</string>
+    <string name="link">קישור</string>
+    <string name="rate">דירוג</string>
+    <string name="comments">תגובות</string>
+    <string name="star_1">כוכב 1</string>
+    <string name="star_2">כוכב2</string>
+    <string name="star_3">כוכב 3</string>
+    <string name="star_4">כוכב 4</string>
+    <string name="star_5">כוכב 5</string>
+    <string name="enter_item_title">הוסף שם למוצר</string>
+    <string name="enter_link_of_item">הוסף קישור למוצר</string>
+    <string name="pick_image">בחר תמונה</string>
+    <string name="sport">ספורט</string>
+    <string name="tech">ציוד טק</string>
+    <string name="home">בית</string>
+    <string name="game">משחק</string>
+    <string name="food">אוכל</string>
+    <string name="fashion">אופנה</string>
+    <string name="category">קטגוריה</string>
+    <string name="add_a_comment">הוסף תגובה</string>
+    <string name="finish">סיום</string>
+</resources>

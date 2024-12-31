@@ -38,7 +38,7 @@ class AllItemsFragment : Fragment(){
 
         binding.recycel.adapter=ItemAdapter(ItemManager.items,object : ItemAdapter.ItemListener{
             override fun onItemClicked(index: Int) {
-                Toast.makeText(requireContext(),"${ItemManager.items[index]}",Toast.LENGTH_SHORT).show()            }
+            }
 
             override fun onItemLongClicked(index: Int) {
                 ItemManager.remove(index)

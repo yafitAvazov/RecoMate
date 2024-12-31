@@ -1,5 +1,6 @@
 package com.example.project2
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -15,6 +16,7 @@ class ItemDetailsFragment : Fragment() {
     private var _binding: FragmentItemDetailsBinding? = null
     private val binding get() = _binding!!
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

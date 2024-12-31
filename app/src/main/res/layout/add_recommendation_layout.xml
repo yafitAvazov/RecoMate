@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,17 +8,22 @@
     android:padding="16dp"
     tools:context=".AddItemFragment">
 
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add Recommendation"
+        android:text="@string/add_recommendation"
         android:textSize="30sp"
         android:gravity="center"
         android:layout_marginBottom="20dp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Item name"
+        android:text="@string/item_name"
         android:textSize="20sp" />
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -28,19 +34,18 @@
             android:id="@+id/item_title"
             android:layout_width="match_parent"
             android:layout_height="44dp"
-            android:hint="Enter item Title" />
+            android:hint="@string/enter_item_title" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/itemCategory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Category"
+        android:text="@string/category"
         android:textSize="20sp"
         android:layout_marginTop="15dp"/>
 
     <GridLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnCount="3">
@@ -49,9 +54,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
-            android:text="Fashion"
+            android:text="@string/fashion"
             android:id="@+id/alert_dialog_btn"
-            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:textSize="15sp"/>
 
 
@@ -59,17 +64,17 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
-            android:text="Food"
+            android:text="@string/food"
             android:id="@+id/date_dialog_btn"
-            android:layout_marginRight="7dp"
+            android:layout_marginEnd="7dp"
             android:textSize="15sp"/>
 
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
-            android:text="Game"
-            android:layout_marginRight="7dp"
+            android:text="@string/game"
+            android:layout_marginEnd="7dp"
             android:id="@+id/custom_dialog_btn1"
             android:textSize="15sp"/>
 
@@ -77,18 +82,18 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
-            android:text="Home"
+            android:text="@string/home"
             android:id="@+id/custom_dialog_btn2"
-            android:layout_marginRight="7dp"
+            android:layout_marginEnd="7dp"
             android:textSize="15sp"/>
 
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
-            android:text="Tech"
+            android:text="@string/tech"
             android:id="@+id/custom_dialog_btn3"
-            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
             android:textSize="15sp"
             />
 
@@ -96,15 +101,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
-            android:text="Sport"
+            android:text="@string/sport"
             android:id="@+id/custom_dialog_btn4"
-            android:layout_marginRight="7dp"
+            android:layout_marginEnd="7dp"
             android:textSize="15sp"/>
 
     </GridLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:baselineAligned="false"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:layout_marginTop="15dp">
@@ -120,7 +126,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Price"
+                android:text="@string/price"
                 android:textSize="20sp" />
 
             <!-- שדה המחיר -->
@@ -134,7 +140,7 @@
                     android:id="@+id/price"
                     android:layout_width="92dp"
                     android:layout_height="47dp"
-                    android:hint="0.00"
+                    android:hint="@string/_0_00"
                     android:inputType="numberDecimal" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
@@ -158,7 +164,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Pick Image" />
+                android:text="@string/pick_image" />
         </LinearLayout>
 
     </LinearLayout>
@@ -167,7 +173,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Link"
+        android:text="@string/link"
         android:textSize="20sp"
         android:layout_marginTop="8dp"/>
     <com.google.android.material.textfield.TextInputLayout
@@ -179,13 +185,13 @@
             android:id="@+id/item_link"
             android:layout_width="match_parent"
             android:layout_height="51dp"
-            android:hint="Enter Link of item" />
+            android:hint="@string/enter_link_of_item" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Rate"
+        android:text="@string/rate"
         android:textSize="20sp"
         android:layout_marginTop="15dp"/>
     <LinearLayout
@@ -198,42 +204,43 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/star_empty"
-            android:contentDescription="Star 1" />
+            android:contentDescription="@string/star_1" />
 
         <ImageView
             android:id="@+id/star2"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/star_empty"
-            android:contentDescription="Star 2" />
+            android:contentDescription="@string/star_2" />
 
         <ImageView
             android:id="@+id/star3"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/star_empty"
-            android:contentDescription="Star 3" />
+            android:contentDescription="@string/star_3" />
 
         <ImageView
             android:id="@+id/star4"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/star_empty"
-            android:contentDescription="Star 4" />
+            android:contentDescription="@string/star_4" />
 
         <ImageView
             android:id="@+id/star5"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:contentDescription="@string/star_5"
             android:src="@drawable/star_empty"
-            android:contentDescription="Star 5" />
+            tools:ignore="ImageContrastCheck" />
     </LinearLayout>
 
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Comments"
+        android:text="@string/comments"
         android:textSize="20sp"
         android:layout_marginTop="15dp"/>
     <com.google.android.material.textfield.TextInputLayout
@@ -245,15 +252,15 @@
             android:id="@+id/item_comment"
             android:layout_width="match_parent"
             android:layout_height="95dp"
-            android:hint="Add a comment" />
+            android:hint="@string/add_a_comment" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Finish"
+        android:text="@string/finish"
         android:id="@+id/finish_btn"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"/>
-
 </LinearLayout>
+</ScrollView>
