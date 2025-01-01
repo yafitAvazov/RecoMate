@@ -1,4 +1,4 @@
-package com.example.project2
+package com.example.project2.ui.single_item
 
 import android.content.Intent
 import android.net.Uri
@@ -9,10 +9,17 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import com.example.project2.R
 import com.example.project2.databinding.FragmentItemDetailsBinding
+import com.example.project2.ui.ItemsViewModel
 
 class ItemDetailsFragment : Fragment() {
     private var _binding: FragmentItemDetailsBinding? = null
+
+    val viewModel : ItemsViewModel by activityViewModels()
+
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -71,6 +78,21 @@ class ItemDetailsFragment : Fragment() {
             binding.categoryContainer.addView(button)
         }
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.chosenItem.observe(viewLifecycleOwner) {
+            binding.itemTitle.text = it.title
+            binding.itemComment.text = it.comment
+            binding.itemPrice.text = "Price: ${it.price}"
+            binding.itemCategory.text = "Category: ${it.category}"
+            binding.itemLink.text = it.link
+            binding.itemImage.setImageURI(it.photo?.let { Uri.parse(it) }) // not sure
+        }
+    }
+
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

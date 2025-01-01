@@ -82,17 +82,18 @@
             android:text="Price: 0.00"
             android:textSize="18sp"
             android:layout_marginTop="8dp" />
+
         <TextView
             android:id="@+id/item_link"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Link: "
-            android:textSize="18sp"
+            android:layout_height="72dp"
             android:layout_marginBottom="8dp"
             android:autoLink="web"
-            android:textColorLink="@color/purple_700"
             android:clickable="true"
-            android:focusable="true" />
+            android:focusable="true"
+            android:text="Link: "
+            android:textColorLink="@color/purple_700"
+            android:textSize="18sp" />
 
 
         <ImageView

@@ -1,4 +1,4 @@
-package com.example.project2
+package com.example.project2.ui.add_item
 
 import android.content.Intent
 import android.net.Uri
@@ -11,8 +11,12 @@ import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.project2.data.model.Item
+import com.example.project2.R
 import com.example.project2.databinding.AddRecommendationLayoutBinding
+import com.example.project2.ui.ItemsViewModel
 
 class AddItemFragment : Fragment() {
     private var _binding: AddRecommendationLayoutBinding? = null
@@ -20,6 +24,9 @@ class AddItemFragment : Fragment() {
     private var imageUri: Uri? = null
     private var selectedRating: Int = 0 // שומר את הדירוג הנבחר
     private val selectedCategories = mutableSetOf<String>() // רשימת קטגוריות שנבחרו
+
+    private val viewModel : ItemsViewModel by activityViewModels()
+
 
     // Launch Activity for image selection
     private val pickImageLauncher =
@@ -55,7 +62,11 @@ class AddItemFragment : Fragment() {
                 link =binding.itemLink.text.toString(),
                 rating = selectedRating // משתמש בדירוג שנבחר
             )
-            ItemManager.add(item)
+
+            //ItemManager.add(item)
+
+            viewModel.addItem(item)
+
             findNavController().navigate(R.id.action_addItemFragment_to_allItemsFragment)
         }
 
@@ -83,10 +94,14 @@ class AddItemFragment : Fragment() {
             button.setOnClickListener {
                 if (selectedCategories.contains(category)) {
                     selectedCategories.remove(category)
-                    button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.default_button)) // צבע ברירת מחדל
+                    button.setBackgroundColor(ContextCompat.getColor(requireContext(),
+                        R.color.default_button
+                    )) // צבע ברירת מחדל
                 } else {
                     selectedCategories.add(category)
-                    button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.selected_button)) // צבע לחצן נבחר
+                    button.setBackgroundColor(ContextCompat.getColor(requireContext(),
+                        R.color.selected_button
+                    )) // צבע לחצן נבחר
                 }
 
             }

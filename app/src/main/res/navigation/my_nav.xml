@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/allItemsFragment"
-        android:name="com.example.project2.AllItemsFragment"
+        android:name="com.example.project2.ui.all_items.AllItemsFragment"
         android:label="all_recommendations_layout"
         tools:layout="@layout/all_recommendations_layout" >
         <action
@@ -23,7 +23,7 @@
     </fragment>
     <fragment
         android:id="@+id/addItemFragment"
-        android:name="com.example.project2.AddItemFragment"
+        android:name="com.example.project2.ui.add_item.AddItemFragment"
         android:label="add_recommendation_layout"
         tools:layout="@layout/add_recommendation_layout" >
         <action
@@ -38,6 +38,6 @@
     </fragment>
     <fragment
         android:id="@+id/itemDetailsFragment"
-        android:name="com.example.project2.ItemDetailsFragment"
+        android:name="com.example.project2.ui.single_item.ItemDetailsFragment"
         android:label="ItemDetailsFragment" />
 </navigation>
