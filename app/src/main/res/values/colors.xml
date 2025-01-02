@@ -5,5 +5,12 @@
     <color name="purple_700">#554ADE</color>
     <color name="default_button">#E0E0E0</color>
     <color name="selected_button">#FF4081</color>
+    <color name="blue">#020240</color>
+    <color name="blue1">#2A6DBD</color>
+    <color name="gray">#CDD5DC</color>
+    <color name="dark_gray">#95989D</color>
+
+
+
 
 </resources>

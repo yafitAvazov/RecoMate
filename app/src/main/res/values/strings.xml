@@ -23,8 +23,11 @@
     <string name="fashion">Fashion</string>
     <string name="category">Category</string>
     <string name="add_a_comment">Add a comment</string>
-    <string name="finish">Finish</string>
+    <string name="Post">Post</string>
     <string name="item_title" translatable="false">Item Title</string>
     <string name="price_0_00" translatable="false">Price: 0.00</string>
     <string name="item_comment" translatable="false">Item Comment</string>
+    <string name="take_photo">Take a Photo</string>
+    <string name="choose_from_device">Choose from Device</string>
+    <string name="select_option">Select an Option</string>
 </resources>

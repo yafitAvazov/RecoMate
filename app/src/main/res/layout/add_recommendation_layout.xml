@@ -18,13 +18,17 @@
         android:layout_height="wrap_content"
         android:text="@string/add_recommendation"
         android:textSize="30sp"
+        android:textStyle="bold"
         android:gravity="center"
         android:layout_marginBottom="20dp"/>
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/item_name"
-        android:textSize="20sp" />
+        android:textStyle="bold"
+
+        android:textSize="20sp"
+       />
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,21 +47,26 @@
         android:layout_height="wrap_content"
         android:text="@string/category"
         android:textSize="20sp"
+        android:textStyle="bold"
+
         android:layout_marginTop="15dp"/>
 
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:columnCount="3">
+        android:columnCount="4">
 
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:text="@string/fashion"
-            android:id="@+id/alert_dialog_btn"
+            android:id="@+id/btn1"
             android:layout_marginEnd="10dp"
-            android:textSize="15sp"/>
+            android:textSize="15sp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/blue1"/>
 
 
         <Button
@@ -65,9 +74,12 @@
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:text="@string/food"
-            android:id="@+id/date_dialog_btn"
+            android:id="@+id/btn2"
             android:layout_marginEnd="7dp"
-            android:textSize="15sp"/>
+            android:textSize="15sp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/blue1"/>
 
         <Button
             android:layout_width="0dp"
@@ -75,26 +87,35 @@
             android:layout_columnWeight="1"
             android:text="@string/game"
             android:layout_marginEnd="7dp"
-            android:id="@+id/custom_dialog_btn1"
-            android:textSize="15sp"/>
+            android:id="@+id/btn3"
+            android:textSize="15sp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/blue1"/>
 
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:text="@string/home"
-            android:id="@+id/custom_dialog_btn2"
+            android:id="@+id/btn4"
             android:layout_marginEnd="7dp"
-            android:textSize="15sp"/>
+            android:textSize="15sp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/blue1"/>
 
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:text="@string/tech"
-            android:id="@+id/custom_dialog_btn3"
+            android:id="@+id/btn5"
             android:layout_marginEnd="5dp"
             android:textSize="15sp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/blue1"
             />
 
         <Button
@@ -102,9 +123,78 @@
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:text="@string/sport"
-            android:id="@+id/custom_dialog_btn4"
+            android:id="@+id/btn6"
             android:layout_marginEnd="7dp"
-            android:textSize="15sp"/>
+            android:textSize="15sp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/blue1"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="Travel"
+            android:id="@+id/btn7"
+            android:layout_marginEnd="7dp"
+            android:textSize="15sp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/blue1"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="Music"
+            android:id="@+id/btn8"
+            android:layout_marginEnd="7dp"
+            android:textSize="15sp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/blue1"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="Book"
+            android:id="@+id/btn9"
+            android:layout_marginEnd="7dp"
+            android:textSize="15sp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/blue1"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="Shops"
+            android:id="@+id/btn10"
+            android:layout_marginEnd="7dp"
+            android:textSize="15sp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/blue1"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="Movie"
+            android:id="@+id/btn11"
+            android:layout_marginEnd="7dp"
+            android:textSize="15sp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/blue1"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="Health"
+            android:id="@+id/btn12"
+            android:layout_marginEnd="7dp"
+            android:textSize="15sp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/blue1"/>
 
     </GridLayout>
     <LinearLayout
@@ -113,7 +203,7 @@
         android:baselineAligned="false"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginTop="15dp">
+        android:layout_marginTop="25dp">
 
         <!-- מחיר: טקסט מעל שדה המחיר -->
         <LinearLayout
@@ -127,6 +217,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/price"
+                android:textStyle="bold"
+
                 android:textSize="20sp" />
 
             <!-- שדה המחיר -->
@@ -153,18 +245,13 @@
             android:gravity="center">
 
             <ImageView
-                android:id="@+id/result_image"
+                android:id="@+id/image_btn"
                 android:layout_width="107dp"
                 android:layout_height="103dp"
                 android:layout_gravity="center"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/baseline_camera_alt_24" />
 
-            <Button
-                android:id="@+id/image_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/pick_image" />
+
         </LinearLayout>
 
     </LinearLayout>
@@ -175,6 +262,8 @@
         android:layout_height="wrap_content"
         android:text="@string/link"
         android:textSize="20sp"
+        android:textStyle="bold"
+
         android:layout_marginTop="8dp"/>
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -193,6 +282,8 @@
         android:layout_height="wrap_content"
         android:text="@string/rate"
         android:textSize="20sp"
+        android:textStyle="bold"
+
         android:layout_marginTop="15dp"/>
     <LinearLayout
         android:layout_width="wrap_content"
@@ -242,6 +333,8 @@
         android:layout_height="wrap_content"
         android:text="@string/comments"
         android:textSize="20sp"
+        android:textStyle="bold"
+
         android:layout_marginTop="15dp"/>
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -258,9 +351,10 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/finish"
+        android:text="@string/Post"
         android:id="@+id/finish_btn"
         android:layout_gravity="center"
+        android:backgroundTint="@color/blue1"
         android:layout_marginTop="10dp"/>
 </LinearLayout>
 </ScrollView>

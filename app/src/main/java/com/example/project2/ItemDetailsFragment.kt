@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.project2.databinding.FragmentItemDetailsBinding
@@ -29,10 +30,10 @@ class ItemDetailsFragment : Fragment() {
             binding.itemTitle.text = bundle.getString("title")
             binding.itemComment.text = bundle.getString("comment")
             binding.itemPrice.text = "Price: ${bundle.getDouble("price")}"
-            binding.itemCategory.text = "Category: ${bundle.getString("category", "None")}"
+//            binding.itemCategory.text = "Category: ${bundle.getString("category", "None")}"
 
-            val categories = bundle.getString("category", "").split(", ")
-            setupCategoryButtons(categories) // יצירת כפתורי קטגוריות
+            val categories = bundle.getString("category", "No Category").split(", ").filter { it.isNotBlank() }
+            setupCategoryButtons(categories)
 
             val link = bundle.getString("link")
             binding.itemLink.text = link
@@ -60,19 +61,32 @@ class ItemDetailsFragment : Fragment() {
         return binding.root
     }
     private fun setupCategoryButtons(categories: List<String>) {
-        // יצירת כפתורים עבור הקטגוריות שנבחרו
-        binding.categoryContainer.removeAllViews() // איפוס התצוגה
-        categories.forEach { category ->
-            val button = Button(requireContext()).apply {
-                text = category
+        // איפוס התצוגה
+        binding.categoryContainer.removeAllViews()
+
+        if (categories.isEmpty()) {
+            val noCategoryText = TextView(requireContext()).apply {
+                text = "No Category"
                 textSize = 16f
-                setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.selected_button))
-                setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+                setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
                 setPadding(8, 8, 8, 8)
             }
-            binding.categoryContainer.addView(button)
+            binding.categoryContainer.addView(noCategoryText)
+        } else {
+            // יצירת כפתורים עבור קטגוריות שנבחרו
+            categories.forEach { category ->
+                val button = Button(requireContext()).apply {
+                    text = category
+                    textSize = 16f
+                    setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.dark_gray))
+                    setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+                    setPadding(8, 8, 8, 8)
+                }
+                binding.categoryContainer.addView(button)
+            }
         }
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

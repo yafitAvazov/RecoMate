@@ -3,29 +3,47 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/my_nav"
-    app:startDestination="@id/allItemsFragment">
+    app:startDestination="@id/startFragment">
 
+    <!-- StartFragment -->
+    <fragment
+        android:id="@+id/startFragment"
+        android:name="com.example.project2.StartFragment"
+        android:label="start_layout"
+        tools:layout="@layout/openning_layout">
+        <action
+            android:id="@+id/action_startFragment_to_allItemsFragment"
+            app:destination="@id/allItemsFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right"/>
+    </fragment>
+
+    <!-- AllItemsFragment -->
     <fragment
         android:id="@+id/allItemsFragment"
         android:name="com.example.project2.AllItemsFragment"
         android:label="all_recommendations_layout"
-        tools:layout="@layout/all_recommendations_layout" >
+        tools:layout="@layout/all_recommendations_layout">
         <action
             android:id="@+id/action_allItemsFragment_to_addItemFragment"
             app:destination="@id/addItemFragment"
             app:enterAnim="@anim/from_right"
             app:exitAnim="@anim/to_left"
             app:popEnterAnim="@anim/from_left"
-            app:popExitAnim="@anim/to_left" />
+            app:popExitAnim="@anim/to_right" />
         <action
             android:id="@+id/action_allItemsFragment_to_itemDetailsFragment"
             app:destination="@id/itemDetailsFragment" />
     </fragment>
+
+    <!-- AddItemFragment -->
     <fragment
         android:id="@+id/addItemFragment"
         android:name="com.example.project2.AddItemFragment"
         android:label="add_recommendation_layout"
-        tools:layout="@layout/add_recommendation_layout" >
+        tools:layout="@layout/add_recommendation_layout">
         <action
             android:id="@+id/action_addItemFragment_to_allItemsFragment"
             app:destination="@id/allItemsFragment"
@@ -33,9 +51,11 @@
             app:exitAnim="@anim/to_left"
             app:popEnterAnim="@anim/from_left"
             app:popExitAnim="@anim/to_right"
-            app:popUpTo="@id/my_nav"
+            app:popUpTo="@id/allItemsFragment"
             app:popUpToInclusive="true" />
     </fragment>
+
+    <!-- ItemDetailsFragment -->
     <fragment
         android:id="@+id/itemDetailsFragment"
         android:name="com.example.project2.ItemDetailsFragment"

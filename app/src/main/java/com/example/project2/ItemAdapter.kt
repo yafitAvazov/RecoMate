@@ -45,21 +45,21 @@ class ItemAdapter(val items: List<Item>, val callBack: ItemListener)
 
         }
 
+
         override fun onLongClick(p0: View?): Boolean {
             callBack.onItemLongClicked(adapterPosition)
             return true
         }
 
         fun bind(item: Item) {
-            // עדכון כותרת והערות
-            binding.itemTitle.text = item.title
 
-
+            binding.itemTitle.text = if (item.title.isBlank()) "No Title" else item.title
+//            binding.itemComment.text = if (item.comment.isBlank()) "No Comment" else item.comment
             // עדכון תמונה אם קיימת
             binding.itemImage.setImageURI(item.photo?.let { Uri.parse(it) })
-
             // עדכון מחיר
-            binding.priceTitle.text = item.price.toString() ?: "N/A"
+//            binding.priceTitle.text = item.price.toString() ?: "N/A"
+            binding.priceTitle.text = if (item.price == 0.0) "No Price" else item.price.toString()
 
             // עדכון הכוכבים
             val stars = listOf(
@@ -78,7 +78,11 @@ class ItemAdapter(val items: List<Item>, val callBack: ItemListener)
 
         }
     }
-
+    fun updateList(newItems: List<Item>) {
+        (items as MutableList).clear()
+        (items as MutableList).addAll(newItems)
+        notifyDataSetChanged()
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val binding = RecommendationLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ItemViewHolder(binding)
