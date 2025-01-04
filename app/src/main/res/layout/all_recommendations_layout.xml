@@ -4,7 +4,7 @@
     android:id="@+id/drawer_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".AllItemsFragment">
+    tools:context=".ui.all_items.AllItemsFragment">
 
     <!-- התוכן הראשי -->
     <androidx.constraintlayout.widget.ConstraintLayout

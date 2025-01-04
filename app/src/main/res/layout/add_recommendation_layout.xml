@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".AddItemFragment">
+    tools:context=".ui.add_item.AddItemFragment">
 
 <LinearLayout
     android:layout_width="match_parent"

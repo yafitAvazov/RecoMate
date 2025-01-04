@@ -1,4 +1,4 @@
-package com.example.project2
+package com.example.project2.ui.add_item
 
 import android.content.Intent
 import android.net.Uri
@@ -14,9 +14,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.project2.data.model.Item
+import com.example.project2.R
 import com.example.project2.databinding.AddRecommendationLayoutBinding
 import java.io.File
+import com.example.project2.ui.ItemsViewModel
 
 class AddItemFragment : Fragment() {
     private var _binding: AddRecommendationLayoutBinding? = null
@@ -25,6 +29,10 @@ class AddItemFragment : Fragment() {
     private var selectedRating: Int = 0 // שומר את הדירוג הנבחר
     private val selectedCategories = mutableSetOf<String>() // רשימת קטגוריות שנבחרו
 
+    private val viewModel : ItemsViewModel by activityViewModels()
+
+
+    // Launch Activity for image selection
     // Launchers
     private val pickImageLauncher =
         registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
@@ -73,7 +81,11 @@ class AddItemFragment : Fragment() {
                 link =link,
                 rating = selectedRating // משתמש בדירוג שנבחר
             )
-            ItemManager.add(item)
+
+            //ItemManager.add(item)
+
+            viewModel.addItem(item)
+
             // הצגת Toast לאחר הוספת ההמלצה
             Toast.makeText(requireContext(), "Recommendation published successfully!", Toast.LENGTH_SHORT).show()
 

@@ -30,4 +30,5 @@
     <string name="take_photo">Take a Photo</string>
     <string name="choose_from_device">Choose from Device</string>
     <string name="select_option">Select an Option</string>
+    <string name="fab_description">Add a new item</string>
 </resources>

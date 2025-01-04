@@ -1,4 +1,4 @@
-package com.example.project2
+package com.example.project2.ui.all_items
 
 import android.net.Uri
 import android.os.Bundle
@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
+import com.example.project2.data.model.Item
+import com.example.project2.R
 import com.example.project2.databinding.RecommendationLayoutBinding
 
 class ItemAdapter(val items: List<Item>, val callBack: ItemListener)
@@ -83,6 +85,9 @@ class ItemAdapter(val items: List<Item>, val callBack: ItemListener)
         (items as MutableList).addAll(newItems)
         notifyDataSetChanged()
     }
+
+    fun itemAt(position: Int) = items[position]
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val binding = RecommendationLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ItemViewHolder(binding)
