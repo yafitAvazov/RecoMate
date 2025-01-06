@@ -24,6 +24,10 @@ class ItemRepository (application: Application){
     }
     fun getItem(id: Int) = itemDao?.getItem(id)
 
+    fun deleteAll() {
+        itemDao?.deleteAll()
+    }
+
 
 
 
