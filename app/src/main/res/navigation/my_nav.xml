@@ -8,7 +8,7 @@
     <!-- StartFragment -->
     <fragment
         android:id="@+id/startFragment"
-        android:name="com.example.project2.StartFragment"
+        android:name="com.example.project2.ui.StartFragment"
         android:label="start_layout"
         tools:layout="@layout/openning_layout">
         <action

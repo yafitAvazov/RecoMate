@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:text="Remove Fillter"
+            android:text="Remove Filter"
             android:backgroundTint="@color/gray"
             style="@style/Widget.MaterialComponents.Button.TextButton"
 
@@ -55,7 +55,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:id="@+id/recycel"
+            android:id="@+id/recycler"
             app:layout_constraintTop_toBottomOf="@id/filter_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
