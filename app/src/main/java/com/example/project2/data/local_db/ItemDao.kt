@@ -28,6 +28,9 @@ interface ItemDao {
     @Query("SELECT * FROM review_table WHERE id LIKE :id")
     fun getItem(id:Int) : Item
 
+    @Query( "DELETE FROM review_table")
+    fun deleteAll()
+
 
 
 }

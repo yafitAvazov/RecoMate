@@ -2,6 +2,9 @@ package com.example.project2.ui.all_items
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -39,6 +42,7 @@ class AllItemsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        setHasOptionsMenu(true)
         _binding = AllRecommendationsLayoutBinding.inflate(inflater, container, false)
         binding.fab.setOnClickListener {
             findNavController().navigate(R.id.action_allItemsFragment_to_addItemFragment)
@@ -224,6 +228,25 @@ class AllItemsFragment : Fragment() {
                     .show()
             }
         }).attachToRecyclerView(binding.recycler)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_delete) {
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("Delete Confirmation")
+            .setMessage("Are you sure you want to delete all items?")
+            .setPositiveButton("Yes") { _, _ ->
+                viewModel.deleteAll()
+                    Toast.makeText(requireContext(), "All items deleted", Toast.LENGTH_SHORT).show()
+                }.show()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroyView() {
