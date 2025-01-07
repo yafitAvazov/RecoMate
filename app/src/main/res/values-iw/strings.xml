@@ -64,4 +64,7 @@
     <string name="photo">תמונה</string>
     <string name="rating">דירוג</string>
     <string name="no_price">אין מחיר</string>
+    <string name="update_recommendation">עדכון המלצה</string>
+    <string name="remove">הסרה</string>
+    <string name="change">שינוי</string>
 </resources>
