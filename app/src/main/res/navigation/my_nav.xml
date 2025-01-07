@@ -36,7 +36,11 @@
         <action
             android:id="@+id/action_allItemsFragment_to_itemDetailsFragment"
             app:destination="@id/itemDetailsFragment" />
+        <action
+            android:id="@+id/action_allItemsFragment_to_updateItemFragment"
+            app:destination="@id/updateItemFragment" />
     </fragment>
+
 
     <!-- AddItemFragment -->
     <fragment
@@ -51,6 +55,21 @@
             app:exitAnim="@anim/to_left"
             app:popEnterAnim="@anim/from_left"
             app:popExitAnim="@anim/to_right"
+            app:popUpTo="@id/allItemsFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_allItemsFragment_to_itemDetailsFragment"
+            app:destination="@id/itemDetailsFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/updateItemFragment"
+        android:name="com.example.project2.ui.update_item.UpdateItemFragment"
+        android:label="update_recommendation_layout"
+        tools:layout="@layout/update_recommendation_layout">
+        <action
+            android:id="@+id/action_updateItemFragment_to_allItemsFragment"
+            app:destination="@id/allItemsFragment"
             app:popUpTo="@id/allItemsFragment"
             app:popUpToInclusive="true" />
     </fragment>

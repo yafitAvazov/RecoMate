@@ -4,8 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.project2.data.model.Item
 import com.example.project2.data.repository.ItemRepository
+import kotlinx.coroutines.launch
 
 class ItemsViewModel (application: Application) : AndroidViewModel(application){
     private val repository = ItemRepository(application)
@@ -25,12 +27,12 @@ class ItemsViewModel (application: Application) : AndroidViewModel(application){
         repository.deleteItem(item)
     }
     fun updateItem(item: Item) {
-        repository.updateItem(item)
-
+        viewModelScope.launch {
+            repository.updateItem(item) // מעדכן את הפריט ב-DAO
+        }
     }
     fun deleteAll() {
         repository.deleteAll()
 
     }
-
 }

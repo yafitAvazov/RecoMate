@@ -11,7 +11,7 @@ import com.example.project2.data.model.Item
 import com.example.project2.R
 import com.example.project2.databinding.RecommendationLayoutBinding
 
-class ItemAdapter(val items: List<Item>, val callBack: ItemListener)
+class ItemAdapter(var items: List<Item>, val callBack: ItemListener)
     : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
     interface ItemListener {
@@ -25,7 +25,16 @@ class ItemAdapter(val items: List<Item>, val callBack: ItemListener)
         init {
             binding.root.setOnClickListener(this)
             binding.root.setOnLongClickListener(this)
+            binding.editBtn.setOnClickListener {
+                val item = items[adapterPosition]
+                val bundle = Bundle().apply {
+                    putParcelable("item", item)
+                }
+                Navigation.findNavController(binding.root)
+                    .navigate(R.id.action_allItemsFragment_to_updateItemFragment, bundle)
+            }
         }
+
 
         override fun onClick(p0: View?) {
             callBack.onItemClicked(adapterPosition)
@@ -81,8 +90,7 @@ class ItemAdapter(val items: List<Item>, val callBack: ItemListener)
         }
     }
     fun updateList(newItems: List<Item>) {
-        (items as MutableList).clear()
-        (items as MutableList).addAll(newItems)
+        items = newItems
         notifyDataSetChanged()
     }
 
