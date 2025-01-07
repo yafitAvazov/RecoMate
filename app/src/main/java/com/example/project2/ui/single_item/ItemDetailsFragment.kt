@@ -12,7 +12,6 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import com.example.project2.R
 import com.example.project2.databinding.FragmentItemDetailsBinding
 import com.example.project2.ui.ItemsViewModel
@@ -20,7 +19,7 @@ import com.example.project2.ui.ItemsViewModel
 class ItemDetailsFragment : Fragment() {
     private var _binding: FragmentItemDetailsBinding? = null
 
-    val viewModel : ItemsViewModel by activityViewModels()
+    val viewModel: ItemsViewModel by activityViewModels()
 
     private val binding get() = _binding!!
 
@@ -36,8 +35,9 @@ class ItemDetailsFragment : Fragment() {
         arguments?.let { bundle ->
             binding.itemTitle.text = bundle.getString("title")
             binding.itemComment.text = bundle.getString("comment")
-            binding.itemPrice.text = "Price: ${bundle.getDouble("price")}"
-//            binding.itemCategory.text = "Category: ${bundle.getString("category", "None")}"
+
+            val price = bundle.getDouble("price")
+            binding.itemPrice.text = if (price == 0.0) "No Price" else "Price: $price"
 
             val categories = bundle.getString("category", "No Category").split(", ").filter { it.isNotBlank() }
             setupCategoryButtons(categories)
@@ -47,7 +47,11 @@ class ItemDetailsFragment : Fragment() {
 
             // עדכון תמונה
             val photoUri = bundle.getString("photo")
-            binding.itemImage.setImageURI(photoUri?.let { Uri.parse(it) })
+            if (photoUri.isNullOrEmpty()) {
+                binding.itemImage.setImageResource(R.drawable.baseline_hide_image_24)
+            } else {
+                binding.itemImage.setImageURI(Uri.parse(photoUri))
+            }
 
             // עדכון כוכבים
             val rating = bundle.getInt("rating")
@@ -63,10 +67,12 @@ class ItemDetailsFragment : Fragment() {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it))
                     startActivity(intent)
                 }
-        }}
+            }
+        }
 
         return binding.root
     }
+
     private fun setupCategoryButtons(categories: List<String>) {
         // איפוס התצוגה
         binding.categoryContainer.removeAllViews()
@@ -100,14 +106,16 @@ class ItemDetailsFragment : Fragment() {
         viewModel.chosenItem.observe(viewLifecycleOwner) {
             binding.itemTitle.text = it.title
             binding.itemComment.text = it.comment
-            binding.itemPrice.text = "Price: ${it.price}"
+            binding.itemPrice.text = if (it.price == 0.0) "No Price" else "Price: ${it.price}"
             binding.itemCategory.text = "Category: ${it.category}"
             binding.itemLink.text = it.link
-            binding.itemImage.setImageURI(it.photo?.let { Uri.parse(it) }) // not sure
+            if (it.photo.isNullOrEmpty()) {
+                binding.itemImage.setImageResource(R.drawable.baseline_hide_image_24)
+            } else {
+                binding.itemImage.setImageURI(Uri.parse(it.photo))
+            }
         }
     }
-
-
 
     override fun onDestroyView() {
         super.onDestroyView()

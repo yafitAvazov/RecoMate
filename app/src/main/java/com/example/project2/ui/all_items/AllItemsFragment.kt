@@ -62,9 +62,14 @@ class AllItemsFragment : Fragment() {
         setupDrawerFilters(view)
         setupItemSwipeHandling()
 
+
+
+
         // Observe LiveData from ViewModel
         viewModel.items?.observe(viewLifecycleOwner) { items ->
+            if (!::originalItems.isInitialized) {
             originalItems = items
+            }
             binding.recycler.adapter = ItemAdapter(items, object : ItemAdapter.ItemListener {
                 override fun onItemClicked(index: Int) {
                     val clickedItem = items[index]
@@ -120,28 +125,77 @@ class AllItemsFragment : Fragment() {
     }
 
     private fun applyFilters() {
+        // סינון הפריטים לפי הקטגוריות שנבחרו
         val filteredItems = originalItems.filter { item ->
             val matchesCategory = selectedCategories.isEmpty() || selectedCategories.any { category ->
                 item.category.contains(category, ignoreCase = true)
             }
-            val matchesRating = selectedRating == 0 || item.rating >= selectedRating
+            val matchesRating = selectedRating == 0 || item.rating == selectedRating
             val matchesPrice = item.price <= selectedMinPrice
 
             matchesCategory && matchesRating && matchesPrice
         }
+
+        // עדכון הרשימה ב-RecyclerView
         (binding.recycler.adapter as ItemAdapter).updateList(filteredItems)
+
+        // הודעת Toast על מספר הפריטים שנמצאו לאחר הסינון
+        Toast.makeText(requireContext(), "${filteredItems.size} items found", Toast.LENGTH_SHORT).show()
     }
 
+
     private fun resetFilters() {
+        // איפוס כל הערכים שנבחרו בסינון
         selectedCategories.clear()
         selectedRating = 0
         selectedMinPrice = 0
 
+        // איפוס תצוגת המחיר
         binding.priceSeekBar.progress = 0
         binding.minPrice.text = "$0"
 
-        (binding.recycler.adapter as ItemAdapter).updateList(originalItems)
+        // איפוס כל תיבות הסימון (CheckBoxes)
+        val checkBoxes = listOf(
+            binding.checkboxFashion,
+            binding.checkboxFood,
+            binding.checkboxGame,
+            binding.checkboxHome,
+            binding.checkboxTech,
+            binding.checkboxSport,
+            binding.checkboxTravel,
+            binding.checkboxMusic,
+            binding.checkboxBook,
+            binding.checkboxShops,
+            binding.checkboxMovie,
+            binding.checkboxHealth
+        )
+        checkBoxes.forEach { checkBox ->
+            checkBox.isChecked = false
+        }
+
+        // איפוס כוכבי הדירוג (Stars)
+        val stars = listOf(
+            binding.star1Filter,
+            binding.star2Filter,
+            binding.star3Filter,
+            binding.star4Filter,
+            binding.star5Filter
+        )
+        stars.forEach { star ->
+            star.setImageResource(R.drawable.star_empty)
+        }
+
+        // הצגת כל הפריטים המקוריים ב-RecyclerView
+        if (::originalItems.isInitialized) {
+            (binding.recycler.adapter as ItemAdapter).updateList(originalItems)
+        }
+
+        // הודעת Toast למשתמש
+        Toast.makeText(requireContext(), "Filters removed. Showing all items.", Toast.LENGTH_SHORT).show()
     }
+
+
+
 
     private fun setupCategoryFilters(view: View) {
         val categoryCheckBoxes = listOf(
