@@ -26,7 +26,6 @@ import com.example.project2.data.model.Item
 import com.example.project2.databinding.AllRecommendationsLayoutBinding
 import com.example.project2.ui.ItemsViewModel
 
-
 class AllItemsFragment : Fragment() {
     private var _binding: AllRecommendationsLayoutBinding? = null
     private val binding get() = _binding!!
@@ -53,7 +52,7 @@ class AllItemsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        arguments?.getString("title")?.let {
+        arguments?.getString(getString(R.string.title))?.let {
             Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT).show()
         }
 
@@ -62,14 +61,9 @@ class AllItemsFragment : Fragment() {
         setupDrawerFilters(view)
         setupItemSwipeHandling()
 
-
-
-
         // Observe LiveData from ViewModel
         viewModel.items?.observe(viewLifecycleOwner) { items ->
-            if (!::originalItems.isInitialized) {
             originalItems = items
-            }
             binding.recycler.adapter = ItemAdapter(items, object : ItemAdapter.ItemListener {
                 override fun onItemClicked(index: Int) {
                     val clickedItem = items[index]
@@ -119,6 +113,7 @@ class AllItemsFragment : Fragment() {
 
         resetFilterButton.setOnClickListener {
             resetFilters()
+            (binding.recycler.adapter as ItemAdapter).updateList(originalItems)
         }
 
         setupCategoryFilters(view)
@@ -140,9 +135,8 @@ class AllItemsFragment : Fragment() {
         (binding.recycler.adapter as ItemAdapter).updateList(filteredItems)
 
         // הודעת Toast על מספר הפריטים שנמצאו לאחר הסינון
-        Toast.makeText(requireContext(), "${filteredItems.size} items found", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "${filteredItems.size} ${getString(R.string.items_found)}", Toast.LENGTH_SHORT).show()
     }
-
 
     private fun resetFilters() {
         // איפוס כל הערכים שנבחרו בסינון
@@ -152,7 +146,7 @@ class AllItemsFragment : Fragment() {
 
         // איפוס תצוגת המחיר
         binding.priceSeekBar.progress = 0
-        binding.minPrice.text = "$0"
+        binding.minPrice.text = getString(R.string._0)
 
         // איפוס כל תיבות הסימון (CheckBoxes)
         val checkBoxes = listOf(
@@ -191,11 +185,8 @@ class AllItemsFragment : Fragment() {
         }
 
         // הודעת Toast למשתמש
-        Toast.makeText(requireContext(), "Filters removed. Showing all items.", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), getString(R.string.Filters_removed), Toast.LENGTH_SHORT).show()
     }
-
-
-
 
     private fun setupCategoryFilters(view: View) {
         val categoryCheckBoxes = listOf(
@@ -270,12 +261,12 @@ class AllItemsFragment : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val item = (binding.recycler.adapter as ItemAdapter).itemAt(viewHolder.adapterPosition)
                 AlertDialog.Builder(requireContext())
-                    .setTitle("Delete Confirmation")
-                    .setMessage("Are you sure you want to delete this item?")
-                    .setPositiveButton("Yes") { _, _ ->
+                    .setTitle(getString(R.string.delete_confirmation))
+                    .setMessage(getString(R.string.delete_confirmation_message))
+                    .setPositiveButton(getString(R.string.yes)) { _, _ ->
                         viewModel.deleteItem(item)
                     }
-                    .setNegativeButton("No") { _, _ ->
+                    .setNegativeButton(getString(R.string.no)) { _, _ ->
                         (binding.recycler.adapter as ItemAdapter).notifyItemChanged(viewHolder.adapterPosition)
                     }
                     .setCancelable(false)
@@ -287,17 +278,16 @@ class AllItemsFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_delete) {
             val builder = AlertDialog.Builder(requireContext())
-            builder.setTitle("Delete Confirmation")
-            .setMessage("Are you sure you want to delete all items?")
-            .setPositiveButton("Yes") { _, _ ->
-                viewModel.deleteAll()
-                    Toast.makeText(requireContext(), "All items deleted", Toast.LENGTH_SHORT).show()
+            builder.setTitle(getString(R.string.delete_confirmation))
+                .setMessage(getString(R.string.all_delete_confirmation_message))
+                .setPositiveButton(getString(R.string.yes)) { _, _ ->
+                    viewModel.deleteAll()
+                    Toast.makeText(requireContext(), getString(R.string.all_items_deleted), Toast.LENGTH_SHORT).show()
                 }.show()
         }
         return super.onOptionsItemSelected(item)
@@ -308,4 +298,3 @@ class AllItemsFragment : Fragment() {
         _binding = null
     }
 }
-

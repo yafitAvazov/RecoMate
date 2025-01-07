@@ -48,7 +48,7 @@ class UpdateItemFragment : Fragment() {
         _binding = UpdateRecommendationLayoutBinding.inflate(inflater, container, false)
 
         // Retrieve the item from arguments
-        val item: Item? = arguments?.getParcelable("item")
+        val item: Item? = arguments?.getParcelable(getString(R.string.item))
         item?.let { populateFields(it) }
 
         binding.removeImageButton.setOnClickListener {
@@ -83,7 +83,7 @@ class UpdateItemFragment : Fragment() {
         }
         selectedRating = item.rating
         selectedCategories.clear()
-        selectedCategories.addAll(item.category.split(", "))
+        selectedCategories.addAll(item.category.split(getString(R.string.separator)))
         updateStarDisplay(selectedRating - 1)
         updateCategoryButtons()
     }
@@ -103,13 +103,14 @@ class UpdateItemFragment : Fragment() {
             comment = comment,
             photo = if (photoUriString.isEmpty()) null else photoUriString,
             rating = selectedRating,
-            category = selectedCategories.joinToString(", ")
+            category = selectedCategories.joinToString(getString(R.string.separator))
         )
 
         CoroutineScope(Dispatchers.IO).launch {
             viewModel.updateItem(updatedItem)
             CoroutineScope(Dispatchers.Main).launch {
-                Toast.makeText(requireContext(), "Item updated successfully!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.item_updated_successfully), Toast.LENGTH_SHORT).show()
                 findNavController().navigate(R.id.action_updateItemFragment_to_allItemsFragment)
             }
         }
@@ -157,12 +158,12 @@ class UpdateItemFragment : Fragment() {
             binding.btn4 to getString(R.string.home),
             binding.btn5 to getString(R.string.tech),
             binding.btn6 to getString(R.string.sport),
-            binding.btn7 to "travel",
-            binding.btn8 to "music",
-            binding.btn9 to "book",
-            binding.btn10 to "shops",
-            binding.btn11 to "movie",
-            binding.btn12 to "health"
+            binding.btn7 to getString(R.string.travel),
+            binding.btn8 to getString(R.string.music),
+            binding.btn9 to getString(R.string.book),
+            binding.btn10 to getString(R.string.shops),
+            binding.btn11 to getString(R.string.movie),
+            binding.btn12 to getString(R.string.health)
         )
 
         buttons.forEach { (button, category) ->
@@ -186,12 +187,12 @@ class UpdateItemFragment : Fragment() {
             binding.btn4 to getString(R.string.home),
             binding.btn5 to getString(R.string.tech),
             binding.btn6 to getString(R.string.sport),
-            binding.btn7 to "travel",
-            binding.btn8 to "music",
-            binding.btn9 to "book",
-            binding.btn10 to "shops",
-            binding.btn11 to "movie",
-            binding.btn12 to "health"
+            binding.btn7 to getString(R.string.travel),
+            binding.btn8 to getString(R.string.music),
+            binding.btn9 to getString(R.string.book),
+            binding.btn10 to getString(R.string.shops),
+            binding.btn11 to getString(R.string.movie),
+            binding.btn12 to getString(R.string.health)
         )
 
         buttons.forEach { (button, category) ->

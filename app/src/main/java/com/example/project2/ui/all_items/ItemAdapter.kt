@@ -28,7 +28,7 @@ class ItemAdapter(var items: List<Item>, val callBack: ItemListener)
             binding.editBtn.setOnClickListener {
                 val item = items[adapterPosition]
                 val bundle = Bundle().apply {
-                    putParcelable("item", item)
+                    putParcelable(getString(R.string.item.toString()), item)
                 }
                 Navigation.findNavController(binding.root)
                     .navigate(R.id.action_allItemsFragment_to_updateItemFragment, bundle)
@@ -40,14 +40,14 @@ class ItemAdapter(var items: List<Item>, val callBack: ItemListener)
             callBack.onItemClicked(adapterPosition)
             val context = binding.root.context
             val bundle = Bundle().apply {
-                putString("title", items[adapterPosition].title)
-                putString("comment", items[adapterPosition].comment)
-                putDouble("price", items[adapterPosition].price)
-                putString("photo", items[adapterPosition].photo)
-                putString("link", items[adapterPosition].link) // ודא שזה קיים
-                putString("category", items[adapterPosition].category) // העברת הקטגוריות
+                putString(context.getString(R.string.item), items[adapterPosition].title)
+                putString(context.getString(R.string.comment), items[adapterPosition].comment)
+                putDouble(context.getString(R.string.price), items[adapterPosition].price)
+                putString(context.getString(R.string.photo), items[adapterPosition].photo)
+                putString(context.getString(R.string.link), items[adapterPosition].link) // ודא שזה קיים
+                putString(context.getString(R.string.category), items[adapterPosition].category) // העברת הקטגוריות
 
-                putInt("rating", items[adapterPosition].rating)
+                putInt(context.getString(R.string.rating), items[adapterPosition].rating)
             }
 
             // ניווט ל-ItemDetailsFragment
@@ -64,13 +64,14 @@ class ItemAdapter(var items: List<Item>, val callBack: ItemListener)
 
         fun bind(item: Item) {
 
-            binding.itemTitle.text = if (item.title.isBlank()) "No Title" else item.title
+            binding.itemTitle.text = if (item.title.isBlank()) binding.root.context.getString(R.string.no_title) else item.title
+
 //            binding.itemComment.text = if (item.comment.isBlank()) "No Comment" else item.comment
             // עדכון תמונה אם קיימת
             binding.itemImage.setImageURI(item.photo?.let { Uri.parse(it) })
             // עדכון מחיר
 //            binding.priceTitle.text = item.price.toString() ?: "N/A"
-            binding.priceTitle.text = if (item.price == 0.0) "No Price" else item.price.toString()
+            binding.priceTitle.text = if (item.price == 0.0) binding.root.context.getString(R.string.no_price) else item.price.toString()
 
             // עדכון הכוכבים
             val stars = listOf(

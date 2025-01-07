@@ -1,6 +1,7 @@
 package com.example.project2.ui.add_item
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -29,16 +30,13 @@ class AddItemFragment : Fragment() {
     private var selectedRating: Int = 0 // שומר את הדירוג הנבחר
     private val selectedCategories = mutableSetOf<String>() // רשימת קטגוריות שנבחרו
 
-    private val viewModel : ItemsViewModel by activityViewModels()
+    private val viewModel: ItemsViewModel by activityViewModels()
 
-
-    // Launch Activity for image selection
-    // Launchers
     private val pickImageLauncher =
         registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
             uri?.let {
                 imageUri = it
-                binding.imageBtn.setImageURI(it) // הצגת התמונה שנבחרה
+                binding.imageBtn.setImageURI(it)
                 requireActivity().contentResolver.takePersistableUriPermission(
                     it,
                     Intent.FLAG_GRANT_READ_URI_PERMISSION
@@ -64,14 +62,13 @@ class AddItemFragment : Fragment() {
 
         // הגדרת כפתור Finish להוספת פריט
         binding.finishBtn.setOnClickListener {
-
-            val title = if (binding.itemTitle.text.toString().isBlank()) "No Title" else binding.itemTitle.text.toString()
-            val comment = if (binding.itemComment.text.toString().isBlank()) "No Comment" else binding.itemComment.text.toString()
+            val title = if (binding.itemTitle.text.toString().isBlank()) getString(R.string.no_title) else binding.itemTitle.text.toString()
+            val comment = if (binding.itemComment.text.toString().isBlank()) getString(R.string.no_comment) else binding.itemComment.text.toString()
             val photo = imageUri?.toString()
             val priceText = binding.price.text.toString()
 
-            val link = if (binding.itemLink.text.toString().isBlank()) "No Link" else binding.itemLink.text.toString()
-            val selectedCategoryText = if (selectedCategories.isEmpty()) "No Category" else selectedCategories.joinToString(", ")
+            val link = if (binding.itemLink.text.toString().isBlank()) getString(R.string.no_link) else binding.itemLink.text.toString()
+            val selectedCategoryText = if (selectedCategories.isEmpty()) getString(R.string.no_category) else selectedCategories.joinToString(", ")
             val price = priceText.toDoubleOrNull() ?: 0.0
             val item = Item(
                 title = title,
@@ -79,16 +76,14 @@ class AddItemFragment : Fragment() {
                 photo = photo,
                 price = price,
                 category = selectedCategoryText,
-                link =link,
-                rating = selectedRating // משתמש בדירוג שנבחר
+                link = link,
+                rating = selectedRating
             )
-
-            //ItemManager.add(item)
 
             viewModel.addItem(item)
 
             // הצגת Toast לאחר הוספת ההמלצה
-            Toast.makeText(requireContext(), "Recommendation published successfully!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.recommendation_published), Toast.LENGTH_SHORT).show()
 
             findNavController().navigate(R.id.action_addItemFragment_to_allItemsFragment)
         }
@@ -103,18 +98,28 @@ class AddItemFragment : Fragment() {
 
         return binding.root
     }
+
     private fun showImagePickerDialog() {
         val options = arrayOf(getString(R.string.take_photo), getString(R.string.choose_from_device))
         AlertDialog.Builder(requireContext())
             .setTitle(getString(R.string.select_option))
             .setItems(options) { _, which ->
                 when (which) {
-                    0 -> takePhoto() // צילום תמונה
+                    0 -> requestCameraPermission() // בקשת הרשאה לפני צילום תמונה
                     1 -> pickImageLauncher.launch(arrayOf("image/*")) // בחירת תמונה מהמכשיר
                 }
             }
             .setCancelable(true)
             .show()
+    }
+
+    private fun requestCameraPermission() {
+        val permissions = arrayOf(android.Manifest.permission.CAMERA)
+        if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(permissions, CAMERA_PERMISSION_REQUEST_CODE)
+        } else {
+            takePhoto()
+        }
     }
 
     private fun takePhoto() {
@@ -129,6 +134,7 @@ class AddItemFragment : Fragment() {
         )
         takePhotoLauncher.launch(imageUri)
     }
+
     private fun setupCategoryButtons() {
         val buttons = listOf(
             binding.btn1 to getString(R.string.fashion),
@@ -137,46 +143,38 @@ class AddItemFragment : Fragment() {
             binding.btn4 to getString(R.string.home),
             binding.btn5 to getString(R.string.tech),
             binding.btn6 to getString(R.string.sport),
-            binding.btn7 to "travel",
-            binding.btn8 to "music",
-            binding.btn9 to "book",
-            binding.btn10 to "shops",
-            binding.btn11 to "movie",
-            binding.btn12 to "health"
+            binding.btn7 to getString(R.string.travel),
+            binding.btn8 to getString(R.string.music),
+            binding.btn9 to getString(R.string.book),
+            binding.btn10 to getString(R.string.shops),
+            binding.btn11 to getString(R.string.movie),
+            binding.btn12 to getString(R.string.health)
         )
 
         buttons.forEach { (button, category) ->
             button.setOnClickListener {
                 if (selectedCategories.contains(category)) {
                     selectedCategories.remove(category)
-                    button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blue1)) // צבע ברירת מחדל
+                    button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blue1))
                 } else {
                     selectedCategories.add(category)
-                    button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gray)) // צבע לחצן נבחר
+                    button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gray))
                 }
-
             }
         }
     }
 
-
-
-    // הגדרת פונקציית דירוג
     private fun setupStarRating() {
-        // יצירת רשימה של הכוכבים
         val stars = listOf(binding.star1, binding.star2, binding.star3, binding.star4, binding.star5)
-
-        // Listener לחיצה על כל כוכב
         stars.forEachIndexed { index, imageView ->
             imageView.setOnClickListener {
-                selectedRating = index + 1 // שמירת הדירוג הנבחר
-                Log.d("StarRating", "Selected Rating: $selectedRating") // בדיקה
-                updateStarDisplay(selectedRating - 1, stars) // עדכון תצוגת הכוכבים
+                selectedRating = index + 1
+                Log.d("StarRating", "Selected Rating: $selectedRating")
+                updateStarDisplay(selectedRating - 1, stars)
             }
         }
     }
 
-    // עדכון תצוגת הכוכבים
     private fun updateStarDisplay(selectedIndex: Int, stars: List<ImageView>) {
         stars.forEachIndexed { index, imageView ->
             imageView.setImageResource(
@@ -185,10 +183,27 @@ class AddItemFragment : Fragment() {
         }
     }
 
-
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                takePhoto()
+            } else {
+                Toast.makeText(requireContext(), getString(R.string.camera_permission_denied), Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val CAMERA_PERMISSION_REQUEST_CODE = 100
     }
 }
