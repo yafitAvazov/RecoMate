@@ -16,6 +16,10 @@ class ItemsViewModel (application: Application) : AndroidViewModel(application){
     private val _chosenItem = MutableLiveData<Item>()
     val chosenItem: LiveData<Item> get() = _chosenItem
 
+    private val _filteredItems = MutableLiveData<List<Item>>()
+    val filteredItems: LiveData<List<Item>> get() = _filteredItems
+
+
     fun setItem(item: Item) {
         _chosenItem.value = item
     }
@@ -34,5 +38,8 @@ class ItemsViewModel (application: Application) : AndroidViewModel(application){
     fun deleteAll() {
         repository.deleteAll()
 
+    }
+    fun setFilteredItems(items: List<Item>) {
+        _filteredItems.value = items
     }
 }

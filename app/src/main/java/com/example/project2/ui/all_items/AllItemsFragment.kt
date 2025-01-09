@@ -59,12 +59,28 @@ class AllItemsFragment : Fragment() {
         setupDrawerFilters(view)
         setupItemSwipeHandling()
 
-        // מעקב אחרי השינויים ב-LiveData של הפריטים
+        // אם כבר בוצע סינון, נציג את הפריטים המסוננים
+        viewModel.filteredItems.observe(viewLifecycleOwner) { filteredItems ->
+            if (filteredItems.isNotEmpty()) {
+                adapter.updateList(filteredItems)
+            } else {
+                // אם אין פריטים מסוננים, נציג את כל הפריטים
+                viewModel.items?.observe(viewLifecycleOwner) { items ->
+                    originalItems = items
+                    adapter.updateList(items)
+                }
+            }
+        }
+
+        // שמירה של רשימת הפריטים המקורית, למקרה שצריך איפוס סינון
         viewModel.items?.observe(viewLifecycleOwner) { items ->
-            originalItems = items
-            adapter.updateList(items)
+            if (viewModel.filteredItems.value.isNullOrEmpty()) {
+                originalItems = items
+                adapter.updateList(items)
+            }
         }
     }
+
 
     private fun initializeRecyclerView() {
         adapter = ItemAdapter(
@@ -135,8 +151,8 @@ class AllItemsFragment : Fragment() {
         }
 
         adapter.updateList(filteredItems)
+        viewModel.setFilteredItems(filteredItems) // שמירת הפריטים המסוננים ב-ViewModel
 
-        // הודעת Toast עם מספר הפריטים שנמצאו
         Toast.makeText(requireContext(), "${filteredItems.size} ${getString(R.string.items_found)}", Toast.LENGTH_SHORT).show()
     }
 
