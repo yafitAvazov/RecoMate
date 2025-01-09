@@ -1,12 +1,7 @@
 package com.example.project2.ui.all_items
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageView
@@ -35,6 +30,7 @@ class AllItemsFragment : Fragment() {
     private var selectedRating: Int = 0
 
     private val viewModel: ItemsViewModel by activityViewModels()
+    private lateinit var adapter: ItemAdapter // משתנה אדפטר כדי להשתמש בו פעם אחת
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,6 +39,8 @@ class AllItemsFragment : Fragment() {
     ): View {
         setHasOptionsMenu(true)
         _binding = AllRecommendationsLayoutBinding.inflate(inflater, container, false)
+
+        // מעבר למסך הוספת פריט
         binding.fab.setOnClickListener {
             findNavController().navigate(R.id.action_allItemsFragment_to_addItemFragment)
         }
@@ -56,34 +54,40 @@ class AllItemsFragment : Fragment() {
             Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT).show()
         }
 
-        // Initialize RecyclerView and setup filters
+        // אתחול ה-RecyclerView וה-Adapter
         initializeRecyclerView()
         setupDrawerFilters(view)
         setupItemSwipeHandling()
 
-        // Observe LiveData from ViewModel
+        // מעקב אחרי השינויים ב-LiveData של הפריטים
         viewModel.items?.observe(viewLifecycleOwner) { items ->
             originalItems = items
-            binding.recycler.adapter = ItemAdapter(items, object : ItemAdapter.ItemListener {
+            adapter.updateList(items)
+        }
+    }
+
+    private fun initializeRecyclerView() {
+        adapter = ItemAdapter(
+            emptyList(),
+            viewModel, // העברת ה-ViewModel לאדפטר
+            object : ItemAdapter.ItemListener {
                 override fun onItemClicked(index: Int) {
-                    val clickedItem = items[index]
+                    val clickedItem = adapter.items[index]
                     Toast.makeText(requireContext(), clickedItem.title, Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onItemLongClicked(index: Int) {
-                    val item = items[index]
+                    val item = adapter.items[index]
                     viewModel.setItem(item)
                     findNavController().navigate(R.id.action_allItemsFragment_to_itemDetailsFragment)
                 }
-            })
-        }
+            }
+        )
 
+        binding.recycler.adapter = adapter
         binding.recycler.layoutManager = LinearLayoutManager(requireContext())
     }
 
-    private fun initializeRecyclerView() {
-        binding.recycler.layoutManager = LinearLayoutManager(requireContext())
-    }
 
     private fun setupDrawerFilters(view: View) {
         val drawerLayout = view.findViewById<DrawerLayout>(R.id.drawer_layout)
@@ -113,42 +117,39 @@ class AllItemsFragment : Fragment() {
 
         resetFilterButton.setOnClickListener {
             resetFilters()
-            (binding.recycler.adapter as ItemAdapter).updateList(originalItems)
+            adapter.updateList(originalItems)
         }
 
         setupCategoryFilters(view)
     }
 
     private fun applyFilters() {
-        // סינון הפריטים לפי הקטגוריות שנבחרו
         val filteredItems = originalItems.filter { item ->
             val matchesCategory = selectedCategories.isEmpty() || selectedCategories.any { category ->
                 item.category.contains(category, ignoreCase = true)
             }
             val matchesRating = selectedRating == 0 || item.rating == selectedRating
-            val matchesPrice = item.price <= selectedMinPrice
+            val matchesPrice = selectedMinPrice == 0 || item.price <= selectedMinPrice
 
             matchesCategory && matchesRating && matchesPrice
         }
 
-        // עדכון הרשימה ב-RecyclerView
-        (binding.recycler.adapter as ItemAdapter).updateList(filteredItems)
+        adapter.updateList(filteredItems)
 
-        // הודעת Toast על מספר הפריטים שנמצאו לאחר הסינון
+        // הודעת Toast עם מספר הפריטים שנמצאו
         Toast.makeText(requireContext(), "${filteredItems.size} ${getString(R.string.items_found)}", Toast.LENGTH_SHORT).show()
     }
 
+
+
     private fun resetFilters() {
-        // איפוס כל הערכים שנבחרו בסינון
         selectedCategories.clear()
         selectedRating = 0
         selectedMinPrice = 0
 
-        // איפוס תצוגת המחיר
         binding.priceSeekBar.progress = 0
         binding.minPrice.text = getString(R.string._0)
 
-        // איפוס כל תיבות הסימון (CheckBoxes)
         val checkBoxes = listOf(
             binding.checkboxFashion,
             binding.checkboxFood,
@@ -163,11 +164,8 @@ class AllItemsFragment : Fragment() {
             binding.checkboxMovie,
             binding.checkboxHealth
         )
-        checkBoxes.forEach { checkBox ->
-            checkBox.isChecked = false
-        }
+        checkBoxes.forEach { it.isChecked = false }
 
-        // איפוס כוכבי הדירוג (Stars)
         val stars = listOf(
             binding.star1Filter,
             binding.star2Filter,
@@ -175,16 +173,12 @@ class AllItemsFragment : Fragment() {
             binding.star4Filter,
             binding.star5Filter
         )
-        stars.forEach { star ->
-            star.setImageResource(R.drawable.star_empty)
-        }
+        stars.forEach { it.setImageResource(R.drawable.star_empty) }
 
-        // הצגת כל הפריטים המקוריים ב-RecyclerView
         if (::originalItems.isInitialized) {
-            (binding.recycler.adapter as ItemAdapter).updateList(originalItems)
+            adapter.updateList(originalItems)
         }
 
-        // הודעת Toast למשתמש
         Toast.makeText(requireContext(), getString(R.string.Filters_removed), Toast.LENGTH_SHORT).show()
     }
 
@@ -244,22 +238,13 @@ class AllItemsFragment : Fragment() {
 
     private fun setupItemSwipeHandling() {
         ItemTouchHelper(object : ItemTouchHelper.Callback() {
-            override fun getMovementFlags(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder
-            ) = makeFlag(
-                ItemTouchHelper.ACTION_STATE_SWIPE,
-                ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-            )
+            override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) =
+                makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
 
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean = false
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder) = false
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val item = (binding.recycler.adapter as ItemAdapter).itemAt(viewHolder.adapterPosition)
+                val item = adapter.itemAt(viewHolder.adapterPosition)
                 AlertDialog.Builder(requireContext())
                     .setTitle(getString(R.string.delete_confirmation))
                     .setMessage(getString(R.string.delete_confirmation_message))
@@ -267,7 +252,7 @@ class AllItemsFragment : Fragment() {
                         viewModel.deleteItem(item)
                     }
                     .setNegativeButton(getString(R.string.no)) { _, _ ->
-                        (binding.recycler.adapter as ItemAdapter).notifyItemChanged(viewHolder.adapterPosition)
+                        adapter.notifyItemChanged(viewHolder.adapterPosition)
                     }
                     .setCancelable(false)
                     .show()
@@ -282,8 +267,8 @@ class AllItemsFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_delete) {
-            val builder = AlertDialog.Builder(requireContext())
-            builder.setTitle(getString(R.string.delete_confirmation))
+            AlertDialog.Builder(requireContext())
+                .setTitle(getString(R.string.delete_confirmation))
                 .setMessage(getString(R.string.all_delete_confirmation_message))
                 .setPositiveButton(getString(R.string.yes)) { _, _ ->
                     viewModel.deleteAll()

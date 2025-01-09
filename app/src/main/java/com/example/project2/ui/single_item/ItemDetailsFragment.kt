@@ -31,44 +31,6 @@ class ItemDetailsFragment : Fragment() {
     ): View? {
         _binding = FragmentItemDetailsBinding.inflate(inflater, container, false)
 
-        // קבלת הנתונים מה-Bundle
-        arguments?.let { bundle ->
-            binding.itemTitle.text = bundle.getString("title")
-            binding.itemComment.text = bundle.getString("comment")
-
-            val price = bundle.getDouble("price")
-            binding.itemPrice.text = if (price == 0.0) "No Price" else "Price: $price"
-
-            val categories = bundle.getString("category", "No Category").split(", ").filter { it.isNotBlank() }
-            setupCategoryButtons(categories)
-
-            val link = bundle.getString("link")
-            binding.itemLink.text = link
-
-            // עדכון תמונה
-            val photoUri = bundle.getString("photo")
-            if (photoUri.isNullOrEmpty()) {
-                binding.itemImage.setImageResource(R.drawable.baseline_hide_image_24)
-            } else {
-                binding.itemImage.setImageURI(Uri.parse(photoUri))
-            }
-
-            // עדכון כוכבים
-            val rating = bundle.getInt("rating")
-            val stars = listOf(binding.star1, binding.star2, binding.star3, binding.star4, binding.star5)
-            stars.forEachIndexed { index, imageView ->
-                imageView.setImageResource(
-                    if (index < rating) R.drawable.star_full else R.drawable.star_empty
-                )
-            }
-            // הוספת פונקציונליות ללינק
-            binding.itemLink.setOnClickListener {
-                link?.let {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it))
-                    startActivity(intent)
-                }
-            }
-        }
 
         return binding.root
     }
@@ -103,19 +65,34 @@ class ItemDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.chosenItem.observe(viewLifecycleOwner) {
-            binding.itemTitle.text = it.title
-            binding.itemComment.text = it.comment
-            binding.itemPrice.text = if (it.price == 0.0) "No Price" else "Price: ${it.price}"
-            binding.itemCategory.text = "Category: ${it.category}"
-            binding.itemLink.text = it.link
-            if (it.photo.isNullOrEmpty()) {
+        // צופה בנתונים שנבחרו ב-ViewModel
+        viewModel.chosenItem.observe(viewLifecycleOwner) { item ->
+            binding.itemTitle.text = item.title.ifBlank { "No Title" }
+            binding.itemComment.text = item.comment.ifBlank { "No Comment" }
+            binding.itemPrice.text = if (item.price == 0.0) "No Price" else "Price: ${item.price}"
+            binding.itemLink.text = item.link.ifBlank { "No Link" }
+
+            // עדכון תמונה
+            if (item.photo.isNullOrEmpty()) {
                 binding.itemImage.setImageResource(R.drawable.baseline_hide_image_24)
             } else {
-                binding.itemImage.setImageURI(Uri.parse(it.photo))
+                binding.itemImage.setImageURI(Uri.parse(item.photo))
             }
+
+            // עדכון דירוג כוכבים
+            val stars = listOf(binding.star1, binding.star2, binding.star3, binding.star4, binding.star5)
+            stars.forEachIndexed { index, imageView ->
+                imageView.setImageResource(
+                    if (index < item.rating) R.drawable.star_full else R.drawable.star_empty
+                )
+            }
+
+            // עדכון קטגוריות
+            setupCategoryButtons(item.category.split(", ").filter { it.isNotBlank() })
         }
+
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

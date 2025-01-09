@@ -7,12 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
-import com.example.project2.data.model.Item
 import com.example.project2.R
+import com.example.project2.data.model.Item
 import com.example.project2.databinding.RecommendationLayoutBinding
+import com.example.project2.ui.ItemsViewModel
 
-class ItemAdapter(var items: List<Item>, val callBack: ItemListener)
-    : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
+class ItemAdapter(
+    var items: List<Item>,
+    private val viewModel: ItemsViewModel,
+    private val callBack: ItemListener
+) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
     interface ItemListener {
         fun onItemClicked(index: Int)
@@ -23,57 +27,51 @@ class ItemAdapter(var items: List<Item>, val callBack: ItemListener)
         : RecyclerView.ViewHolder(binding.root), View.OnClickListener, View.OnLongClickListener {
 
         init {
+            // מאזין ללחיצה על כרטיסייה כדי להיכנס לעמוד הפרטים
             binding.root.setOnClickListener(this)
+
+            // מאזין ללחיצה ארוכה על כרטיסייה
             binding.root.setOnLongClickListener(this)
+
+            // מאזין ללחיצה על כפתור עריכה
             binding.editBtn.setOnClickListener {
                 val item = items[adapterPosition]
                 val bundle = Bundle().apply {
-                    putParcelable(getString(R.string.item.toString()), item)
+                    putParcelable("item", item)
                 }
                 Navigation.findNavController(binding.root)
                     .navigate(R.id.action_allItemsFragment_to_updateItemFragment, bundle)
             }
         }
 
-
-        override fun onClick(p0: View?) {
-            callBack.onItemClicked(adapterPosition)
-            val context = binding.root.context
-            val bundle = Bundle().apply {
-                putString(context.getString(R.string.item), items[adapterPosition].title)
-                putString(context.getString(R.string.comment), items[adapterPosition].comment)
-                putDouble(context.getString(R.string.price), items[adapterPosition].price)
-                putString(context.getString(R.string.photo), items[adapterPosition].photo)
-                putString(context.getString(R.string.link), items[adapterPosition].link) // ודא שזה קיים
-                putString(context.getString(R.string.category), items[adapterPosition].category) // העברת הקטגוריות
-
-                putInt(context.getString(R.string.rating), items[adapterPosition].rating)
-            }
-
-            // ניווט ל-ItemDetailsFragment
-            val navController = Navigation.findNavController(binding.root)
-            navController.navigate(R.id.action_allItemsFragment_to_itemDetailsFragment, bundle)
-
+        override fun onClick(v: View?) {
+            val item = items[adapterPosition]
+            viewModel.setItem(item) // שמירת הפריט ב-ViewModel
+            Navigation.findNavController(binding.root)
+                .navigate(R.id.action_allItemsFragment_to_itemDetailsFragment)
         }
 
 
-        override fun onLongClick(p0: View?): Boolean {
+        override fun onLongClick(v: View?): Boolean {
             callBack.onItemLongClicked(adapterPosition)
             return true
         }
 
         fun bind(item: Item) {
-
+            // שם הפריט
             binding.itemTitle.text = if (item.title.isBlank()) binding.root.context.getString(R.string.no_title) else item.title
 
-//            binding.itemComment.text = if (item.comment.isBlank()) "No Comment" else item.comment
-            // עדכון תמונה אם קיימת
-            binding.itemImage.setImageURI(item.photo?.let { Uri.parse(it) })
-            // עדכון מחיר
-//            binding.priceTitle.text = item.price.toString() ?: "N/A"
-            binding.priceTitle.text = if (item.price == 0.0) binding.root.context.getString(R.string.no_price) else item.price.toString()
+            // תמונה
+            if (item.photo.isNullOrEmpty()) {
+                binding.itemImage.setImageResource(R.drawable.baseline_hide_image_24) // תמונת ברירת מחדל
+            } else {
+                binding.itemImage.setImageURI(Uri.parse(item.photo))
+            }
 
-            // עדכון הכוכבים
+            // מחיר
+            binding.priceTitle.text = if (item.price == 0.0) binding.root.context.getString(R.string.no_price) else "$${item.price}"
+
+            // דירוג כוכבים
             val stars = listOf(
                 binding.star1,
                 binding.star2,
@@ -87,9 +85,9 @@ class ItemAdapter(var items: List<Item>, val callBack: ItemListener)
                     if (index < item.rating) R.drawable.star_full else R.drawable.star_empty
                 )
             }
-
         }
     }
+
     fun updateList(newItems: List<Item>) {
         items = newItems
         notifyDataSetChanged()
@@ -106,5 +104,5 @@ class ItemAdapter(var items: List<Item>, val callBack: ItemListener)
         holder.bind(items[position])
     }
 
-    override fun getItemCount() = items.size
+    override fun getItemCount(): Int = items.size
 }
