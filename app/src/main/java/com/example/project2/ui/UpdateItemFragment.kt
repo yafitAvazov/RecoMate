@@ -1,27 +1,22 @@
-package com.example.project2.ui.update_item
+package com.example.project2.ui
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.project2.R
 import com.example.project2.data.model.Item
 import com.example.project2.databinding.UpdateRecommendationLayoutBinding
-import com.example.project2.ui.ItemsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.File
 
 class UpdateItemFragment : Fragment() {
     private var _binding: UpdateRecommendationLayoutBinding? = null
@@ -32,6 +27,8 @@ class UpdateItemFragment : Fragment() {
     private var selectedRating: Int = 0
     private val selectedCategories = mutableSetOf<String>()
     private var imageUri: Uri? = null
+
+
 
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let {
@@ -47,8 +44,9 @@ class UpdateItemFragment : Fragment() {
     ): View {
         _binding = UpdateRecommendationLayoutBinding.inflate(inflater, container, false)
 
-        // Retrieve the item from arguments
-        val item: Item? = arguments?.getParcelable(getString(R.string.item))
+        // Retrieve the item using the fixed key
+        val item = requireArguments().getParcelable<Item>("item")
+
         item?.let { populateFields(it) }
 
         binding.removeImageButton.setOnClickListener {

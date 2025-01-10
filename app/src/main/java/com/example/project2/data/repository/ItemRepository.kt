@@ -19,6 +19,7 @@ class ItemRepository (application: Application){
     fun updateItem(item: Item) {
         itemDao?.updateItem(item)
     }
+
     fun deleteItem(item: Item) {
         itemDao?.deleteItem(item)
     }

@@ -73,5 +73,6 @@
     <string name="update_recommendation">Update recommendation</string>
     <string name="remove">Remove</string>
     <string name="change">Change</string>
+    <string name="error_loading_item">Failed to load the item. Please try again.</string>
 
 </resources>

@@ -32,9 +32,10 @@ class ItemsViewModel (application: Application) : AndroidViewModel(application){
     }
     fun updateItem(item: Item) {
         viewModelScope.launch {
-            repository.updateItem(item) // מעדכן את הפריט ב-DAO
+            repository.updateItem(item)
         }
     }
+
     fun deleteAll() {
         repository.deleteAll()
 

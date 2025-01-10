@@ -64,7 +64,7 @@
     </fragment>
     <fragment
         android:id="@+id/updateItemFragment"
-        android:name="com.example.project2.ui.update_item.UpdateItemFragment"
+        android:name="com.example.project2.ui.UpdateItemFragment"
         android:label="update_recommendation_layout"
         tools:layout="@layout/update_recommendation_layout">
         <action

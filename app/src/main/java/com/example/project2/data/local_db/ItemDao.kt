@@ -20,7 +20,9 @@ interface ItemDao {
     fun deleteItem(vararg item: Item)
 
     @Update
+
     fun updateItem(item: Item)
+
 
     @Query("SELECT * FROM review_table ORDER BY id ASC")
     fun getItems() : LiveData<List<Item>>
