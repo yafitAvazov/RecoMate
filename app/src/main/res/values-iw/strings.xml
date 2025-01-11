@@ -67,5 +67,6 @@
     <string name="update_recommendation">עדכון המלצה</string>
     <string name="remove">הסרה</string>
     <string name="change">שינוי</string>
-    <string name="error_loading_item">שגיאה בטעינת הפריט. נסה שוב.</string>
+    <string name="main_item_title">כותרת מוצר ראשית</string>
+
 </resources>

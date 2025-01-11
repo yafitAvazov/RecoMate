@@ -32,7 +32,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Main item title"
+                android:text="@string/main_item_title"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:id="@+id/item_title" />

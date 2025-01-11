@@ -59,7 +59,9 @@ class ItemAdapter(
 
         fun bind(item: Item) {
             // שם הפריט
-            binding.itemTitle.text = if (item.title.isBlank()) binding.root.context.getString(R.string.no_title) else item.title
+            binding.itemTitle.text = if (item.title=="")binding.root.context.getString((R.string.no_title)) else item.title
+
+
 
             // תמונה
             if (item.photo.isNullOrEmpty()) {

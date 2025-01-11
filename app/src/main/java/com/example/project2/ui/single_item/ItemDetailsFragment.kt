@@ -41,7 +41,7 @@ class ItemDetailsFragment : Fragment() {
 
         if (categories.isEmpty()) {
             val noCategoryText = TextView(requireContext()).apply {
-                text = "No Category"
+                text = getString(R.string.no_category)
                 textSize = 16f
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
                 setPadding(8, 8, 8, 8)
@@ -67,10 +67,10 @@ class ItemDetailsFragment : Fragment() {
 
         // צופה בנתונים שנבחרו ב-ViewModel
         viewModel.chosenItem.observe(viewLifecycleOwner) { item ->
-            binding.itemTitle.text = item.title.ifBlank { "No Title" }
-            binding.itemComment.text = item.comment.ifBlank { "No Comment" }
-            binding.itemPrice.text = if (item.price == 0.0) "No Price" else "Price: ${item.price}"
-            binding.itemLink.text = item.link.ifBlank { "No Link" }
+            binding.itemTitle.text = item.title.ifBlank {getString(R.string.no_title) }
+            binding.itemComment.text = item.comment.ifBlank { getString(R.string.no_comment)}
+            binding.itemPrice.text = if (item.price == 0.0) getString(R.string.no_price) else "Price: ${item.price}"
+            binding.itemLink.text = item.link.ifBlank { getString(R.string.no_link) }
 
             // עדכון תמונה
             if (item.photo.isNullOrEmpty()) {

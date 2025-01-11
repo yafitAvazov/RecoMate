@@ -62,13 +62,13 @@ class AddItemFragment : Fragment() {
 
         // הגדרת כפתור Finish להוספת פריט
         binding.finishBtn.setOnClickListener {
-            val title = if (binding.itemTitle.text.toString().isBlank()) getString(R.string.no_title) else binding.itemTitle.text.toString()
-            val comment = if (binding.itemComment.text.toString().isBlank()) getString(R.string.no_comment) else binding.itemComment.text.toString()
+            val title = if (binding.itemTitle.text.toString().isBlank()) "" else binding.itemTitle.text.toString()
+            val comment = if (binding.itemComment.text.toString().isBlank()) "" else binding.itemComment.text.toString()
             val photo = imageUri?.toString()
             val priceText = binding.price.text.toString()
 
-            val link = if (binding.itemLink.text.toString().isBlank()) getString(R.string.no_link) else binding.itemLink.text.toString()
-            val selectedCategoryText = if (selectedCategories.isEmpty()) getString(R.string.no_category) else selectedCategories.joinToString(", ")
+            val link = if (binding.itemLink.text.toString().isBlank()) "" else binding.itemLink.text.toString()
+            val selectedCategoryText = if (selectedCategories.isEmpty()) "" else selectedCategories.joinToString(", ")
             val price = priceText.toDoubleOrNull() ?: 0.0
             val item = Item(
                 title = title,

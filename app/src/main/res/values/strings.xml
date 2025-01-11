@@ -59,7 +59,6 @@
     <string name="title">title</string>
     <string name="camera_permission_denied">Camera permission denied</string>
     <string name="recommendation_published">Recommendation published successfully!</string>
-    <string name="no_title">No Title</string>
     <string name="no_comment">No Comment</string>
     <string name="no_link">No Link</string>
     <string name="no_category">No Category</string>
@@ -73,6 +72,6 @@
     <string name="update_recommendation">Update recommendation</string>
     <string name="remove">Remove</string>
     <string name="change">Change</string>
-    <string name="error_loading_item">Failed to load the item. Please try again.</string>
-
+    <string name="no_title">No Title</string>
+    <string name="main_item_title">Main item title</string>
 </resources>

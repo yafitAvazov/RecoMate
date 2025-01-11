@@ -144,7 +144,7 @@ class AllItemsFragment : Fragment() {
             val matchesCategory = selectedCategories.isEmpty() || selectedCategories.any { category ->
                 item.category.contains(category, ignoreCase = true)
             }
-            val matchesRating = selectedRating == 0 || item.rating == selectedRating
+            val matchesRating = selectedRating == 0 || item.rating >= selectedRating
             val matchesPrice = selectedMinPrice == 0 || item.price <= selectedMinPrice
 
             matchesCategory && matchesRating && matchesPrice
