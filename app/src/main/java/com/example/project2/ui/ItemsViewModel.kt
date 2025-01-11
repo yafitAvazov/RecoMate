@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.example.project2.data.model.Item
 import com.example.project2.data.repository.ItemRepository
@@ -43,4 +44,10 @@ class ItemsViewModel (application: Application) : AndroidViewModel(application){
     fun setFilteredItems(items: List<Item>) {
         _filteredItems.value = items
     }
+    suspend fun getFilteredItems(selectedCategories: String?, selectedRating: Int, selectedMinPrice: Double): List<Item> {
+        return repository.getFilteredItems(selectedCategories, selectedRating, selectedMinPrice)
+    }
+
+
+
 }

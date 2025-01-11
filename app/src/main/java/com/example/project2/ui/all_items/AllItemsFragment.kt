@@ -12,6 +12,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +21,7 @@ import com.example.project2.R
 import com.example.project2.data.model.Item
 import com.example.project2.databinding.AllRecommendationsLayoutBinding
 import com.example.project2.ui.ItemsViewModel
+import kotlinx.coroutines.launch
 
 class AllItemsFragment : Fragment() {
     private var _binding: AllRecommendationsLayoutBinding? = null
@@ -140,21 +142,23 @@ class AllItemsFragment : Fragment() {
     }
 
     private fun applyFilters() {
-        val filteredItems = originalItems.filter { item ->
-            val matchesCategory = selectedCategories.isEmpty() || selectedCategories.any { category ->
-                item.category.contains(category, ignoreCase = true)
+        viewLifecycleOwner.lifecycleScope.launch {
+            val filteredItems = (if (selectedRating == 0) null else selectedRating)?.let {
+                viewModel.getFilteredItems(
+                    selectedCategories.joinToString(", "),
+                    it,
+                    selectedMinPrice.toDouble()
+                )
             }
-            val matchesRating = selectedRating == 0 || item.rating >= selectedRating
-            val matchesPrice = selectedMinPrice == 0 || item.price <= selectedMinPrice
-
-            matchesCategory && matchesRating && matchesPrice
+            if (filteredItems != null) {
+                adapter.updateList(filteredItems)
+            }
+            Toast.makeText(requireContext(), "${filteredItems?.size} ${getString(R.string.items_found)}", Toast.LENGTH_SHORT).show()
         }
-
-        adapter.updateList(filteredItems)
-        viewModel.setFilteredItems(filteredItems) // שמירת הפריטים המסוננים ב-ViewModel
-
-        Toast.makeText(requireContext(), "${filteredItems.size} ${getString(R.string.items_found)}", Toast.LENGTH_SHORT).show()
     }
+
+
+
 
 
 

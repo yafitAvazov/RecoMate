@@ -1,9 +1,11 @@
 package com.example.project2.data.repository
 
 import android.app.Application
+import androidx.lifecycle.liveData
 import com.example.project2.data.local_db.ItemDao
 import com.example.project2.data.local_db.ItemDataBase
 import com.example.project2.data.model.Item
+import kotlinx.coroutines.Dispatchers
 
 class ItemRepository (application: Application){
     private var itemDao:ItemDao?
@@ -27,6 +29,9 @@ class ItemRepository (application: Application){
 
     fun deleteAll() {
         itemDao?.deleteAll()
+    }
+    suspend fun getFilteredItems(selectedCategories: String?, selectedRating: Int, selectedMinPrice: Double): List<Item> {
+        return itemDao?.getFilteredItems(selectedCategories, selectedRating, selectedMinPrice) ?: emptyList()
     }
 
 
