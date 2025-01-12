@@ -137,48 +137,33 @@ class AddItemFragment : Fragment() {
 
     private fun setupCategoryButtons() {
         val buttons = listOf(
-            binding.btn1,
-            binding.btn2,
-            binding.btn3,
-            binding.btn4,
-            binding.btn5,
-            binding.btn6,
-            binding.btn7,
-            binding.btn8,
-            binding.btn9,
-            binding.btn10,
-            binding.btn11,
-            binding.btn12
+            binding.btn1 to getString(R.string.fashion),
+            binding.btn2 to getString(R.string.food),
+            binding.btn3 to getString(R.string.game),
+            binding.btn4 to getString(R.string.home),
+            binding.btn5 to getString(R.string.tech),
+            binding.btn6 to getString(R.string.sport),
+            binding.btn7 to getString(R.string.travel),
+            binding.btn8 to getString(R.string.music),
+            binding.btn9 to getString(R.string.book),
+            binding.btn10 to getString(R.string.shops),
+            binding.btn11 to getString(R.string.movie),
+            binding.btn12 to getString(R.string.health)
         )
 
-        val categoryResIds = listOf(
-            R.string.fashion,
-            R.string.food,
-            R.string.game,
-            R.string.home,
-            R.string.tech,
-            R.string.sport,
-            R.string.travel,
-            R.string.music,
-            R.string.book,
-            R.string.shops,
-            R.string.movie,
-            R.string.health
-        )
-
-        buttons.forEachIndexed { index, button ->
-            val category = getString(categoryResIds[index]) // גישה לפי אינדקס
+        buttons.forEach { (button, category) ->
             button.setOnClickListener {
                 if (selectedCategories.contains(category)) {
                     selectedCategories.remove(category)
-                    button.setBackgroundColor(
-                        ContextCompat.getColor(requireContext(), R.color.blue1)
-                    )
+                    button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blue1))
                 } else {
-                    selectedCategories.add(category)
-                    button.setBackgroundColor(
-                        ContextCompat.getColor(requireContext(), R.color.gray)
-                    )
+                    if (selectedCategories.size < 3) {
+                        selectedCategories.add(category)
+                        button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gray))
+                    } else {
+                        Toast.makeText(requireContext(),
+                            getString(R.string.you_can_select_up_to_3_categories), Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
