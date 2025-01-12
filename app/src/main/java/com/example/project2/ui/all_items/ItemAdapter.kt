@@ -1,5 +1,6 @@
 package com.example.project2.ui.all_items
 
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.project2.R
 import com.example.project2.data.model.Item
 import com.example.project2.databinding.RecommendationLayoutBinding
@@ -63,11 +65,15 @@ class ItemAdapter(
 
 
 
-            // תמונה
+            // Load the image with Glide
             if (item.photo.isNullOrEmpty()) {
-                binding.itemImage.setImageResource(R.drawable.baseline_hide_image_24) // תמונת ברירת מחדל
+                binding.itemImage.setImageResource(R.drawable.baseline_hide_image_24) // Default image
             } else {
-                binding.itemImage.setImageURI(Uri.parse(item.photo))
+                Glide.with(binding.root.context)
+                    .load(Uri.parse(item.photo))
+                    .placeholder(R.drawable.baseline_hide_image_24) // Placeholder while loading
+                    .error(R.drawable.baseline_hide_image_24)       // Fallback if loading fails
+                    .into(binding.itemImage)
             }
 
             // מחיר

@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
 
 
+
     // Room Database
     val room_version = "2.6.1"
     implementation("androidx.room:room-runtime:$room_version")
@@ -58,6 +59,11 @@ dependencies {
     val lifecycle_version = "2.6.1"
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version")
+
+    // Glide for Image Loading
+    implementation("com.github.bumptech.glide:glide:4.15.1")
+    kapt("com.github.bumptech.glide:compiler:4.15.1")
+
 
     // Unit Testing
     testImplementation(libs.junit)

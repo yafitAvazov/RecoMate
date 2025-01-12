@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.example.project2.R
 import com.example.project2.data.model.Item
 import com.example.project2.databinding.UpdateRecommendationLayoutBinding
@@ -33,9 +34,15 @@ class UpdateItemFragment : Fragment() {
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let {
             imageUri = it
-            binding.imageBtn.setImageURI(it)
+            // Use Glide to set the image
+            Glide.with(requireContext())
+                .load(it)
+                .placeholder(R.drawable.baseline_hide_image_24)
+                .error(R.drawable.baseline_hide_image_24)
+                .into(binding.imageBtn)
         }
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -76,7 +83,12 @@ class UpdateItemFragment : Fragment() {
         if (item.photo.isNullOrEmpty()) {
             binding.imageBtn.setImageResource(R.drawable.baseline_hide_image_24)
         } else {
-            binding.imageBtn.setImageURI(Uri.parse(item.photo))
+            // Use Glide to load the image
+            Glide.with(requireContext())
+                .load(Uri.parse(item.photo))
+                .placeholder(R.drawable.baseline_hide_image_24) // Placeholder image
+                .error(R.drawable.baseline_hide_image_24)       // Error fallback image
+                .into(binding.imageBtn)
             imageUri = Uri.parse(item.photo)
         }
         selectedRating = item.rating

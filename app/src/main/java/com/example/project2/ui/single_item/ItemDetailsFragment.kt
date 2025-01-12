@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.bumptech.glide.Glide
 import com.example.project2.R
 import com.example.project2.databinding.FragmentItemDetailsBinding
 import com.example.project2.ui.ItemsViewModel
@@ -72,11 +73,15 @@ class ItemDetailsFragment : Fragment() {
             binding.itemPrice.text = if (item.price == 0.0) getString(R.string.no_price) else "${getString(R.string.price)}: ${item.price}"
             binding.itemLink.text = item.link.ifBlank { getString(R.string.no_link) }
 
-            // עדכון תמונה
+            // Update image using Glide
             if (item.photo.isNullOrEmpty()) {
                 binding.itemImage.setImageResource(R.drawable.baseline_hide_image_24)
             } else {
-                binding.itemImage.setImageURI(Uri.parse(item.photo))
+                Glide.with(requireContext())
+                    .load(Uri.parse(item.photo))
+                    .placeholder(R.drawable.baseline_hide_image_24) // Placeholder image
+                    .error(R.drawable.baseline_hide_image_24)       // Error fallback image
+                    .into(binding.itemImage)
             }
 
             // עדכון דירוג כוכבים
