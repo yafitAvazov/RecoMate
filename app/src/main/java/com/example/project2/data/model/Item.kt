@@ -20,15 +20,4 @@ data class Item(
     @ColumnInfo(name = "item_rating") val rating: Int // Custom column name for rating
 
 ) : Parcelable
-/*
-object ItemManager{
-    val items:MutableList<Item> = mutableListOf()
-    fun  add(item: Item){
-        items.add(item)
-    }
 
-    fun remove(index:Int){
-        items.removeAt(index)
-    }
-}
- */

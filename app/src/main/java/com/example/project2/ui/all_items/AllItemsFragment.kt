@@ -26,7 +26,7 @@ class AllItemsFragment : Fragment() {
     private val binding get() = _binding!!
     private val selectedCategories = mutableSetOf<String>() // Selected categories
     private lateinit var originalItems: List<Item>
-    private var selectedMinPrice: Int = 0
+    private var selectedMaxPrice: Int = 0
     private var selectedRating: Int = 0
 
     private val viewModel: ItemsViewModel by activityViewModels()
@@ -114,8 +114,8 @@ class AllItemsFragment : Fragment() {
         binding.priceSeekBar.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                selectedMinPrice = progress
-                binding.minPrice.text = "$$progress"
+                selectedMaxPrice = progress
+                binding.maxPrice.text = "$$progress"
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -145,15 +145,17 @@ class AllItemsFragment : Fragment() {
                 item.category.contains(category, ignoreCase = true)
             }
             val matchesRating = selectedRating == 0 || item.rating >= selectedRating
-            val matchesPrice = selectedMinPrice == 0 || item.price <= selectedMinPrice
+            val matchesPrice = selectedMaxPrice == 0 || item.price <= selectedMaxPrice
 
             matchesCategory && matchesRating && matchesPrice
         }
 
         adapter.updateList(filteredItems)
         viewModel.setFilteredItems(filteredItems) // שמירת הפריטים המסוננים ב-ViewModel
-
-        Toast.makeText(requireContext(), "${filteredItems.size} ${getString(R.string.items_found)}", Toast.LENGTH_SHORT).show()
+        if (filteredItems.isEmpty())
+            Toast.makeText(requireContext(), "${filteredItems.size} ${getString(R.string.items_found)}. Showing all items.", Toast.LENGTH_SHORT).show()
+        else
+            Toast.makeText(requireContext(), "${filteredItems.size} ${getString(R.string.items_found)}", Toast.LENGTH_SHORT).show()
     }
 
 
@@ -161,7 +163,7 @@ class AllItemsFragment : Fragment() {
     private fun resetFilters() {
         selectedCategories.clear()
         selectedRating = 0
-        selectedMinPrice = 0
+        selectedMaxPrice = 0
 
         binding.priceSeekBar.progress = 0
         binding.minPrice.text = getString(R.string._0)
@@ -200,26 +202,42 @@ class AllItemsFragment : Fragment() {
 
     private fun setupCategoryFilters(view: View) {
         val categoryCheckBoxes = listOf(
-            view.findViewById<CheckBox>(R.id.checkbox_fashion),
-            view.findViewById<CheckBox>(R.id.checkbox_food),
-            view.findViewById<CheckBox>(R.id.checkbox_game),
-            view.findViewById<CheckBox>(R.id.checkbox_home),
-            view.findViewById<CheckBox>(R.id.checkbox_tech),
-            view.findViewById<CheckBox>(R.id.checkbox_sport),
-            view.findViewById<CheckBox>(R.id.checkbox_travel),
-            view.findViewById<CheckBox>(R.id.checkbox_music),
-            view.findViewById<CheckBox>(R.id.checkbox_book),
-            view.findViewById<CheckBox>(R.id.checkbox_shops),
+            view.findViewById(R.id.checkbox_fashion),
+            view.findViewById(R.id.checkbox_food),
+            view.findViewById(R.id.checkbox_game),
+            view.findViewById(R.id.checkbox_home),
+            view.findViewById(R.id.checkbox_tech),
+            view.findViewById(R.id.checkbox_sport),
+            view.findViewById(R.id.checkbox_travel),
+            view.findViewById(R.id.checkbox_music),
+            view.findViewById(R.id.checkbox_book),
+            view.findViewById(R.id.checkbox_shops),
             view.findViewById<CheckBox>(R.id.checkbox_movie),
             view.findViewById<CheckBox>(R.id.checkbox_health)
         )
 
         categoryCheckBoxes.forEach { checkBox ->
+            val categoryName = when (checkBox.id) {
+                R.id.checkbox_fashion -> getString(R.string.fashion)
+                R.id.checkbox_food -> getString(R.string.food)
+                R.id.checkbox_game -> getString(R.string.game)
+                R.id.checkbox_home -> getString(R.string.home)
+                R.id.checkbox_tech -> getString(R.string.tech)
+                R.id.checkbox_sport -> getString(R.string.sport)
+                R.id.checkbox_travel -> getString(R.string.travel)
+                R.id.checkbox_music -> getString(R.string.music)
+                R.id.checkbox_book -> getString(R.string.book)
+                R.id.checkbox_shops -> getString(R.string.shops)
+                R.id.checkbox_movie -> getString(R.string.movie)
+                R.id.checkbox_health -> getString(R.string.health)
+                else -> ""
+            }
+            checkBox.text = categoryName
             checkBox.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
-                    selectedCategories.add(checkBox.text.toString())
+                    selectedCategories.add(categoryName)
                 } else {
-                    selectedCategories.remove(checkBox.text.toString())
+                    selectedCategories.remove(categoryName)
                 }
             }
         }

@@ -67,9 +67,9 @@ class ItemDetailsFragment : Fragment() {
 
         // צופה בנתונים שנבחרו ב-ViewModel
         viewModel.chosenItem.observe(viewLifecycleOwner) { item ->
-            binding.itemTitle.text = item.title.ifBlank {getString(R.string.no_title) }
-            binding.itemComment.text = item.comment.ifBlank { getString(R.string.no_comment)}
-            binding.itemPrice.text = if (item.price == 0.0) getString(R.string.no_price) else "Price: ${item.price}"
+            binding.itemTitle.text = item.title.ifBlank { getString(R.string.no_title)}
+            binding.itemComment.text = item.comment.ifBlank { getString(R.string.no_comment) }
+            binding.itemPrice.text = if (item.price == 0.0) getString(R.string.no_price) else "${getString(R.string.price)}: ${item.price}"
             binding.itemLink.text = item.link.ifBlank { getString(R.string.no_link) }
 
             // עדכון תמונה
@@ -88,7 +88,7 @@ class ItemDetailsFragment : Fragment() {
             }
 
             // עדכון קטגוריות
-            setupCategoryButtons(item.category.split(", ").filter { it.isNotBlank() })
+            setupCategoryButtons(item.category.split(getString(R.string.separator)).filter { it.isNotBlank() })
         }
 
     }

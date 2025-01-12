@@ -62,13 +62,13 @@ class AddItemFragment : Fragment() {
 
         // הגדרת כפתור Finish להוספת פריט
         binding.finishBtn.setOnClickListener {
-            val title = if (binding.itemTitle.text.toString().isBlank()) "" else binding.itemTitle.text.toString()
-            val comment = if (binding.itemComment.text.toString().isBlank()) "" else binding.itemComment.text.toString()
+            val title = binding.itemTitle.text.toString().ifBlank { "" }
+            val comment = binding.itemComment.text.toString().ifBlank { "" }
             val photo = imageUri?.toString()
             val priceText = binding.price.text.toString()
 
-            val link = if (binding.itemLink.text.toString().isBlank()) "" else binding.itemLink.text.toString()
-            val selectedCategoryText = if (selectedCategories.isEmpty()) "" else selectedCategories.joinToString(", ")
+            val link = binding.itemLink.text.toString().ifBlank { "" }
+            val selectedCategoryText = if (selectedCategories.isEmpty()) "" else selectedCategories.joinToString(getString(R.string.separator))
             val price = priceText.toDoubleOrNull() ?: 0.0
             val item = Item(
                 title = title,
@@ -137,32 +137,53 @@ class AddItemFragment : Fragment() {
 
     private fun setupCategoryButtons() {
         val buttons = listOf(
-            binding.btn1 to getString(R.string.fashion),
-            binding.btn2 to getString(R.string.food),
-            binding.btn3 to getString(R.string.game),
-            binding.btn4 to getString(R.string.home),
-            binding.btn5 to getString(R.string.tech),
-            binding.btn6 to getString(R.string.sport),
-            binding.btn7 to getString(R.string.travel),
-            binding.btn8 to getString(R.string.music),
-            binding.btn9 to getString(R.string.book),
-            binding.btn10 to getString(R.string.shops),
-            binding.btn11 to getString(R.string.movie),
-            binding.btn12 to getString(R.string.health)
+            binding.btn1,
+            binding.btn2,
+            binding.btn3,
+            binding.btn4,
+            binding.btn5,
+            binding.btn6,
+            binding.btn7,
+            binding.btn8,
+            binding.btn9,
+            binding.btn10,
+            binding.btn11,
+            binding.btn12
         )
 
-        buttons.forEach { (button, category) ->
+        val categoryResIds = listOf(
+            R.string.fashion,
+            R.string.food,
+            R.string.game,
+            R.string.home,
+            R.string.tech,
+            R.string.sport,
+            R.string.travel,
+            R.string.music,
+            R.string.book,
+            R.string.shops,
+            R.string.movie,
+            R.string.health
+        )
+
+        buttons.forEachIndexed { index, button ->
+            val category = getString(categoryResIds[index]) // גישה לפי אינדקס
             button.setOnClickListener {
                 if (selectedCategories.contains(category)) {
                     selectedCategories.remove(category)
-                    button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blue1))
+                    button.setBackgroundColor(
+                        ContextCompat.getColor(requireContext(), R.color.blue1)
+                    )
                 } else {
                     selectedCategories.add(category)
-                    button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gray))
+                    button.setBackgroundColor(
+                        ContextCompat.getColor(requireContext(), R.color.gray)
+                    )
                 }
             }
         }
     }
+
 
     private fun setupStarRating() {
         val stars = listOf(binding.star1, binding.star2, binding.star3, binding.star4, binding.star5)

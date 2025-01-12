@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "com.example.project2"
     compileSdk = 35
-    buildFeatures{
+    buildFeatures {
         viewBinding = true
     }
     defaultConfig {
@@ -40,9 +40,6 @@ android {
 }
 
 dependencies {
-
-
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -50,6 +47,8 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+
+
     // Room Database
     val room_version = "2.6.1"
     implementation("androidx.room:room-runtime:$room_version")

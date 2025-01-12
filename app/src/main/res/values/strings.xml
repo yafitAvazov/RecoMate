@@ -15,12 +15,12 @@
     <string name="enter_item_title">Enter item Title</string>
     <string name="enter_link_of_item">Enter Link of item</string>
     <string name="pick_image">Pick Image</string>
-    <string name="sport">Sport</string>
-    <string name="tech">Tech</string>
-    <string name="home">Home</string>
-    <string name="game">Game</string>
-    <string name="food">Food</string>
-    <string name="fashion">Fashion</string>
+    <string name="sport" translatable="false">Sport</string>
+    <string name="tech" translatable="false">Tech</string>
+    <string name="home" translatable="false">Home</string>
+    <string name="game" translatable="false">Game</string>
+    <string name="food" translatable="false">Food</string>
+    <string name="fashion" translatable="false">Fashion</string>
     <string name="category">Category</string>
     <string name="add_a_comment">Add a comment</string>
     <string name="Post">Post</string>
@@ -37,16 +37,16 @@
     <string name="my_recommendations">My Recommendations</string>
     <string name="filter">Filter</string>
     <string name="categories">Categories</string>
-    <string name="travel">Travel</string>
-    <string name="book">Book</string>
-    <string name="health">Health</string>
-    <string name="movie">Movie</string>
-    <string name="music">Music</string>
-    <string name="shops">Shops</string>
+    <string name="travel" translatable="false">Travel</string>
+    <string name="book" translatable="false">Book</string>
+    <string name="health" translatable="false">Health</string>
+    <string name="movie" translatable="false">Movie</string>
+    <string name="music" translatable="false">Music</string>
+    <string name="shops" translatable="false">Shops</string>
     <string name="price_range">Price Range</string>
     <string name="minimum_rating">Minimum Rating</string>
     <string name="apply">Apply</string>
-    <string name="_500" translatable="false">$500</string>
+    <string name="_1000" translatable="false">$1000</string>
     <string name="_0" translatable="false">$0</string>
     <string name="delete_confirmation">Delete Confirmation</string>
     <string name="all_delete_confirmation_message">Are you sure you want to delete all items?</string>
@@ -73,5 +73,5 @@
     <string name="remove">Remove</string>
     <string name="change">Change</string>
     <string name="no_title">No Title</string>
-    <string name="main_item_title">Main item title</string>
+    <string name="main_item_title" translatable="false">Main item title</string>
 </resources>

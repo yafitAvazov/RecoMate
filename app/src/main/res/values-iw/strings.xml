@@ -15,12 +15,12 @@
     <string name="enter_item_title">הוסף שם למוצר</string>
     <string name="enter_link_of_item">הוסף קישור למוצר</string>
     <string name="pick_image">בחר תמונה</string>
-    <string name="sport">ספורט</string>
+    <!--<string name="sport">ספורט</string>
     <string name="tech">ציוד טק</string>
     <string name="home">בית</string>
     <string name="game">משחק</string>
     <string name="food">אוכל</string>
-    <string name="fashion">אופנה</string>
+    <string name="fashion">אופנה</string>-->
     <string name="category">קטגוריה</string>
     <string name="add_a_comment">הוסף תגובה</string>
     <string name="remove_filter">הסר מסננים</string>
@@ -34,12 +34,12 @@
     <string name="my_recommendations">ההמלצות שלי</string>
     <string name="filter">סינון</string>
     <string name="categories">קטגוריות</string>
-    <string name="travel">טיולים</string>
+   <!-- <string name="travel">טיולים</string>
     <string name="book">ספרים</string>
     <string name="health">בריאות</string>
     <string name="movie">סרטים</string>
     <string name="music">מוזיקה</string>
-    <string name="shops">חנויות</string>
+    <string name="shops">חנויות</string>-->
     <string name="price_range">טווח מחירים</string>
     <string name="minimum_rating">דירוג מינימלי</string>
     <string name="apply">החל</string>
@@ -67,6 +67,4 @@
     <string name="update_recommendation">עדכון המלצה</string>
     <string name="remove">הסרה</string>
     <string name="change">שינוי</string>
-    <string name="main_item_title">כותרת מוצר ראשית</string>
-
 </resources>
