@@ -74,4 +74,6 @@
     <string name="change">Change</string>
     <string name="no_title">No Title</string>
     <string name="main_item_title">Main item title</string>
+    <string name="Lets_Recommend">Lets Recommend!</string>
+    <string name="you_can_select_up_to_3_categories">You can select up to 3 categories</string>
 </resources>

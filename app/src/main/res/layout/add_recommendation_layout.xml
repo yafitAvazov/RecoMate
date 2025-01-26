@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp"
     tools:context=".ui.add_item.AddItemFragment">
@@ -66,7 +67,7 @@
             android:textSize="15sp"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:textColor="@color/white"
-            android:backgroundTint="@color/blue1"/>
+            android:backgroundTint="@color/blue"/>
 
 
         <Button
@@ -79,7 +80,7 @@
             android:textSize="15sp"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:textColor="@color/white"
-            android:backgroundTint="@color/blue1"/>
+            android:backgroundTint="@color/blue"/>
 
         <Button
             android:layout_width="0dp"
@@ -91,7 +92,7 @@
             android:textSize="15sp"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:textColor="@color/white"
-            android:backgroundTint="@color/blue1"/>
+            android:backgroundTint="@color/blue"/>
 
         <Button
             android:layout_width="0dp"
@@ -103,7 +104,7 @@
             android:textSize="15sp"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:textColor="@color/white"
-            android:backgroundTint="@color/blue1"/>
+            android:backgroundTint="@color/blue"/>
 
         <Button
             android:layout_width="0dp"
@@ -115,7 +116,7 @@
             android:textSize="15sp"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:textColor="@color/white"
-            android:backgroundTint="@color/blue1"
+            android:backgroundTint="@color/blue"
             />
 
         <Button
@@ -128,7 +129,7 @@
             android:textSize="15sp"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:textColor="@color/white"
-            android:backgroundTint="@color/blue1"/>
+            android:backgroundTint="@color/blue"/>
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -139,7 +140,7 @@
             android:textSize="15sp"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:textColor="@color/white"
-            android:backgroundTint="@color/blue1"/>
+            android:backgroundTint="@color/blue"/>
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -150,7 +151,7 @@
             android:textSize="15sp"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:textColor="@color/white"
-            android:backgroundTint="@color/blue1"/>
+            android:backgroundTint="@color/blue"/>
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -161,7 +162,7 @@
             android:textSize="15sp"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:textColor="@color/white"
-            android:backgroundTint="@color/blue1"/>
+            android:backgroundTint="@color/blue"/>
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -172,7 +173,7 @@
             android:textSize="15sp"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:textColor="@color/white"
-            android:backgroundTint="@color/blue1"/>
+            android:backgroundTint="@color/blue"/>
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -183,7 +184,7 @@
             android:textSize="15sp"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:textColor="@color/white"
-            android:backgroundTint="@color/blue1"/>
+            android:backgroundTint="@color/blue"/>
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -194,7 +195,7 @@
             android:textSize="15sp"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:textColor="@color/white"
-            android:backgroundTint="@color/blue1"/>
+            android:backgroundTint="@color/blue"/>
 
     </GridLayout>
     <LinearLayout
@@ -354,7 +355,19 @@
         android:text="@string/Post"
         android:id="@+id/finish_btn"
         android:layout_gravity="center"
-        android:backgroundTint="@color/blue1"
+        android:backgroundTint="@color/blue"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
         android:layout_marginTop="10dp"/>
+    <!-- תפריט תחתון -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/white"
+        app:menu="@menu/bottom_nav_menu"
+        app:labelVisibilityMode="unlabeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 </LinearLayout>
 </ScrollView>

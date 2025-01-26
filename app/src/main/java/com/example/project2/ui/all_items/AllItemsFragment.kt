@@ -22,6 +22,7 @@ import com.example.project2.data.model.Item
 import com.example.project2.databinding.AllRecommendationsLayoutBinding
 import com.example.project2.ui.ItemsViewModel
 import kotlinx.coroutines.launch
+import androidx.navigation.fragment.navArgs
 
 class AllItemsFragment : Fragment() {
     private var _binding: AllRecommendationsLayoutBinding? = null
@@ -33,6 +34,7 @@ class AllItemsFragment : Fragment() {
 
     private val viewModel: ItemsViewModel by activityViewModels()
     private lateinit var adapter: ItemAdapter // משתנה אדפטר כדי להשתמש בו פעם אחת
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,6 +62,7 @@ class AllItemsFragment : Fragment() {
         initializeRecyclerView()
         setupDrawerFilters(view)
         setupItemSwipeHandling()
+
 
         // אם כבר בוצע סינון, נציג את הפריטים המסוננים
         viewModel.filteredItems.observe(viewLifecycleOwner) { filteredItems ->

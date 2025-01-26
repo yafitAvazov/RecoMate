@@ -68,5 +68,7 @@
     <string name="remove">הסרה</string>
     <string name="change">שינוי</string>
     <string name="main_item_title">כותרת מוצר ראשית</string>
+    <string name="Lets_Recommend">בואו נמליץ!</string>
+    <string name="you_can_select_up_to_3_categories">ניתן לבחור עד 3 קטגוריות בלבד.</string>
 
 </resources>

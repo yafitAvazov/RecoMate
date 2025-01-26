@@ -26,7 +26,7 @@ class StartFragment : Fragment() {
         val startButton: Button = view.findViewById(R.id.start_button)
         startButton.setOnClickListener {
             // Navigate to AllItemsFragment
-            findNavController().navigate(R.id.action_startFragment_to_allItemsFragment)
+            findNavController().navigate(R.id.action_startFragment_to_categoriesFragment)
         }
     }
 }

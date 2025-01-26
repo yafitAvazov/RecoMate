@@ -151,15 +151,19 @@ class AddItemFragment : Fragment() {
             binding.btn12 to getString(R.string.health)
         )
 
-        buttons.forEach { (button, category) ->
+            buttons.forEach { (button, category) ->
             button.setOnClickListener {
                 if (selectedCategories.contains(category)) {
                     selectedCategories.remove(category)
                     button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blue1))
-                } else {
-                    selectedCategories.add(category)
-                    button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gray))
                 }
+                    if (selectedCategories.size < 3) {
+                        selectedCategories.add(category)
+                        button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gray))
+                    } else {
+                        Toast.makeText(requireContext(),
+                            getString(R.string.you_can_select_up_to_3_categories), Toast.LENGTH_SHORT).show()
+                    }
             }
         }
     }

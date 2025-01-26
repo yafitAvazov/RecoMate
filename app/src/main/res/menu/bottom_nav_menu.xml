@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_categories"
+        android:icon="@drawable/category_icon"
+        android:title="All categoris"
+        />
+    <item
+        android:id="@+id/nav_all_recommendation"
+        android:icon="@drawable/baseline_format_list_bulleted_24"
+        android:title="All Recommendation"
+        />
+
+    <item
+        android:id="@+id/nav_chat"
+        android:icon="@drawable/baseline_chat_bubble_outline_24"
+        android:title="Chat"/>
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/baseline_person_outline_24"
+        android:title="Profile"/>
+
+    <item
+        android:id="@+id/nav_favorites"
+        android:icon="@drawable/baseline_favorite_border_24"
+        android:title="Favorites"/>
+
+
+</menu>

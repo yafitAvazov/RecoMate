@@ -9,16 +9,29 @@
     <fragment
         android:id="@+id/startFragment"
         android:name="com.example.project2.ui.StartFragment"
-        android:label="start_layout"
+        android:label="Start"
         tools:layout="@layout/openning_layout">
         <action
-            android:id="@+id/action_startFragment_to_allItemsFragment"
-            app:destination="@id/allItemsFragment"
+            android:id="@+id/action_startFragment_to_categoriesFragment"
+            app:destination="@id/categoriesFragment"
             app:enterAnim="@anim/from_right"
             app:exitAnim="@anim/to_left"
             app:popEnterAnim="@anim/from_left"
             app:popExitAnim="@anim/to_right"/>
     </fragment>
+    <fragment
+        android:id="@+id/categoriesFragment"
+        android:name="com.example.project2.ui.CategoriesFragment"
+        android:label="Categories">
+        <action
+            android:id="@+id/action_categoriesFragment_to_allItemsFragment"
+            app:destination="@id/allItemsFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+    </fragment>
+
 
     <!-- AllItemsFragment -->
     <fragment
@@ -26,6 +39,10 @@
         android:name="com.example.project2.ui.all_items.AllItemsFragment"
         android:label="all_recommendations_layout"
         tools:layout="@layout/all_recommendations_layout">
+        <argument
+            android:name="category"
+            app:argType="string"
+            android:defaultValue=""/>
         <action
             android:id="@+id/action_allItemsFragment_to_addItemFragment"
             app:destination="@id/addItemFragment"
