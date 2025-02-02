@@ -66,6 +66,7 @@ class AddItemFragment : Fragment() {
             val comment = if (binding.itemComment.text.toString().isBlank()) "" else binding.itemComment.text.toString()
             val photo = imageUri?.toString()
             val priceText = binding.price.text.toString()
+            val address = if (binding.addressEdt.text.isNullOrBlank()) "" else binding.addressEdt.text.toString()
 
             val link = if (binding.itemLink.text.toString().isBlank()) "" else binding.itemLink.text.toString()
             val selectedCategoryText = if (selectedCategories.isEmpty()) "" else selectedCategories.joinToString(", ")
@@ -77,7 +78,8 @@ class AddItemFragment : Fragment() {
                 price = price,
                 category = selectedCategoryText,
                 link = link,
-                rating = selectedRating
+                rating = selectedRating,
+                address = address
             )
 
             viewModel.addItem(item)

@@ -95,5 +95,14 @@
     <fragment
         android:id="@+id/itemDetailsFragment"
         android:name="com.example.project2.ui.single_item.ItemDetailsFragment"
-        android:label="ItemDetailsFragment" />
+        android:label="ItemDetailsFragment" >
+        <action
+            android:id="@+id/action_itemDetailsFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.example.project2.ui.MapFragment"
+        android:label="mapview"
+        tools:layout="@layout/mapview" />
 </navigation>

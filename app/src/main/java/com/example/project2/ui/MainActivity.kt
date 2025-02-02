@@ -43,29 +43,17 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_categories -> {
-                   navController.navigate(R.id.categoriesFragment)
-                   true
-              }
-//                R.id.nav_chat -> {
-//                    navController.navigate(R.id.chatFragment)
-//                    true
-//                }
-//                R.id.nav_profile -> {
-//                    navController.navigate(R.id.profileFragment)
-//                    true
-//                }
-//                R.id.nav_favorites -> {
-//                    navController.navigate(R.id.favoritesFragment)
-//                    true
-//                }
+                    navController.navigate(R.id.categoriesFragment)
+                    true
+                }
                 else -> false
             }
         }
 
-        // הגדרת שולי מערכת להפחתת בעיות תצוגה
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        // התאמה לשולי המערכת כדי למנוע חפיפה עם כפתורי הניווט
+        ViewCompat.setOnApplyWindowInsetsListener(bottomNavigationView) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(0, 0, 0, systemBars.bottom) // מרים את ה-BottomNavigationView מעל הכפתורים
             insets
         }
     }

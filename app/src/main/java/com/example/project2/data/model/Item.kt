@@ -17,8 +17,8 @@ data class Item(
     @ColumnInfo(name = "item_price") val price: Double, // Custom column name for price
     @ColumnInfo(name = "item_category") val category: String, // Custom column name for category
     @ColumnInfo(name = "item_link") val link: String, // Custom column name for link
-    @ColumnInfo(name = "item_rating") val rating: Int // Custom column name for rating
-
+    @ColumnInfo(name = "item_rating") val rating: Int, // Custom column name for rating
+    @ColumnInfo(name = "item_address") val address: String? // Nullable field for address
 ) : Parcelable
 /*
 object ItemManager{

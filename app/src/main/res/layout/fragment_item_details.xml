@@ -118,6 +118,31 @@
                 android:layout_height="80dp"
                 android:src="@drawable/baseline_hide_image_24"
                 android:id="@+id/item_image" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/address_textView"
+                    android:text="No address"
+                    android:background="@drawable/bubble_speech"
+                    android:layout_weight="1"
+                    android:textSize="16sp"
+                    android:padding="12dp"/>
+                <Space
+                    android:layout_width="5dp"
+                    android:layout_height="match_parent"/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Show address"
+                    android:id="@+id/show_address_button"/>
+
+            </LinearLayout>
+
 
             <!-- הערה -->
             <TextView

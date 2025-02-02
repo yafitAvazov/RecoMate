@@ -79,6 +79,13 @@ class UpdateItemFragment : Fragment() {
             binding.imageBtn.setImageURI(Uri.parse(item.photo))
             imageUri = Uri.parse(item.photo)
         }
+        if (item.address.isNullOrEmpty()){
+            binding.editAddressEditText.setText("No address")
+        }
+        else
+        {
+            binding.editAddressEditText.setText(item.address)
+        }
         selectedRating = item.rating
         selectedCategories.clear()
         selectedCategories.addAll(item.category.split(getString(R.string.separator)))
@@ -92,6 +99,7 @@ class UpdateItemFragment : Fragment() {
         val link = binding.itemLink.text.toString()
         val comment = binding.itemComment.text.toString()
         val photoUriString = imageUri?.toString() ?: ""
+        val address = binding.editAddressEditText.text.toString()
 
         val updatedItem = Item(
             id = existingItemId ?: 0,
@@ -101,7 +109,8 @@ class UpdateItemFragment : Fragment() {
             comment = comment,
             photo = if (photoUriString.isEmpty()) null else photoUriString,
             rating = selectedRating,
-            category = selectedCategories.joinToString(getString(R.string.separator))
+            category = selectedCategories.joinToString(getString(R.string.separator)),
+            address = address
         )
 
         CoroutineScope(Dispatchers.IO).launch {
