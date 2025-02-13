@@ -19,9 +19,13 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar) // ✅ כעת אין התנגשויות
+
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
+
 
         // קישור ה-BottomNavigationView ל-NavController
         bottomNavigationView.setupWithNavController(navController)
@@ -44,6 +48,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_categories -> {
                     navController.navigate(R.id.categoriesFragment)
+                    true
+                }
+                R.id.add_idem -> {
+                    navController.navigate(R.id.addItemFragment)
                     true
                 }
                 else -> false

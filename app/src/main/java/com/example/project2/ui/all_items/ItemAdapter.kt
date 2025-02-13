@@ -94,7 +94,6 @@ class ItemAdapter(
         items = newItems
         notifyDataSetChanged()
     }
-
     fun itemAt(position: Int) = items[position]
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {

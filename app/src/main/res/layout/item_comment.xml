@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="7dp"> <!-- 🔹 הקטנת הריווח -->
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        android:layout_margin="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <!-- כותרת התגובה -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+              >
+                <ImageView
+                    android:id="@+id/user_avatar"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/logo"
+                    android:contentDescription="תמונת פרופיל"
+                    android:layout_marginStart="8dp"
+                    android:scaleType="centerCrop"
+                    android:clipToOutline="true"
+                    android:backgroundTint="@color/primary" />
+                <Space
+                    android:layout_width="8dp"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Username"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="@color/primaryText" />
+
+
+
+
+<!--                android:background="?attr/selectableItemBackgroundBorderless"-->
+
+            </LinearLayout>
+
+            <!-- טקסט התגובה -->
+            <TextView
+                android:id="@+id/comment_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:textSize="14sp"
+                android:textColor="@color/secondaryText"
+                android:layout_marginTop="8dp"
+                android:lineSpacingExtra="4dp" />
+
+            <!-- פעולות על התגובה -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="end"
+                android:layout_marginTop="8dp">
+
+                <ImageView
+                    android:id="@+id/like"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/baseline_favorite_border_24"
+                    android:contentDescription="תמונת פרופיל"
+                    android:layout_marginStart="8dp"
+                    android:scaleType="centerCrop"
+                    android:clipToOutline="true"
+                    android:backgroundTint="@color/primary" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

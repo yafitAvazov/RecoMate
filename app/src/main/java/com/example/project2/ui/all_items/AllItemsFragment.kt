@@ -44,10 +44,10 @@ class AllItemsFragment : Fragment() {
         setHasOptionsMenu(true)
         _binding = AllRecommendationsLayoutBinding.inflate(inflater, container, false)
 
-        // מעבר למסך הוספת פריט
-        binding.fab.setOnClickListener {
-            findNavController().navigate(R.id.action_allItemsFragment_to_addItemFragment)
-        }
+//        // מעבר למסך הוספת פריט
+//        binding.fab.setOnClickListener {
+//            findNavController().navigate(R.id.action_allItemsFragment_to_addItemFragment)
+//        }
         return binding.root
     }
 
@@ -62,6 +62,30 @@ class AllItemsFragment : Fragment() {
         initializeRecyclerView()
         setupDrawerFilters(view)
         setupItemSwipeHandling()
+
+        val deleteButton = view.findViewById<ImageView>(R.id.action_delete)
+
+        deleteButton.setOnClickListener {
+            AlertDialog.Builder(requireContext())
+                .setTitle(getString(R.string.delete_confirmation))
+                .setMessage(getString(R.string.all_delete_confirmation_message))
+                .setPositiveButton(getString(R.string.yes)) { _, _ ->
+                    viewModel.deleteAll()
+
+                    // 🟢 לאחר המחיקה, מוודאים שה-Adapter מתעדכן
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        viewModel.filteredItems.observe(viewLifecycleOwner) { filteredItems ->
+                            adapter.updateList(filteredItems)
+                            binding.recycler.scrollToPosition(0) // ✅ גלילה לראש הרשימה לאחר מחיקה
+                        }
+                    }
+
+                    Toast.makeText(requireContext(), getString(R.string.all_items_deleted), Toast.LENGTH_SHORT).show()
+                }
+                .setNegativeButton(getString(R.string.no), null)
+                .show()
+        }
+
 
 
         // אם כבר בוצע סינון, נציג את הפריטים המסוננים
@@ -267,15 +291,22 @@ class AllItemsFragment : Fragment() {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder) = false
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val item = adapter.itemAt(viewHolder.adapterPosition)
+                val item = adapter.itemAt(viewHolder.adapterPosition) // קבלת הפריט שנמחק
+
                 AlertDialog.Builder(requireContext())
                     .setTitle(getString(R.string.delete_confirmation))
                     .setMessage(getString(R.string.delete_confirmation_message))
                     .setPositiveButton(getString(R.string.yes)) { _, _ ->
-                        viewModel.deleteItem(item)
+                        viewModel.deleteItem(item) // מחיקה מה-Database
+
+                        // 🟢 עדכון הרשימה כך שהכרטיסים יזוזו מיידית
+                        val newList = adapter.items.toMutableList().apply { removeAt(viewHolder.adapterPosition) }
+                        adapter.updateList(newList) // עדכון ה-Adapter
+                        adapter.notifyItemRemoved(viewHolder.adapterPosition) // הזזת הכרטיסים למעלה
+
                     }
                     .setNegativeButton(getString(R.string.no)) { _, _ ->
-                        adapter.notifyItemChanged(viewHolder.adapterPosition)
+                        adapter.notifyItemChanged(viewHolder.adapterPosition) // שחזור אם בוטלה המחיקה
                     }
                     .setCancelable(false)
                     .show()
@@ -283,23 +314,12 @@ class AllItemsFragment : Fragment() {
         }).attachToRecyclerView(binding.recycler)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.main_menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_delete) {
-            AlertDialog.Builder(requireContext())
-                .setTitle(getString(R.string.delete_confirmation))
-                .setMessage(getString(R.string.all_delete_confirmation_message))
-                .setPositiveButton(getString(R.string.yes)) { _, _ ->
-                    viewModel.deleteAll()
-                    Toast.makeText(requireContext(), getString(R.string.all_items_deleted), Toast.LENGTH_SHORT).show()
-                }.show()
-        }
-        return super.onOptionsItemSelected(item)
-    }
+//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        inflater.inflate(R.menu.main_menu, menu)
+//        super.onCreateOptionsMenu(menu, inflater)
+//    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

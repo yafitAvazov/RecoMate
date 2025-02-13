@@ -1,160 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- פריסת הכרטיסייה הראשית -->
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/blue"
+    android:fillViewport="true"
     android:padding="16dp">
 
-    <androidx.cardview.widget.CardView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        app:cardElevation="8dp"
-        app:cardCornerRadius="12dp"
-        android:background="@color/white">
+        android:orientation="vertical">
 
-        <LinearLayout
+        <!-- כרטיס הפריט -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            android:layout_marginBottom="16dp"
+            android:layoutDirection="rtl"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/divider">
 
-            <!-- כותרת הפריט -->
-            <TextView
-                android:id="@+id/item_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/item_title"
-                android:textSize="40sp"
-                android:textStyle="bold"
-                android:layout_marginTop="16dp" />
-
-            <!-- דירוג כוכבים -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="10dp">
-
-                <ImageView
-                    android:id="@+id/star1"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/star_empty" />
-
-                <ImageView
-                    android:id="@+id/star2"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/star_empty" />
-
-                <ImageView
-                    android:id="@+id/star3"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/star_empty" />
-
-                <ImageView
-                    android:id="@+id/star4"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/star_empty" />
-
-                <ImageView
-                    android:id="@+id/star5"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/star_empty" />
-            </LinearLayout>
-
-            <!-- קטגוריות -->
-            <LinearLayout
-                android:id="@+id/categoryContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="14dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"/>
-            <!-- TextView to display the category -->
-            <TextView
-                android:id="@+id/item_category"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textSize="20sp" />
-
-            <!-- מחיר -->
-            <TextView
-                android:id="@+id/item_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/price"
-                android:textStyle="bold"
-                android:textSize="24sp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="15dp"/>
-
-            <!-- קישור -->
-            <TextView
-                android:id="@+id/item_link"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/link"
-                android:textStyle="bold"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="15dp"
-                android:textSize="20sp"
-
-                android:autoLink="web"
-                android:textColorLink="@color/purple_700"
-                android:clickable="true"
-                android:focusable="true" />
-
-            <!-- תמונה -->
-            <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@drawable/baseline_hide_image_24"
-                android:id="@+id/item_image" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp">
-                <TextView
-                    android:layout_width="0dp"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@color/white">
+
+                <!-- תמונת הפריט -->
+                <ImageView
+                    android:id="@+id/item_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/baseline_hide_image_24"
+                    android:contentDescription="תמונת הפריט"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- כותרת ומחיר -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/address_textView"
-                    android:text="No address"
-                    android:background="@drawable/bubble_speech"
-                    android:layout_weight="1"
-                    android:textSize="16sp"
-                    android:padding="12dp"/>
-                <Space
-                    android:layout_width="5dp"
-                    android:layout_height="match_parent"/>
-                <Button
+                    android:orientation="horizontal"
+                    android:gravity="end"
+                    android:layout_marginBottom="16dp">
+
+                    <!-- מחיר הפריט -->
+                    <TextView
+                        android:id="@+id/item_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="₪100"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/secondaryText"
+                        android:layout_marginStart="8dp" />
+
+                    <!-- כותרת הפריט -->
+                    <TextView
+                        android:id="@+id/item_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="Title"
+                        android:textSize="40sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/primaryText"
+                        android:layout_weight="1"
+                        android:gravity="start" />
+
+                </LinearLayout>
+
+
+
+
+                <!-- דירוג כוכבים -->
+                <LinearLayout
+                    android:id="@+id/stars_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="end"
+                    android:layout_marginBottom="16dp">
+
+                <ImageView
+                        android:id="@+id/star1"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/star_empty" />
+
+                    <ImageView
+                        android:id="@+id/star2"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/star_empty" />
+
+                    <ImageView
+                        android:id="@+id/star3"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/star_empty" />
+
+                    <ImageView
+                        android:id="@+id/star4"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/star_empty" />
+
+                    <ImageView
+                        android:id="@+id/star5"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/star_empty" />
+
+                </LinearLayout>
+
+                <!-- קטגוריות -->
+                <TextView
+                    android:id="@+id/item_category"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Show address"
-                    android:id="@+id/show_address_button"/>
+                    android:text="קטגוריה"
+                    android:textSize="16sp"
+                    android:textColor="@color/primaryText"
+                    android:layout_marginBottom="16dp"
+                    android:layout_gravity="end" />
+
+                <!-- מיקום וכפתור הצג כתובת -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="end|center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <!-- כפתור הצגת הכתובת -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/show_address_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Show adress"
+                       android:backgroundTint="@color/blue"
+                         />
+                    <Space
+                        android:layout_width="15dp"
+                        android:layout_height="wrap_content" />
+                    <!-- טקסט הכתובת -->
+                    <TextView
+                        android:id="@+id/address_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="כתובת הפריט"
+                        android:textSize="16sp"
+                        android:textColor="@color/secondaryText"
+                        android:layout_marginEnd="8dp"
+                        android:gravity="center_vertical" />
+
+                    <!-- אייקון מיקום -->
+                    <ImageView
+                        android:id="@+id/locationIcon"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/baseline_location_pin_24"
+                        android:contentDescription="סמל מיקום"
+                        android:layout_marginEnd="8dp" />
+
+                </LinearLayout>
+
+
+                <!-- הערה/תיאור הפריט -->
+                <TextView
+                    android:id="@+id/item_comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="תיאור הפריט או הערות נוספות..."
+                    android:textSize="16sp"
+                    android:textColor="@color/primaryText"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp"
+                 />
+
+
 
             </LinearLayout>
 
+        </com.google.android.material.card.MaterialCardView>
 
-            <!-- הערה -->
-            <TextView
-                android:id="@+id/item_comment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/item_comment"
-                android:textSize="16sp"
-                android:background="@drawable/bubble_speech"
-                android:padding="12dp"
-                android:layout_marginTop="16dp" />
+        <!-- אזור התגובות -->
+        <include layout="@layout/comments_section_layout" />
 
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-</ScrollView>
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

@@ -28,7 +28,13 @@ interface ItemDao {
     fun getItems() : LiveData<List<Item>>
 
     @Query("SELECT * FROM review_table WHERE id LIKE :id")
-    fun getItem(id:Int) : Item
+    fun getItem(id:Int) : LiveData<Item>
+
+
+
+    @Query("UPDATE review_table SET item_comments = :comments WHERE id = :id")
+    fun updateComments(id: Int, comments: String)
+
 
     @Query( "DELETE FROM review_table")
     fun deleteAll()

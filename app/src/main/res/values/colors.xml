@@ -9,6 +9,28 @@
     <color name="blue1">#2A6DBD</color>
     <color name="gray">#CDD5DC</color>
     <color name="dark_gray">#95989D</color>
+    <color name="light_gray">#EDECEC</color>
+    <color name="dark_blue">#0D1B2A</color>
+    <color name="light_blue">#62C1F4</color>
+
+    <color name="primary">#6200EE</color>
+    <color name="primaryVariant">#3700B3</color>
+    <color name="secondary">#03DAC6</color>
+    <color name="secondaryVariant">#018786</color>
+    <color name="background">#FFFFFF</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="error">#B00020</color>
+    <color name="onPrimary">#FFFFFF</color>
+    <color name="onSecondary">#000000</color>
+    <color name="onBackground">#000000</color>
+    <color name="onSurface">#000000</color>
+    <color name="onError">#FFFFFF</color>
+    <color name="primaryText">#212121</color>
+    <color name="secondaryText">#757575</color>
+
+
+        <color name="divider">#BDBDBD</color>
+
 
 
 

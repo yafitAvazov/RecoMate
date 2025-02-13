@@ -12,9 +12,9 @@
         />
 
     <item
-        android:id="@+id/nav_chat"
-        android:icon="@drawable/baseline_chat_bubble_outline_24"
-        android:title="Chat"/>
+        android:id="@+id/add_idem"
+        android:icon="@drawable/baseline_format_list_bulleted_add_24"
+        android:title="Add"/>
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/baseline_person_outline_24"

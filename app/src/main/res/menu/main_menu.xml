@@ -2,9 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/action_delete"
-        android:title="Delete all"
-        android:icon="@drawable/baseline_delete_24"
-        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_logo"
+        android:title=""
+        app:showAsAction="always"
+        app:actionLayout="@layout/custom_toolbar_logo" /> <!-- שימוש ב-Layout מותאם אישית -->
+
+<!--    <item android:id="@+id/action_delete"-->
+<!--        android:title="Delete all"-->
+<!--        android:icon="@drawable/baseline_delete_24"-->
+<!--        app:showAsAction="always" />-->
 
 </menu>

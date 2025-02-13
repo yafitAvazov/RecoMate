@@ -1,99 +1,103 @@
-
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardUseCompatPadding="true"
-    app:contentPadding="10dp"
-    app:cardCornerRadius="10dp">
+    android:layout_margin="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="6dp"
+    android:backgroundTint="@color/light_blue">
 
+    <!-- כרטיסיה פנימית עם רקע כחול -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dp"
+        app:cardCornerRadius="14dp"
+    app:cardElevation="0dp"
+    android:backgroundTint="@color/blue"> <!-- ✅ צבע פנימי -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="12dp"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        tools:ignore="MissingConstraints">
 
         <!-- תמונה -->
         <ImageView
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:id="@+id/item_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:src="@drawable/baseline_hide_image_24"
-            android:id="@+id/item_image" />
+            android:scaleType="centerCrop"
+            />
 
-        <!-- פרטים (כותרות ותיאור) -->
+        <!-- פרטים -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:layout_marginStart="20dp">
+            android:layout_marginStart="16dp">
 
             <TextView
-                android:layout_width="match_parent"
+                android:id="@+id/item_title"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/main_item_title"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:id="@+id/item_title" />
+                android:textColor="@color/white" />
 
             <!-- דירוג כוכבים -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="5dp">
-
-                <ImageView
-                    android:id="@+id/star1"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/star_empty" />
-
-                <ImageView
-                    android:id="@+id/star2"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/star_empty" />
-
-                <ImageView
-                    android:id="@+id/star3"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/star_empty" />
-
-                <ImageView
-                    android:id="@+id/star4"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/star_empty" />
-
-                <ImageView
-                    android:id="@+id/star5"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/star_empty" />
+                android:layout_marginTop="4dp">
+                <ImageView android:id="@+id/star1" android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/star_empty"/>
+                <ImageView android:id="@+id/star2" android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/star_empty"/>
+                <ImageView android:id="@+id/star3" android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/star_empty"/>
+                <ImageView android:id="@+id/star4" android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/star_empty"/>
+                <ImageView android:id="@+id/star5" android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/star_empty"/>
             </LinearLayout>
-
-
         </LinearLayout>
 
-        <!-- מחיר בצד ימין -->
-        <TextView
+        <!-- מחיר וכפתור עריכה -->
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/price"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginStart="16dp"
-            android:id="@+id/price_title" />
-        <ImageView
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
 
-            android:id="@+id/edit_btn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="15dp"
-            android:src="@drawable/baseline_edit_24" />
+            <TextView
+                android:id="@+id/price_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/price"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/light_blue"/>
+
+            <ImageView
+                android:id="@+id/edit_btn"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/baseline_edit_24"
+              />
+        </LinearLayout>
+
     </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
 </androidx.cardview.widget.CardView>

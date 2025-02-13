@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.firebase.crashlytics.buildtools)
     // Room Database
     val room_version = "2.6.1"
     implementation("androidx.room:room-runtime:$room_version")
@@ -61,6 +62,12 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version")
 
+// Glide for image loading
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    kapt("com.github.bumptech.glide:compiler:4.12.0")
+
+// Gson - להמרת רשימת תגובות ל-JSON
+    implementation("com.google.code.gson:gson:2.9.0")
     // Unit Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
