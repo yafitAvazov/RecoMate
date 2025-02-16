@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.project2.R
 import com.example.project2.ui.adapters.CategoryAdapter
 import com.example.project2.ui.model.Category
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CategoriesFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView

@@ -14,14 +14,16 @@ import androidx.navigation.fragment.findNavController
 import com.example.project2.R
 import com.example.project2.data.model.Item
 import com.example.project2.databinding.UpdateRecommendationLayoutBinding
+import com.example.project2.ui.recommendation_detail.RecommendationDetailViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
+@AndroidEntryPoint
 class UpdateItemFragment : Fragment() {
     private var _binding: UpdateRecommendationLayoutBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: ItemsViewModel by activityViewModels()
+    private val viewModel: RecommendationDetailViewModel by activityViewModels()
 
     private var existingItemId: Int? = null
     private var selectedRating: Int = 0

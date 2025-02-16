@@ -1,11 +1,12 @@
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/drawer_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/blue"
-    tools:context=".ui.all_items.AllItemsFragment"
+    tools:context=".ui.all_recommendation.AllItemsFragment"
    >
 
 
@@ -93,7 +94,30 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/filter_button"
             app:layout_constraintVertical_bias="0.0" />
+        <!-- ProgressBar לטעינה -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/filter_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
+        <!-- הודעת שגיאה במקרה של תקלה -->
+        <TextView
+            android:id="@+id/errorTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/error_fetching_items"
+            android:textSize="18sp"
+            android:textColor="@android:color/holo_red_dark"
+            android:gravity="center"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/progressBar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
         <!--        &lt;!&ndash; כפתור פעולה &ndash;&gt;-->
 <!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
 <!--            android:id="@+id/fab"-->

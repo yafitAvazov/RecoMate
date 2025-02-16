@@ -21,8 +21,10 @@ import com.example.project2.data.model.Item
 import com.example.project2.R
 import com.example.project2.databinding.AddRecommendationLayoutBinding
 import java.io.File
-import com.example.project2.ui.ItemsViewModel
+import com.example.project2.ui.all_recommendation.RecommendationListViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AddItemFragment : Fragment() {
     private var _binding: AddRecommendationLayoutBinding? = null
     private val binding get() = _binding!!
@@ -30,7 +32,7 @@ class AddItemFragment : Fragment() {
     private var selectedRating: Int = 0 // שומר את הדירוג הנבחר
     private val selectedCategories = mutableSetOf<String>() // רשימת קטגוריות שנבחרו
 
-    private val viewModel: ItemsViewModel by activityViewModels()
+    private val viewModel: RecommendationListViewModel by activityViewModels()
 
     private val pickImageLauncher =
         registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->

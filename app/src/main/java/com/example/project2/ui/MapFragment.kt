@@ -10,7 +10,9 @@ import android.webkit.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.project2.databinding.MapviewBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MapFragment : Fragment() {
     private var _binding: MapviewBinding? = null
     private val binding get() = _binding!!

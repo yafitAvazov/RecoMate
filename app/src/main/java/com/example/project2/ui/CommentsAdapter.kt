@@ -1,4 +1,4 @@
-package com.example.project2.ui.single_item
+package com.example.project2.ui
 
 import android.view.LayoutInflater
 import android.view.View
