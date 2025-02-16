@@ -1,8 +1,11 @@
 package com.example.project2.ui.all_recommendation
 
+import android.view.View
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.project2.data.model.Item
+import com.example.project2.data.repository.AuthRepository
 import com.example.project2.data.repository.ItemRepository
 import com.example.project2.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,8 +16,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecommendationListViewModel @Inject constructor(
-    private val repository: ItemRepository
-) : ViewModel() {
+    private val repository: ItemRepository,
+    private val authRepository: AuthRepository // ✅ ודאי שזה מתקבל כפרמטר
+) : ViewModel(){
 
     private val _items = MutableStateFlow<List<Item>>(emptyList()) // ✅ ודאי שהמשתנה מוגדר
     val items: StateFlow<List<Item>> get() = _items.asStateFlow()
@@ -25,6 +29,10 @@ class RecommendationListViewModel @Inject constructor(
 
     init {
         fetchItems()
+    }
+
+    fun signOut() {
+        authRepository.logout()
     }
 
     fun fetchItems() {

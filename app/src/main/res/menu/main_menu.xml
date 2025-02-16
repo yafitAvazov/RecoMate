@@ -8,9 +8,7 @@
         app:showAsAction="always"
         app:actionLayout="@layout/custom_toolbar_logo" /> <!-- שימוש ב-Layout מותאם אישית -->
 
-<!--    <item android:id="@+id/action_delete"-->
-<!--        android:title="Delete all"-->
-<!--        android:icon="@drawable/baseline_delete_24"-->
-<!--        app:showAsAction="always" />-->
-
+    <item android:title="Sign out"
+        android:id="@+id/action_sign_out"
+        app:showAsAction="never"/>
 </menu>

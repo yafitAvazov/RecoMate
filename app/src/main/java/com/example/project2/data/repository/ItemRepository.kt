@@ -35,9 +35,12 @@ class ItemRepository @Inject constructor(private val itemDao: ItemDao) {
     fun getItemById(itemId: Int): Flow<Item?> = itemDao.getItemById(itemId)
 
 
-    fun deleteAll() {
-        itemDao.deleteAll()
+    suspend fun deleteAll() {
+        withContext(Dispatchers.IO) {
+            itemDao.deleteAll()
+        }
     }
+
 
     suspend fun updateItemComments(itemId: Int, comments: List<String>) {
         withContext(Dispatchers.IO) {

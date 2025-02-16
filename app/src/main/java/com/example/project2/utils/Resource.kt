@@ -1,9 +1,5 @@
 package com.example.project2.utils
 
-import com.example.project2.data.model.Item
-
-
-
 data class Resource<out T>(val status: Status, val data: T?, val message: String?) {
 
     enum class Status {
@@ -26,4 +22,3 @@ data class Resource<out T>(val status: Status, val data: T?, val message: String
         }
     }
 }
-

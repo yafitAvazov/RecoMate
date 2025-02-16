@@ -12,12 +12,8 @@
         android:label="Start"
         tools:layout="@layout/openning_layout">
         <action
-            android:id="@+id/action_startFragment_to_categoriesFragment"
-            app:destination="@id/categoriesFragment"
-            app:enterAnim="@anim/from_right"
-            app:exitAnim="@anim/to_left"
-            app:popEnterAnim="@anim/from_left"
-            app:popExitAnim="@anim/to_right"/>
+            android:id="@+id/action_startFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
     <fragment
         android:id="@+id/categoriesFragment"
@@ -56,6 +52,9 @@
         <action
             android:id="@+id/action_allItemsFragment_to_updateItemFragment"
             app:destination="@id/updateItemFragment" />
+        <action
+            android:id="@+id/action_allItemsFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
 
 
@@ -77,10 +76,6 @@
         <action
             android:id="@+id/action_allItemsFragment_to_itemDetailsFragment"
             app:destination="@id/itemDetailsFragment" />
-<!--        <action-->
-<!--            android:id="@+id/action_addItemFragment_to_loginFragment"-->
-<!--            app:destination="@id/loginFragment"-->
-<!--            app:popUpTo="@id/my_nav" />-->
 
     </fragment>
     <fragment
@@ -113,27 +108,28 @@
         android:name="com.example.project2.ui.MapFragment"
         android:label="mapview"
         tools:layout="@layout/mapview" />
-<!--    <fragment-->
-<!--        android:id="@+id/loginFragment"-->
-<!--        android:name="com.example.project2.ui.login.LoginFragment"-->
-<!--        android:label="login_layout"-->
-<!--        tools:layout="@layout/login_layout" >-->
-<!--        <action-->
-<!--            android:id="@+id/action_loginFragment_to_allItemsFragment"-->
-<!--            app:destination="@id/allItemsFragment"-->
-<!--            app:popUpTo="@id/my_nav" />-->
-<!--        <action-->
-<!--            android:id="@+id/action_loginFragment_to_registerFragment"-->
-<!--            app:destination="@id/registerFragment" />-->
-<!--    </fragment>-->
-<!--    <fragment-->
-<!--        android:id="@+id/registerFragment"-->
-<!--        android:name="com.example.project2.ui.register.RegisterFragment"-->
-<!--        android:label="register"-->
-<!--        tools:layout="@layout/register" >-->
-<!--        <action-->
-<!--            android:id="@+id/action_registerFragment_to_allItemsFragment"-->
-<!--            app:destination="@id/allItemsFragment"-->
-<!--            app:popUpTo="@id/my_nav" />-->
-<!--    </fragment>-->
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.project2.ui.login.LoginFragment"
+        android:label="login_layout"
+        tools:layout="@layout/login_layout" >
+        <action
+            android:id="@+id/action_loginFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_categoriesFragment"
+            app:destination="@id/categoriesFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_categoriesFragment2"
+            app:destination="@id/categoriesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.example.project2.ui.register.RegisterFragment"
+        android:label="register"
+        tools:layout="@layout/register" >
+        <action
+            android:id="@+id/action_registerFragment_to_categoriesFragment"
+            app:destination="@id/categoriesFragment" />
+    </fragment>
 </navigation>

@@ -23,13 +23,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar) // ✅ כעת אין התנגשויות
+        supportActionBar?.setDisplayShowTitleEnabled(false) // ✅ מסיר את הכותרת של ה-Toolbar ומאפשר לוגו
+
         val content = findViewById<View>(android.R.id.content)
         content.post {
             enableEdgeToEdge(window)
         }
 
-        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar) // ✅ כעת אין התנגשויות
+
+
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment

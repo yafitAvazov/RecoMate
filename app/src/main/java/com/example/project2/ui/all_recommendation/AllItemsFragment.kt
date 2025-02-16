@@ -12,6 +12,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
@@ -34,7 +35,7 @@ class AllItemsFragment : Fragment() {
     private var selectedMinPrice: Int = 0
     private var selectedRating: Int = 0
 
-    private val viewModel: RecommendationListViewModel by activityViewModels()
+    private val viewModel: RecommendationListViewModel by viewModels()
     private lateinit var adapter: ItemAdapter
 
     override fun onCreateView(
@@ -61,6 +62,25 @@ class AllItemsFragment : Fragment() {
             showDeleteAllConfirmationDialog()
         }
     }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true) // ✅ מאפשר הצגת תפריט
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_menu,menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == R.id.action_sign_out) {
+            viewModel.signOut()
+            findNavController().navigate(R.id.action_allItemsFragment_to_loginFragment)
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+
     private fun deleteAllItems() {
         viewModel.deleteAll()
 
