@@ -36,6 +36,7 @@ class RecommendationDetailViewModel @Inject constructor(
     fun updateItem(item: Item) {
         viewModelScope.launch {
             repository.updateItem(item)
+            _chosenItem.postValue(item)
         }
     }
     fun getItemById(itemId: Int) {

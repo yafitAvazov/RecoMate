@@ -1,4 +1,4 @@
-package com.example.project2.ui.adapters
+package com.example.project2.ui.categories
 
 import android.view.LayoutInflater
 import android.view.View

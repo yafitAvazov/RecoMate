@@ -46,6 +46,14 @@ class RecommendationListViewModel @Inject constructor(
                 }
         }
     }
+    fun fetchItemsByCategory(category: String) {
+        viewModelScope.launch {
+            repository.getItemsByCategory(category).collect { itemList ->
+                _items.value = itemList
+            }
+        }
+    }
+
 
 
     fun addItem(item: Item) {

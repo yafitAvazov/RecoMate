@@ -18,7 +18,7 @@
     <string name="sport">Sport</string>
     <string name="tech">Tech</string>
     <string name="home">Home</string>
-    <string name="game">Game</string>
+    <string name="game">Games</string>
     <string name="food">Food</string>
     <string name="fashion">Fashion</string>
     <string name="category">Category</string>
@@ -38,9 +38,9 @@
     <string name="filter">Filter</string>
     <string name="categories">Categories</string>
     <string name="travel">Travel</string>
-    <string name="book">Book</string>
+    <string name="book">Books</string>
     <string name="health">Health</string>
-    <string name="movie">Movie</string>
+    <string name="movie">Movies</string>
     <string name="music">Music</string>
     <string name="shops">Shops</string>
     <string name="price_range">Price Range</string>
@@ -77,4 +77,7 @@
     <string name="Lets_Recommend">Lets Recommend!</string>
     <string name="you_can_select_up_to_3_categories">You can select up to 3 categories</string>
     <string name="error_fetching_items">error_fetching_items</string>
+    <string name="category_chosen">Category chosen: %1$s</string>
+    <string name="beauty">Beauty</string>
+    <string name="enter_adress">Enter Adress</string>
 </resources>

@@ -115,14 +115,13 @@ class UpdateItemFragment : Fragment() {
             address = address
         )
 
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.Main).launch {
             viewModel.updateItem(updatedItem)
-            CoroutineScope(Dispatchers.Main).launch {
-                Toast.makeText(requireContext(),
-                    getString(R.string.item_updated_successfully), Toast.LENGTH_SHORT).show()
-                findNavController().navigate(R.id.action_updateItemFragment_to_allItemsFragment)
-            }
+            Toast.makeText(requireContext(), getString(R.string.item_updated_successfully), Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_updateItemFragment_to_allItemsFragment)
         }
+
+
     }
 
     private fun removeImage() {
@@ -168,7 +167,7 @@ class UpdateItemFragment : Fragment() {
             binding.btn5 to getString(R.string.tech),
             binding.btn6 to getString(R.string.sport),
             binding.btn7 to getString(R.string.travel),
-            binding.btn8 to getString(R.string.music),
+            binding.btn8 to getString(R.string.beauty),
             binding.btn9 to getString(R.string.book),
             binding.btn10 to getString(R.string.shops),
             binding.btn11 to getString(R.string.movie),
@@ -181,8 +180,12 @@ class UpdateItemFragment : Fragment() {
                     selectedCategories.remove(category)
                     button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blue1))
                 } else {
-                    selectedCategories.add(category)
-                    button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gray))
+                    if (selectedCategories.size < 3) {
+                        selectedCategories.add(category)
+                        button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gray))
+                    } else {
+                        Toast.makeText(requireContext(), "ניתן לבחור עד 3 קטגוריות בלבד", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
@@ -197,7 +200,7 @@ class UpdateItemFragment : Fragment() {
             binding.btn5 to getString(R.string.tech),
             binding.btn6 to getString(R.string.sport),
             binding.btn7 to getString(R.string.travel),
-            binding.btn8 to getString(R.string.music),
+            binding.btn8 to getString(R.string.beauty),
             binding.btn9 to getString(R.string.book),
             binding.btn10 to getString(R.string.shops),
             binding.btn11 to getString(R.string.movie),

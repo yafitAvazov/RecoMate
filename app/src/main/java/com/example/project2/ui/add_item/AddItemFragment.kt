@@ -148,26 +148,26 @@ class AddItemFragment : Fragment() {
             binding.btn5 to getString(R.string.tech),
             binding.btn6 to getString(R.string.sport),
             binding.btn7 to getString(R.string.travel),
-            binding.btn8 to getString(R.string.music),
+            binding.btn8 to getString(R.string.beauty),
             binding.btn9 to getString(R.string.book),
             binding.btn10 to getString(R.string.shops),
             binding.btn11 to getString(R.string.movie),
             binding.btn12 to getString(R.string.health)
         )
 
-            buttons.forEach { (button, category) ->
+        buttons.forEach { (button, category) ->
             button.setOnClickListener {
                 if (selectedCategories.contains(category)) {
                     selectedCategories.remove(category)
                     button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blue1))
                 }
-                    if (selectedCategories.size < 3) {
-                        selectedCategories.add(category)
-                        button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gray))
-                    } else {
-                        Toast.makeText(requireContext(),
-                            getString(R.string.you_can_select_up_to_3_categories), Toast.LENGTH_SHORT).show()
-                    }
+                if (selectedCategories.size < 3) {
+                    selectedCategories.add(category)
+                    button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gray))
+                } else {
+                    Toast.makeText(requireContext(),
+                        getString(R.string.you_can_select_up_to_3_categories), Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

@@ -113,8 +113,7 @@ class AllItemsFragment : Fragment() {
     private fun initializeRecyclerView() {
         adapter = ItemAdapter(emptyList(), object : ItemAdapter.ItemListener {
             override fun onItemClicked(index: Int) {
-                val clickedItem = adapter.items[index]
-                Toast.makeText(requireContext(), clickedItem.title, Toast.LENGTH_SHORT).show()
+
             }
 
             override fun onItemLongClicked(index: Int) {

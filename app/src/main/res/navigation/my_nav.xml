@@ -21,15 +21,15 @@
     </fragment>
     <fragment
         android:id="@+id/categoriesFragment"
-        android:name="com.example.project2.ui.CategoriesFragment"
+        android:name="com.example.project2.ui.categories.CategoriesFragment"
         android:label="Categories">
+
         <action
             android:id="@+id/action_categoriesFragment_to_allItemsFragment"
-            app:destination="@id/allItemsFragment"
-            app:enterAnim="@anim/from_right"
-            app:exitAnim="@anim/to_left"
-            app:popEnterAnim="@anim/from_left"
-            app:popExitAnim="@anim/to_right" />
+            app:destination="@id/allItemsFragment" />
+        <action
+            android:id="@+id/action_categoriesFragment_to_specificCategoryItemsFragment"
+            app:destination="@id/specificCategoryItemsFragment" />
     </fragment>
 
 
@@ -77,10 +77,6 @@
         <action
             android:id="@+id/action_allItemsFragment_to_itemDetailsFragment"
             app:destination="@id/itemDetailsFragment" />
-<!--        <action-->
-<!--            android:id="@+id/action_addItemFragment_to_loginFragment"-->
-<!--            app:destination="@id/loginFragment"-->
-<!--            app:popUpTo="@id/my_nav" />-->
 
     </fragment>
     <fragment
@@ -100,10 +96,6 @@
         android:id="@+id/itemDetailsFragment"
         android:name="com.example.project2.ui.recommendation_detail.RecommendationDetailsFragment"
         android:label="ItemDetailsFragment" >
-        <argument
-            android:name="selectedItem"
-            app:argType="com.example.project2.data.model.Item"
-            app:nullable="false" />
         <action
             android:id="@+id/action_itemDetailsFragment_to_mapFragment"
             app:destination="@id/mapFragment" />
@@ -113,27 +105,14 @@
         android:name="com.example.project2.ui.MapFragment"
         android:label="mapview"
         tools:layout="@layout/mapview" />
-<!--    <fragment-->
-<!--        android:id="@+id/loginFragment"-->
-<!--        android:name="com.example.project2.ui.login.LoginFragment"-->
-<!--        android:label="login_layout"-->
-<!--        tools:layout="@layout/login_layout" >-->
-<!--        <action-->
-<!--            android:id="@+id/action_loginFragment_to_allItemsFragment"-->
-<!--            app:destination="@id/allItemsFragment"-->
-<!--            app:popUpTo="@id/my_nav" />-->
-<!--        <action-->
-<!--            android:id="@+id/action_loginFragment_to_registerFragment"-->
-<!--            app:destination="@id/registerFragment" />-->
-<!--    </fragment>-->
-<!--    <fragment-->
-<!--        android:id="@+id/registerFragment"-->
-<!--        android:name="com.example.project2.ui.register.RegisterFragment"-->
-<!--        android:label="register"-->
-<!--        tools:layout="@layout/register" >-->
-<!--        <action-->
-<!--            android:id="@+id/action_registerFragment_to_allItemsFragment"-->
-<!--            app:destination="@id/allItemsFragment"-->
-<!--            app:popUpTo="@id/my_nav" />-->
-<!--    </fragment>-->
+    <fragment
+        android:id="@+id/specificCategoryItemsFragment"
+        android:name="com.example.project2.ui.categories.SpecificCategoryItemsFragment"
+        android:label="specific_category_items"
+        tools:layout="@layout/specific_category_items" >
+        <action
+            android:id="@+id/action_specificCategoryItemsFragment_to_itemDetailsFragment"
+            app:destination="@id/itemDetailsFragment" />
+    </fragment>
+
 </navigation>

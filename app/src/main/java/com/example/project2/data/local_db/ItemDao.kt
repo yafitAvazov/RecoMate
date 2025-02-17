@@ -40,6 +40,14 @@ interface ItemDao {
     suspend fun updateComments(itemId: Int, commentsJson: String)
 
 
+    @Query("SELECT * FROM review_table WHERE :selectedCategories IS NULL OR ',' || REPLACE(item_category, ', ', ',') || ',' LIKE '%,' || :selectedCategories || ',%'")
+    fun getItemsByCategory(selectedCategories: String?): Flow<List<Item>>
+
+
+
+
+
+
 
     @Query( "DELETE FROM review_table")
     fun deleteAll()
@@ -47,15 +55,14 @@ interface ItemDao {
     SELECT * FROM review_table 
     WHERE (:selectedCategories IS NULL OR item_category LIKE '%' || :selectedCategories || '%')
     AND (:selectedRating IS NULL OR (item_rating > 0 AND item_rating <= :selectedRating))
-    AND (:selectedMinPrice = 0.0 OR item_price <= :selectedMinPrice)
-""")
-
+    AND (:selectedMinPrice = 0.0 OR item_price <= :selectedMinPrice)""")
 
     suspend fun getFilteredItems(
         selectedCategories: String?,
         selectedRating: Int,
         selectedMinPrice: Double
     ): List<Item>
+
 
 
 

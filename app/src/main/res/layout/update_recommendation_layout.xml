@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".ui.add_item.AddItemFragment">
+    tools:context=".ui.UpdateItemFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -145,7 +145,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
-                android:text="@string/music"
+                android:text="@string/beauty"
                 android:id="@+id/btn8"
                 android:layout_marginEnd="7dp"
                 android:textSize="15sp"

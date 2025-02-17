@@ -1,0 +1,171 @@
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/drawer_layout"
+    android:background="@color/blue"
+    tools:context=".ui.categories.SpecificCategoryItemsFragment">
+
+    <!-- התוכן הראשי -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- אזור הכותרת והתמונה עם רקע -->
+        <LinearLayout
+            android:id="@+id/titles"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/category_background"
+            android:gravity="center"
+            android:padding="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:id="@+id/categoryImage"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_placeholder"/>
+
+            <TextView
+                android:id="@+id/categoryName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/category"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:textColor="@color/dark_blue"
+                android:gravity="center"
+                android:layout_marginTop="8dp"/>
+        </LinearLayout>
+
+        <!-- כפתורי פעולה -->
+        <Button
+            android:id="@+id/top_items"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TOP ITEMS 🔥"
+            android:backgroundTint="@color/gray"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/titles"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/action_delete"/>
+
+        <ImageView
+            android:id="@+id/action_delete"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/baseline_delete_24"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/titles"
+            app:layout_constraintEnd_toStartOf="@id/reset_filter_button"/>
+
+        <ImageView
+            android:id="@+id/filter_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/baseline_filter_list_24"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/titles"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <Button
+            android:id="@+id/reset_filter_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/remove_filter"
+            android:backgroundTint="@color/gray"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textColor="@color/black"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/titles"
+            app:layout_constraintEnd_toStartOf="@id/filter_button"/>
+
+        <!-- רשימת הפריטים -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:paddingTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/reset_filter_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:scrollbars="vertical"/>
+
+        <!-- ProgressBar לטעינה -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/filter_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <!-- הודעת שגיאה במקרה של תקלה -->
+        <TextView
+            android:id="@+id/errorTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/error_fetching_items"
+            android:textSize="18sp"
+            android:textColor="@android:color/holo_red_dark"
+            android:gravity="center"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/progressBar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- חלון הצד לסינון -->
+    <LinearLayout
+        android:id="@+id/order_by_menu"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:orientation="vertical"
+        android:background="@android:color/white">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/filter_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filter_options"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_marginBottom="16dp"/>
+
+                <!-- כפתור Apply -->
+                <Button
+                    android:id="@+id/apply_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/apply"
+                    android:backgroundTint="@color/gray"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp"/>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

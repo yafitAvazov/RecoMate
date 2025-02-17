@@ -21,9 +21,13 @@ class ItemRepository @Inject constructor(private val itemDao: ItemDao) {
         itemDao.addItem(item)
     }
 
-     fun updateItem(item: Item) {
-        itemDao.updateItem(item)
+    suspend fun updateItem(item: Item) {
+        withContext(Dispatchers.IO) { // ✅ רץ ברקע
+            itemDao.updateItem(item)
+
+        }
     }
+
 
     suspend fun deleteItem(item: Item) {
         withContext(Dispatchers.IO) {
@@ -56,4 +60,7 @@ class ItemRepository @Inject constructor(private val itemDao: ItemDao) {
                 emit(Resource.error("Error fetching filtered items: ${e.message}")) // שולח שגיאה
             }
         }.flowOn(Dispatchers.IO) // גורם לקוד לרוץ על `Dispatchers.IO`
+    fun getItemsByCategory(selectedCategories: String): Flow<List<Item>> {
+        return itemDao.getItemsByCategory(selectedCategories)
+    }
 }
