@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
@@ -41,10 +43,17 @@ class ItemAdapter(
         }
 
         override fun onClick(v: View?) {
+            val navController = Navigation.findNavController(binding.root)
+            val currentDestination = navController.currentDestination?.id
+
+            if (currentDestination == R.id.specificCategoryItemsFragment) {
+                Toast.makeText(binding.root.context, "Long click for details", Toast.LENGTH_SHORT).show()
+            return
+            }
+
             val item = items[adapterPosition]
             val bundle = bundleOf("itemId" to item.id)
-            Navigation.findNavController(binding.root)
-                .navigate(R.id.action_allItemsFragment_to_itemDetailsFragment, bundle)
+            navController.navigate(R.id.action_allItemsFragment_to_itemDetailsFragment, bundle)
         }
         override fun onLongClick(v: View?): Boolean {
             callBack.onItemLongClicked(adapterPosition)
