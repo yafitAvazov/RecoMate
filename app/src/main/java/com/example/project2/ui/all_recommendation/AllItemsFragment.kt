@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.observe
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -30,9 +29,12 @@ import kotlinx.coroutines.launch
 class AllItemsFragment : Fragment() {
     private var _binding: AllRecommendationsLayoutBinding? = null
     private val binding get() = _binding!!
-    private val selectedCategories = mutableSetOf<String>()
-    private var selectedMinPrice: Int = 0
+    private var selectedMaxPrice: Int = 1000
     private var selectedRating: Int = 0
+    private var selectedSort: String? = null // Track selected sort type
+    private var selectedSortButton: Button? = null // Track selected button for color change
+
+
 
     private val viewModel: RecommendationListViewModel by activityViewModels()
     private lateinit var adapter: ItemAdapter
@@ -48,6 +50,7 @@ class AllItemsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupStarRating()
 
         initializeRecyclerView()
         setupDrawerFilters(view)
@@ -61,6 +64,42 @@ class AllItemsFragment : Fragment() {
             showDeleteAllConfirmationDialog()
         }
     }
+
+    private fun setupStarRating() {
+        val stars = listOf(
+            binding.star1Filter to 1,
+            binding.star2Filter to 2,
+            binding.star3Filter to 3,
+            binding.star4Filter to 4,
+            binding.star5Filter to 5
+        )
+
+        stars.forEach { (starView, rating) ->
+            starView.setOnClickListener {
+                selectedRating = rating
+                updateStars(rating)
+                Toast.makeText(requireContext(), "Minimum rating set: $rating ⭐", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun updateStars(selected: Int) {
+        val starImages = listOf(
+            binding.star1Filter,
+            binding.star2Filter,
+            binding.star3Filter,
+            binding.star4Filter,
+            binding.star5Filter
+        )
+
+        starImages.forEachIndexed { index, imageView ->
+            imageView.setImageResource(
+                if (index < selected) R.drawable.star_full else R.drawable.star_empty
+            )
+        }
+    }
+
+
     private fun deleteAllItems() {
         viewModel.deleteAll()
 
@@ -130,15 +169,48 @@ class AllItemsFragment : Fragment() {
 
 
     private fun setupDrawerFilters(view: View) {
-        val drawerLayout = view.findViewById<DrawerLayout>(R.id.drawer_layout) // ✅ כעת משתמש ב-ID הנכון
+        val drawerLayout = view.findViewById<DrawerLayout>(R.id.drawer_layout)
         val filterButton = view.findViewById<ImageView>(R.id.filter_button)
         val resetFilterButton = view.findViewById<Button>(R.id.reset_filter_button)
         val applyButton = view.findViewById<Button>(R.id.apply_button)
 
+        // Sorting buttons
+        val sortPriceAscButton = view.findViewById<Button>(R.id.sort_price_asc_button)
+        val sortPriceDescButton = view.findViewById<Button>(R.id.sort_price_desc_button)
+        val sortStarsDescButton = view.findViewById<Button>(R.id.sort_stars_desc_button)
+
+        // Setup sort button listeners
+        val sortButtons = mapOf(
+            sortPriceAscButton to "price_asc",
+            sortPriceDescButton to "price_desc",
+            sortStarsDescButton to "stars_desc"
+        )
+
+        sortButtons.forEach { (button, sortKey) ->
+            button.setOnClickListener {
+                // Track selected sort
+                selectedSort = sortKey
+
+                // Reset all buttons to default color
+                sortButtons.keys.forEach { it.setBackgroundColor(resources.getColor(R.color.gray)) }
+
+                // Highlight the selected button
+                button.setBackgroundColor(resources.getColor(R.color.purple_500))
+
+                Toast.makeText(requireContext(), "Sort selected: ${button.text}", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
+        // Open drawer on filter icon click
+        filterButton.setOnClickListener {
+            drawerLayout.openDrawer(GravityCompat.END)
+        }
+
         binding.priceSeekBar.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                selectedMinPrice = progress
+                selectedMaxPrice = progress  // Corrected variable name
                 binding.minPrice.text = "$$progress"
             }
 
@@ -146,54 +218,93 @@ class AllItemsFragment : Fragment() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
-        filterButton.setOnClickListener {
-            drawerLayout.openDrawer(GravityCompat.END) // ✅ תפריט מצד ימין (לפי `layout_gravity="end"`)
+
+        // Sorting actions with color change
+        sortPriceAscButton.setOnClickListener {
+            handleSortSelection(sortPriceAscButton, "price_asc")
         }
 
+        sortPriceDescButton.setOnClickListener {
+            handleSortSelection(sortPriceDescButton, "price_desc")
+        }
+
+        sortStarsDescButton.setOnClickListener {
+            handleSortSelection(sortStarsDescButton, "stars_desc")
+        }
+
+
+        // Apply filters with current selections
         applyButton.setOnClickListener {
             applyFilters()
             drawerLayout.closeDrawer(GravityCompat.END)
         }
 
+        // Reset filters
         resetFilterButton.setOnClickListener {
             resetFilters()
         }
     }
 
-    private fun applyFilters() {
-        viewModel.fetchFilteredItems(
-            selectedCategories.joinToString(", "),
-            selectedRating,
-            selectedMinPrice.toDouble()
-        )
+    private fun handleSortSelection(button: Button, sortType: String) {
+        // Reset previous button color if any
+        selectedSortButton?.setBackgroundColor(resources.getColor(R.color.gray))
+
+        // Set new selected button
+        selectedSort = sortType
+        selectedSortButton = button
+        button.setBackgroundColor(resources.getColor(R.color.purple_500))
+
     }
+
+
+
+    private fun applyFilters() {
+        // Fetch the filtered items first
+        viewModel.fetchFilteredItems(selectedRating, selectedMaxPrice.toDouble())
+
+        // Delay the sorting to give time for the filter operation to complete
+        viewLifecycleOwner.lifecycleScope.launch {
+            kotlinx.coroutines.delay(300) // Adjust time if needed
+            selectedSort?.let { sortType ->
+                viewModel.fetchSortedItems(sortType)
+            }
+        }
+
+        // Reset button color after apply
+        selectedSortButton?.setBackgroundColor(resources.getColor(R.color.gray))
+        selectedSortButton = null
+    }
+
+
+
+
+
+
+
+
+
 
     private fun resetFilters() {
-        selectedCategories.clear()
         selectedRating = 0
-        selectedMinPrice = 0
-
-        binding.priceSeekBar.progress = 0
-        binding.minPrice.text = getString(R.string._0)
-
-        val checkBoxes = listOf(
-            binding.checkboxFashion,
-            binding.checkboxFood,
-            binding.checkboxGame,
-            binding.checkboxHome,
-            binding.checkboxTech,
-            binding.checkboxSport,
-            binding.checkboxTravel,
-            binding.checkboxMusic,
-            binding.checkboxBook,
-            binding.checkboxShops,
-            binding.checkboxMovie,
-            binding.checkboxHealth
+        selectedMaxPrice = 1000
+        binding.priceSeekBar.progress = 1000
+        binding.minPrice.text = getString(R.string._1000)
+        // Reset sort button colors
+        val sortButtons = listOf(
+            binding.sortPriceAscButton,
+            binding.sortPriceDescButton,
+            binding.sortStarsDescButton
         )
-        checkBoxes.forEach { it.isChecked = false }
 
+        // Reset color for all sort buttons
+        sortButtons.forEach { it.setBackgroundColor(resources.getColor(R.color.gray)) }
+
+        // Reset selected sort
+        selectedSort = null
+        selectedSortButton = null
         viewModel.fetchItems()
     }
+
 
     private fun setupItemSwipeHandling() {
         ItemTouchHelper(object : ItemTouchHelper.Callback() {

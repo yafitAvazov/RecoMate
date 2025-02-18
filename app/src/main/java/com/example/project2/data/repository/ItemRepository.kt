@@ -21,7 +21,7 @@ class ItemRepository @Inject constructor(private val itemDao: ItemDao) {
         itemDao.addItem(item)
     }
 
-     fun updateItem(item: Item) {
+    fun updateItem(item: Item) {
         itemDao.updateItem(item)
     }
 
@@ -46,14 +46,14 @@ class ItemRepository @Inject constructor(private val itemDao: ItemDao) {
         }
     }
 
-    fun getFilteredItems(selectedCategories: String?, selectedRating: Int, selectedMinPrice: Double) =
+    fun getFilteredItems(selectedRating: Int, selectedMaxPrice: Double) =
         flow {
-            emit(Resource.loading()) // שולח מצב טעינה
+            emit(Resource.loading()) // Send loading state
             try {
-                val result = itemDao.getFilteredItems(selectedCategories, selectedRating, selectedMinPrice)
-                emit(Resource.success(result)) // שולח את הנתונים
+                val result = itemDao.getFilteredItems(selectedRating, selectedMaxPrice)
+                emit(Resource.success(result)) // Send the filtered data
             } catch (e: Exception) {
-                emit(Resource.error("Error fetching filtered items: ${e.message}")) // שולח שגיאה
+                emit(Resource.error("Error fetching filtered items: ${e.message}")) // Send the error
             }
-        }.flowOn(Dispatchers.IO) // גורם לקוד לרוץ על `Dispatchers.IO`
+        }.flowOn(Dispatchers.IO)
 }

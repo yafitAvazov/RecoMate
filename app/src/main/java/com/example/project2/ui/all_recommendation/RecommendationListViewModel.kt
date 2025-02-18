@@ -38,14 +38,31 @@ class RecommendationListViewModel @Inject constructor(
 
 
 
-    fun fetchFilteredItems(selectedCategories: String?, selectedRating: Int, selectedMinPrice: Double) {
+    fun fetchFilteredItems(selectedRating: Int, selectedMaxPrice: Double) {
         viewModelScope.launch {
-            repository.getFilteredItems(selectedCategories, selectedRating, selectedMinPrice)
+            repository.getFilteredItems(selectedRating, selectedMaxPrice)
                 .collect { resource ->
-                    _filteredItems.value = resource // ✅ כעת זה תואם לסוג הנתונים
+                    _items.value = resource.data ?: emptyList() // ✅ Ensure the filtered list is reflected here
                 }
         }
     }
+
+
+    fun fetchSortedItems(sortBy: String) {
+        viewModelScope.launch {
+            val sortedList = when (sortBy) {
+                "price_asc" -> _items.value.sortedBy { it.price }
+                "price_desc" -> _items.value.sortedByDescending { it.price }
+                "stars_desc" -> _items.value.sortedByDescending { it.rating }
+                else -> _items.value
+            }
+            _items.value = sortedList
+        }
+    }
+
+
+
+
 
 
     fun addItem(item: Item) {

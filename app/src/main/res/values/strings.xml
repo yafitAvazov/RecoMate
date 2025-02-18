@@ -46,7 +46,7 @@
     <string name="price_range">Price Range</string>
     <string name="minimum_rating">Minimum Rating</string>
     <string name="apply">Apply</string>
-    <string name="_500" translatable="false">$500</string>
+    <string name="_1000" translatable="false">$1000</string>
     <string name="_0" translatable="false">$0</string>
     <string name="delete_confirmation">Delete Confirmation</string>
     <string name="all_delete_confirmation_message">Are you sure you want to delete all items?</string>
@@ -77,4 +77,5 @@
     <string name="Lets_Recommend">Lets Recommend!</string>
     <string name="you_can_select_up_to_3_categories">You can select up to 3 categories</string>
     <string name="error_fetching_items">error_fetching_items</string>
+    <string name="sort_options">Sort Options</string>
 </resources>
