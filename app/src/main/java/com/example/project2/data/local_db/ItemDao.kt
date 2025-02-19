@@ -51,18 +51,19 @@ interface ItemDao {
 
     @Query( "DELETE FROM review_table")
     fun deleteAll()
+
+
+
     @Query("""
     SELECT * FROM review_table 
-    WHERE (:selectedCategories IS NULL OR item_category LIKE '%' || :selectedCategories || '%')
-    AND (:selectedRating IS NULL OR (item_rating > 0 AND item_rating <= :selectedRating))
-    AND (:selectedMinPrice = 0.0 OR item_price <= :selectedMinPrice)""")
-
+    WHERE item_rating >= :selectedRating 
+    AND item_price <= :selectedMinPrice
+""")
     suspend fun getFilteredItems(
         selectedCategories: String?,
         selectedRating: Int,
         selectedMinPrice: Double
     ): List<Item>
-
 
 
 

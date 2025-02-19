@@ -166,93 +166,42 @@
                     android:gravity="center"
                     android:layout_marginBottom="16dp" />
 
-                <!-- קטגוריות -->
+                <!-- מיון -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/categories"
+                    android:text="@string/sort_options"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp" />
 
-                <GridLayout
+                <Button
+                    android:id="@+id/sort_price_asc_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:columnCount="3">
+                    android:text="Sort by Price: Low to High"
+                    android:layout_marginVertical="6dp"
+                    android:backgroundTint="@color/gray"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"/>
 
-                    <CheckBox
-                        android:id="@+id/checkbox_fashion"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/fashion" />
+                <Button
+                    android:id="@+id/sort_price_desc_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Sort by Price: High to Low"
+                    android:layout_marginVertical="6dp"
+                    android:backgroundTint="@color/gray"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"/>
 
-                    <CheckBox
-                        android:id="@+id/checkbox_food"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/food" />
+                <Button
+                    android:id="@+id/sort_stars_desc_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Sort by Stars: High to Low"
+                    android:layout_marginVertical="6dp"
+                    android:backgroundTint="@color/gray"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"/>
 
-                    <CheckBox
-                        android:id="@+id/checkbox_game"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/game" />
-
-                    <CheckBox
-                        android:id="@+id/checkbox_home"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/home" />
-
-                    <CheckBox
-                        android:id="@+id/checkbox_tech"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/tech" />
-
-                    <CheckBox
-                        android:id="@+id/checkbox_sport"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/sport" />
-
-                    <CheckBox
-                        android:id="@+id/checkbox_travel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/travel" />
-
-                    <CheckBox
-                        android:id="@+id/checkbox_music"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/music" />
-
-                    <CheckBox
-                        android:id="@+id/checkbox_book"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/book" />
-
-                    <CheckBox
-                        android:id="@+id/checkbox_shops"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/shops" />
-
-                    <CheckBox
-                        android:id="@+id/checkbox_movie"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/movie" />
-
-                    <CheckBox
-                        android:id="@+id/checkbox_health"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/health" />
-
-                </GridLayout>
 
                 <!-- מחיר -->
                 <TextView
@@ -272,7 +221,7 @@
                         android:id="@+id/min_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/_0"
+                        android:text="@string/_1000"
                         android:textSize="16sp"
                         android:layout_alignParentStart="true" />
 
@@ -280,7 +229,7 @@
                         android:id="@+id/max_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/_500"
+                        android:text="@string/_1000"
                         android:textSize="16sp"
                         android:layout_alignParentEnd="true" />
 
@@ -289,7 +238,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:max="1000"
-                        android:progress="0"
+                        android:progress="1000"
                         android:layout_marginTop="16dp"/>
                 </RelativeLayout>
 
@@ -312,32 +261,46 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:src="@drawable/star_empty"
-                        android:contentDescription="@string/star_1" />
+                        android:contentDescription="@string/star_1"
+                        android:clickable="true"
+                        android:focusable="true"/>
 
                     <ImageView
                         android:id="@+id/star2_filter"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:src="@drawable/star_empty"
-                        android:contentDescription="@string/star_2" />
+                        android:contentDescription="@string/star_2"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
                     <ImageView
                         android:id="@+id/star3_filter"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:src="@drawable/star_empty"
-                        android:contentDescription="@string/star_3" />
+                        android:contentDescription="@string/star_3"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
                     <ImageView
                         android:id="@+id/star4_filter"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:src="@drawable/star_empty"
-                        android:contentDescription="@string/star_4" />
+                        android:contentDescription="@string/star_4"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
                     <ImageView
                         android:id="@+id/star5_filter"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:src="@drawable/star_empty"
-                        android:contentDescription="@string/star_5" />
+                        android:contentDescription="@string/star_5"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
                 </LinearLayout>
 
                 <!-- כפתור Apply -->

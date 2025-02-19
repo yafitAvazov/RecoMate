@@ -12,6 +12,7 @@
     <color name="light_gray">#EDECEC</color>
     <color name="dark_blue">#0D1B2A</color>
     <color name="light_blue">#62C1F4</color>
+    <color name="purple_500">#6200EE</color> <!-- Purple -->
 
     <color name="primary">#6200EE</color>
     <color name="primaryVariant">#3700B3</color>
