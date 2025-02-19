@@ -66,15 +66,9 @@ interface ItemDao {
     @Query("DELETE FROM review_table")
     suspend fun deleteAll()
 
-    @Query("""
-    SELECT * FROM review_table 
-    WHERE item_rating >= :selectedRating 
-    AND item_price <= :selectedMinPrice
-""")
-    suspend fun getFilteredItems(
-        selectedRating: Int,
-        selectedMinPrice: Double
-    ): List<Item>
+    @Query("SELECT * FROM review_table WHERE item_rating >= :selectedRating AND item_price <= :selectedMaxPrice")
+    fun getFilteredItems(selectedRating: Int, selectedMaxPrice: Double): Flow<List<Item>>
+
 
 
 

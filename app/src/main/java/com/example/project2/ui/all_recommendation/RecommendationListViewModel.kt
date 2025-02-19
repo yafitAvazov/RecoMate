@@ -62,12 +62,15 @@ class RecommendationListViewModel @Inject constructor(
 
     fun fetchFilteredItems(selectedRating: Int, selectedMaxPrice: Double) {
         viewModelScope.launch {
-            repository.getFilteredItems(selectedRating, selectedMaxPrice)
-                .collect { resource ->
-                    _items.value = resource.data ?: emptyList() // ✅ Ensure the filtered list is reflected here
+            repository.getFilteredItems(selectedRating, selectedMaxPrice) // ✅ Collect the Flow
+                .collect { resource: Resource<List<Item>> -> // ✅ Explicitly define the type
+                    _filteredItems.value = resource // ✅ Assign Resource<List<Item>> properly
+                    _items.value = resource.data ?: emptyList() // ✅ Extract List<Item>
                 }
         }
     }
+
+
 
     fun fetchUserItems() {
         viewModelScope.launch {

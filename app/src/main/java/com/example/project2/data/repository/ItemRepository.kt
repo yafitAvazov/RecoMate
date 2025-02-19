@@ -22,7 +22,7 @@ class ItemRepository @Inject constructor(
     private val itemRepositoryFirebase: ItemRepositoryFirebase
 ) {
 
-//    fun getItems(): Flow<List<Item>> = flow {
+    //    fun getItems(): Flow<List<Item>> = flow {
 //        val localItems = itemRepositoryLocal.getItems().firstOrNull()
 //        if (localItems.isNullOrEmpty()) {
 //            itemRepositoryFirebase.getItems().collect { firebaseItems ->
@@ -33,7 +33,7 @@ class ItemRepository @Inject constructor(
 //            emit(localItems)
 //        }
 //    }.flowOn(Dispatchers.IO)
-fun getItems(): Flow<List<Item>> = itemRepositoryFirebase.getItems()
+    fun getItems(): Flow<List<Item>> = itemRepositoryFirebase.getItems()
 
 
     fun getUserItems(): Flow<List<Item>> = itemRepositoryFirebase.getUserItems()
@@ -65,13 +65,11 @@ fun getItems(): Flow<List<Item>> = itemRepositoryFirebase.getItems()
     }
 
 
-
-
-
     suspend fun deleteAllUserItems() {
         itemRepositoryFirebase.deleteAllUserItems()
         itemRepositoryLocal.deleteAll()
     }
+
     suspend fun updateItemComments(itemId: Int, comments: List<String>) {
         withContext(Dispatchers.IO) {
             val userId = FirebaseAuth.getInstance().currentUser?.uid
@@ -93,9 +91,9 @@ fun getItems(): Flow<List<Item>> = itemRepositoryFirebase.getItems()
     }
 
 
-
     fun getItemById(itemId: Int): Flow<Item?> = flow {
-        val localItem = itemRepositoryLocal.getItemById(itemId).firstOrNull()
+        val localItem =
+            withContext(Dispatchers.IO) { itemRepositoryLocal.getItemById(itemId).firstOrNull() }
         if (localItem != null) {
             emit(localItem)
         } else {
@@ -106,16 +104,18 @@ fun getItems(): Flow<List<Item>> = itemRepositoryFirebase.getItems()
     }.flowOn(Dispatchers.IO)
 
 
-    fun getFilteredItems(selectedRating: Int, selectedMaxPrice: Double) =
-        flow {
-            emit(Resource.loading()) // Send loading state
-            try {
-                val result = itemDao.getFilteredItems(selectedRating, selectedMaxPrice)
-                emit(Resource.success(result)) // Send the filtered data
-            } catch (e: Exception) {
-                emit(Resource.error("Error fetching filtered items: ${e.message}")) // Send the error
-            }
-        }.flowOn(Dispatchers.IO) // גורם לקוד לרוץ על `Dispatchers.IO`
+    fun getFilteredItems(selectedRating: Int, selectedMaxPrice: Double): Flow<Resource<List<Item>>> = flow {
+        emit(Resource.loading()) // ✅ Emit loading state
+        try {
+            val result = itemRepositoryLocal.getFilteredItems(selectedRating, selectedMaxPrice)
+            emit(Resource.success(result.firstOrNull() ?: emptyList())) // ✅ Collect the Flow and return list
+        } catch (e: Exception) {
+            emit(Resource.error("Error fetching filtered items: ${e.message}", emptyList())) // ✅ Handle error
+        }
+    }.flowOn(Dispatchers.IO)
+
+
+
     fun getItemsByCategory(selectedCategories: String): Flow<List<Item>> =
         flow {
             val localItems = itemRepositoryLocal.getItemsByCategory(selectedCategories).firstOrNull()

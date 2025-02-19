@@ -14,6 +14,9 @@ class ItemRepositoryLocal @Inject constructor(private val itemDao: ItemDao) {
 
     fun getItems(): Flow<List<Item>> = itemDao.getItems()
 
+    fun getItemsByCategory(category: String): Flow<List<Item>> = itemDao.getItemsByCategory(category)
+
+
     suspend fun addItem(item: Item) = withContext(Dispatchers.IO) {
         itemDao.addItem(item)
     }
@@ -44,6 +47,11 @@ class ItemRepositoryLocal @Inject constructor(private val itemDao: ItemDao) {
 
 
     fun getUserFavorites(userId: String): Flow<List<Item>> = itemDao.getUserFavorites(userId)
+
+    suspend fun getFilteredItems(selectedRating: Int, selectedMaxPrice: Double): Flow<List<Item>> {
+        return itemDao.getFilteredItems(selectedRating, selectedMaxPrice)
+    }
+
 
 
 //    suspend fun addFavorite(itemId: Int, userId: String) = withContext(Dispatchers.IO) {

@@ -157,5 +157,18 @@ fun getItems(): Flow<List<Item>> = callbackFlow {
             println("⚠️ Error: User is not authorized to update this item's comments")
         }
     }
+    fun getItemsByCategory(category: String): Flow<List<Item>> = callbackFlow {
+        val listener = itemRef.whereEqualTo("category", category)
+            .addSnapshotListener { snapshot, e ->
+                if (snapshot != null) {
+                    val items = snapshot.toObjects(Item::class.java)
+                    trySend(items).isSuccess
+                } else {
+                    close(e)
+                }
+            }
+        awaitClose { listener.remove() }
+    }
+
 
 }
