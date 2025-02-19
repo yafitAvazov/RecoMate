@@ -22,7 +22,7 @@ class RecommendationListViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-//    private val _items = MutableStateFlow<List<Item>>(emptyList())
+    //    private val _items = MutableStateFlow<List<Item>>(emptyList())
 //    val items: StateFlow<List<Item>> get() = _items.asStateFlow()
     private val _items = MutableStateFlow<List<Item>>(emptyList())
     val items: StateFlow<List<Item>> = _items.asStateFlow()
@@ -141,6 +141,24 @@ class RecommendationListViewModel @Inject constructor(
             fetchUserFavorites() // 🔥 מרענן את רשימת המועדפים
         }
     }
+    fun fetchSortedItems(sortBy: String) {
+        viewModelScope.launch {
+            val sortedList = when (sortBy) {
+                "price_asc" -> _items.value.sortedBy { it.price }
+                "price_desc" -> _items.value.sortedByDescending { it.price }
+                "stars_desc" -> _items.value.sortedByDescending { it.rating }
+                else -> _items.value
+            }
+            _items.value = sortedList
+        }
+    }
+        fun fetchItemsByCategory(category: String) {
+            viewModelScope.launch {
+                repository.getItemsByCategory(category).collect { itemList ->
+                    _items.value = itemList
+                }
+            }
+        }
 
 
 

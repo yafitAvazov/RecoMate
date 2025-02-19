@@ -62,8 +62,7 @@ class ItemAdapter(
             val item = items[adapterPosition]
             val bundle = bundleOf("itemId" to item.id)
 
-            val navController = Navigation.findNavController(binding.root)
-            val currentDestination = navController.currentDestination?.id
+
 
             when (currentDestination) {
                 R.id.allItemsFragment -> {

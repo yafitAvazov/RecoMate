@@ -123,9 +123,6 @@
         <action
             android:id="@+id/action_loginFragment_to_categoriesFragment"
             app:destination="@id/categoriesFragment" />
-        <action
-            android:id="@+id/action_loginFragment_to_categoriesFragment2"
-            app:destination="@id/categoriesFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"

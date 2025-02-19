@@ -116,9 +116,19 @@ fun getItems(): Flow<List<Item>> = itemRepositoryFirebase.getItems()
                 emit(Resource.error("Error fetching filtered items: ${e.message}")) // Send the error
             }
         }.flowOn(Dispatchers.IO) // גורם לקוד לרוץ על `Dispatchers.IO`
-    fun getItemsByCategory(selectedCategories: String): Flow<List<Item>> {
-        return itemDao.getItemsByCategory(selectedCategories)
-    }
+    fun getItemsByCategory(selectedCategories: String): Flow<List<Item>> =
+        flow {
+            val localItems = itemRepositoryLocal.getItemsByCategory(selectedCategories).firstOrNull()
+            if (!localItems.isNullOrEmpty()) {
+                emit(localItems)
+            } else {
+                itemRepositoryFirebase.getItemsByCategory(selectedCategories).collect { firebaseItems ->
+                    emit(firebaseItems)
+                    saveItemsLocally(firebaseItems) // Save fetched items in local DB
+                }
+            }
+        }.flowOn(Dispatchers.IO)
+
 
     suspend fun updateLikeStatus(itemId: Int, isLiked: Boolean) {
         withContext(Dispatchers.IO) {

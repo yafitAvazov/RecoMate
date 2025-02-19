@@ -108,9 +108,9 @@ class AllItemsFragment : Fragment() {
     }
 
 
-    private fun deleteAllItems() {
-        viewModel.deleteAll()
-
+    //    private fun deleteAllItems() {
+//        viewModel.deleteAll()
+//    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_sign_out) {
             viewModel.signOut()
@@ -118,7 +118,6 @@ class AllItemsFragment : Fragment() {
         }
         return super.onOptionsItemSelected(item)
     }
-
 
 
     private fun updateItemList() {
@@ -145,7 +144,11 @@ class AllItemsFragment : Fragment() {
             }
         }
 
-        Toast.makeText(requireContext(), getString(R.string.all_items_deleted), Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            requireContext(),
+            getString(R.string.all_items_deleted),
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     private fun showDeleteAllConfirmationDialog() {
@@ -190,7 +193,6 @@ class AllItemsFragment : Fragment() {
     }
 
 
-
     private fun initializeRecyclerView() {
         adapter = ItemAdapter(emptyList(), object : ItemAdapter.ItemListener {
             override fun onItemClicked(index: Int) {
@@ -201,8 +203,12 @@ class AllItemsFragment : Fragment() {
             override fun onItemLongClicked(index: Int) {
                 val item = adapter.items[index]
                 val bundle = bundleOf("itemId" to item.id)
-                findNavController().navigate(R.id.action_allItemsFragment_to_itemDetailsFragment, bundle)
+                findNavController().navigate(
+                    R.id.action_allItemsFragment_to_itemDetailsFragment,
+                    bundle
+                )
             }
+
             override fun onItemDeleted(item: Item) {
                 viewModel.deleteItem(item) // 🔥 מוחק מה-DB המקומי ומה-Firebase
 
@@ -212,8 +218,10 @@ class AllItemsFragment : Fragment() {
                     viewModel.fetchUserItems()
                 }
 
-                Toast.makeText(requireContext(), "Recommendation deleted!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Recommendation deleted!", Toast.LENGTH_SHORT)
+                    .show()
             }
+
             override fun onItemLiked(item: Item) {
                 viewModel.updateLikeStatus(item.id, true) // 🔥 שומר את הלייק
             }
@@ -257,7 +265,11 @@ class AllItemsFragment : Fragment() {
                 // Highlight the selected button
                 button.setBackgroundColor(resources.getColor(R.color.purple_500))
 
-                Toast.makeText(requireContext(), "Sort selected: ${button.text}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Sort selected: ${button.text}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -269,7 +281,11 @@ class AllItemsFragment : Fragment() {
 
         binding.priceSeekBar.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+            override fun onProgressChanged(
+                seekBar: SeekBar?,
+                progress: Int,
+                fromUser: Boolean
+            ) {
                 selectedMaxPrice = progress  // Corrected variable name
                 binding.minPrice.text = "$$progress"
             }
@@ -316,7 +332,6 @@ class AllItemsFragment : Fragment() {
     }
 
 
-
     private fun applyFilters() {
         // Fetch the filtered items first
         viewModel.fetchFilteredItems(selectedRating, selectedMaxPrice.toDouble())
@@ -333,14 +348,6 @@ class AllItemsFragment : Fragment() {
         selectedSortButton?.setBackgroundColor(resources.getColor(R.color.gray))
         selectedSortButton = null
     }
-
-
-
-
-
-
-
-
 
 
     private fun resetFilters() {
@@ -370,4 +377,5 @@ class AllItemsFragment : Fragment() {
         _binding = null
     }
 }
+
 

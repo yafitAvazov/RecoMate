@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.project2.R
+import com.example.project2.data.model.Item
 import com.example.project2.databinding.SpecificCategoryItemsBinding
 import com.example.project2.ui.all_recommendation.ItemAdapter
 import com.example.project2.ui.all_recommendation.RecommendationListViewModel
@@ -62,6 +63,18 @@ class SpecificCategoryItemsFragment : Fragment() {
                 val item = adapter.items[index]
                 val bundle = bundleOf("itemId" to item.id)
                 findNavController().navigate(R.id.action_specificCategoryItemsFragment_to_itemDetailsFragment, bundle)
+            }
+
+            override fun onItemDeleted(item: Item) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onItemLiked(item: Item) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onItemUnliked(item: Item) {
+                TODO("Not yet implemented")
             }
         })
 
