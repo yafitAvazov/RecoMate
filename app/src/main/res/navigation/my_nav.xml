@@ -132,4 +132,39 @@
             android:id="@+id/action_registerFragment_to_categoriesFragment"
             app:destination="@id/categoriesFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/myRecommendationsFragment"
+        android:name="com.example.project2.ui.my_recommendations.MyRecommendationsFragment"
+        android:label="My Recommendations">
+        <action
+            android:id="@+id/action_myRecommendationsFragment_to_itemDetailsFragment"
+            app:destination="@id/itemDetailsFragment" />
+        <action
+            android:id="@+id/action_myRecommendationsFragment_to_updateItemFragment"
+            app:destination="@id/updateItemFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="com.example.project2.ui.FavoritesFragment"
+        android:label="Favorites"
+        tools:layout="@layout/favorite_recommendation_layout">
+
+        <!-- ניווט חזרה לכל ההמלצות -->
+        <action
+            android:id="@+id/action_favoritesFragment_to_allItemsFragment"
+            app:destination="@id/allItemsFragment" />
+
+        <!-- ניווט לדף הפרטים של פריט -->
+        <action
+            android:id="@+id/action_favoritesFragment_to_itemDetailsFragment"
+            app:destination="@id/itemDetailsFragment" />
+    </fragment>
+
+    <activity
+        android:id="@+id/fullImageActivity"
+        android:name="com.example.project2.ui.FullImageActivity"
+        android:label="FullImageActivity" />
+    <fragment android:id="@+id/placeholder" />
+
 </navigation>

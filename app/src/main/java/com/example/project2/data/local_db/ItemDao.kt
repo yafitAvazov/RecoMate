@@ -18,14 +18,15 @@ interface ItemDao {
     suspend fun addItem(item: Item)
 
     @Delete
-    fun deleteItem(vararg item: Item)
+    suspend fun deleteItem(item: Item)
 
     @Update
 
-    fun updateItem(item: Item)
+    suspend fun updateItem(item: Item)
 
     @Query("SELECT * FROM review_table WHERE id = :itemId")
-    fun getItemById(itemId: Int): Flow<Item>
+    fun getItemById(itemId: Int): Flow<Item?>
+
 
     @Query("SELECT * FROM review_table ORDER BY id DESC")
     fun getItems(): Flow<List<Item>> // ✅ צריך להחזיר Flow<List<Item>>
@@ -34,15 +35,30 @@ interface ItemDao {
     @Query("SELECT * FROM review_table WHERE id LIKE :id")
     fun getItem(id:Int) : LiveData<Item>
 
+    @Query("SELECT * FROM review_table WHERE isLiked = 1")
+    fun getUserFavorites(): Flow<List<Item>>
+
+    @Query("UPDATE review_table SET isLiked = :isLiked WHERE id = :itemId")
+    suspend fun updateLikeStatus(itemId: Int, isLiked: Boolean)
+
+    @Query("SELECT * FROM review_table WHERE isLiked = 1 AND user_id = :userId")
+    fun getUserFavorites(userId: String): Flow<List<Item>>
+
+
+//    @Query("UPDATE review_table SET isLiked = 1 WHERE id = :itemId AND user_id = :userId")
+//    suspend fun addFavorite(itemId: Int, userId: String)
+//
+//    @Query("UPDATE review_table SET isLiked = 0 WHERE id = :itemId AND user_id = :userId")
+//    suspend fun removeFavorite(itemId: Int, userId: String)
+
 
 
     @Query("UPDATE review_table SET item_comments = :commentsJson WHERE id = :itemId")
     suspend fun updateComments(itemId: Int, commentsJson: String)
 
+    @Query("DELETE FROM review_table")
+    suspend fun deleteAll()
 
-
-    @Query( "DELETE FROM review_table")
-    fun deleteAll()
     @Query("""
     SELECT * FROM review_table 
     WHERE (:selectedCategories IS NULL OR item_category LIKE '%' || :selectedCategories || '%')

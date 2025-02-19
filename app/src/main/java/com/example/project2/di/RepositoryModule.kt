@@ -4,6 +4,8 @@ import com.example.project2.data.local_db.ItemDao
 import com.example.project2.data.repository.AuthRepository
 import com.example.project2.data.repository.ItemRepository
 import com.example.project2.data.repository.firebaseImpl.AuthRepositoryFirebase
+import com.example.project2.data.repository.firebaseImpl.ItemRepositoryFirebase
+import com.example.project2.data.repository.local.ItemRepositoryLocal
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,13 +18,28 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideItemRepository(itemDao: ItemDao): ItemRepository {
-        return ItemRepository(itemDao)
+    fun provideItemRepositoryLocal(itemDao: ItemDao): ItemRepositoryLocal {
+        return ItemRepositoryLocal(itemDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideItemRepositoryFirebase(): ItemRepositoryFirebase {
+        return ItemRepositoryFirebase()
     }
 
     @Provides
     @Singleton
     fun provideAuthRepository(): AuthRepository {
-        return AuthRepositoryFirebase() // 🟢 ודאי שזהו ה-AuthRepository בשימוש
+        return AuthRepositoryFirebase()
+    }
+
+    @Provides
+    @Singleton
+    fun provideItemRepository(
+        itemRepositoryLocal: ItemRepositoryLocal,
+        itemRepositoryFirebase: ItemRepositoryFirebase
+    ): ItemRepository {
+        return ItemRepository(itemRepositoryLocal, itemRepositoryFirebase)
     }
 }

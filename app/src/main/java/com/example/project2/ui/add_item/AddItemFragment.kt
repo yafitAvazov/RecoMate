@@ -20,9 +20,9 @@ import androidx.navigation.fragment.findNavController
 import com.example.project2.data.model.Item
 import com.example.project2.R
 import com.example.project2.databinding.AddRecommendationLayoutBinding
-import java.io.File
 import com.example.project2.ui.all_recommendation.RecommendationListViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 
 @AndroidEntryPoint
 class AddItemFragment : Fragment() {
@@ -53,54 +53,61 @@ class AddItemFragment : Fragment() {
             }
         }
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = AddRecommendationLayoutBinding.inflate(inflater, container, false)
-        setupCategoryButtons() // הגדרת לחצני הקטגוריות
+        setupCategoryButtons()
 
-        // הגדרת כפתור Finish להוספת פריט
         binding.finishBtn.setOnClickListener {
-            val title = if (binding.itemTitle.text.toString().isBlank()) "" else binding.itemTitle.text.toString()
-            val comment = if (binding.itemComment.text.toString().isBlank()) "" else binding.itemComment.text.toString()
-            val photo = imageUri?.toString()
-            val priceText = binding.price.text.toString()
-            val address = if (binding.addressEdt.text.isNullOrBlank()) "" else binding.addressEdt.text.toString()
-
-            val link = if (binding.itemLink.text.toString().isBlank()) "" else binding.itemLink.text.toString()
-            val selectedCategoryText = if (selectedCategories.isEmpty()) "" else selectedCategories.joinToString(", ")
-            val price = priceText.toDoubleOrNull() ?: 0.0
-            val item = Item(
-                title = title,
-                comment = comment,
-                photo = photo,
-                price = price,
-                category = selectedCategoryText,
-                link = link,
-                rating = selectedRating,
-                address = address
-            )
-
-            viewModel.addItem(item)
-
-            // הצגת Toast לאחר הוספת ההמלצה
-            Toast.makeText(requireContext(), getString(R.string.recommendation_published), Toast.LENGTH_SHORT).show()
-
-            findNavController().navigate(R.id.action_addItemFragment_to_allItemsFragment)
+            addNewItem()
         }
 
-        // הגדרת לחצן בחירת תמונה/צילום
         binding.imageBtn.setOnClickListener {
             showImagePickerDialog()
         }
 
-        // הגדרת דירוג כוכבים
         setupStarRating()
 
         return binding.root
+    }
+
+    private fun addNewItem() {
+        val title = binding.itemTitle.text.toString().takeIf { it.isNotBlank() } ?: ""
+        val comment = binding.itemComment.text.toString().takeIf { it.isNotBlank() } ?: ""
+        val photo = imageUri?.toString()
+        val priceText = binding.price.text.toString()
+        val address = binding.addressEdt.text.toString().takeIf { it.isNotBlank() } ?: ""
+        val link = binding.itemLink.text.toString().takeIf { it.isNotBlank() } ?: ""
+        val selectedCategoryText = selectedCategories.takeIf { it.isNotEmpty() }?.joinToString(", ") ?: ""
+        val price = priceText.toDoubleOrNull() ?: 0.0
+
+        val userId = viewModel.getCurrentUserId() // ✅ השגת ה-User ID של המשתמש המחובר
+
+        if (userId == null) {
+            Toast.makeText(requireContext(), "Error: User not logged in!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val item = Item(
+            id = 0, // זה יתעדכן אוטומטית ב-Firebase
+            userId = userId, // ✅ עכשיו יש לנו userId!
+            title = title,
+            comment = comment,
+            photo = photo,
+            price = price,
+            category = selectedCategoryText,
+            link = link,
+            rating = selectedRating,
+            address = address
+        )
+
+        viewModel.addItem(item)
+
+        Toast.makeText(requireContext(), getString(R.string.recommendation_published), Toast.LENGTH_SHORT).show()
+        findNavController().navigate(R.id.action_addItemFragment_to_allItemsFragment)
     }
 
     private fun showImagePickerDialog() {
@@ -109,8 +116,8 @@ class AddItemFragment : Fragment() {
             .setTitle(getString(R.string.select_option))
             .setItems(options) { _, which ->
                 when (which) {
-                    0 -> requestCameraPermission() // בקשת הרשאה לפני צילום תמונה
-                    1 -> pickImageLauncher.launch(arrayOf("image/*")) // בחירת תמונה מהמכשיר
+                    0 -> requestCameraPermission()
+                    1 -> pickImageLauncher.launch(arrayOf("image/*"))
                 }
             }
             .setCancelable(true)
@@ -155,19 +162,15 @@ class AddItemFragment : Fragment() {
             binding.btn12 to getString(R.string.health)
         )
 
-            buttons.forEach { (button, category) ->
+        buttons.forEach { (button, category) ->
             button.setOnClickListener {
                 if (selectedCategories.contains(category)) {
                     selectedCategories.remove(category)
                     button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blue1))
+                } else {
+                    selectedCategories.add(category)
+                    button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gray))
                 }
-                    if (selectedCategories.size < 3) {
-                        selectedCategories.add(category)
-                        button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gray))
-                    } else {
-                        Toast.makeText(requireContext(),
-                            getString(R.string.you_can_select_up_to_3_categories), Toast.LENGTH_SHORT).show()
-                    }
             }
         }
     }
@@ -177,7 +180,6 @@ class AddItemFragment : Fragment() {
         stars.forEachIndexed { index, imageView ->
             imageView.setOnClickListener {
                 selectedRating = index + 1
-                Log.d("StarRating", "Selected Rating: $selectedRating")
                 updateStarDisplay(selectedRating - 1, stars)
             }
         }
@@ -188,21 +190,6 @@ class AddItemFragment : Fragment() {
             imageView.setImageResource(
                 if (index <= selectedIndex) R.drawable.star_full else R.drawable.star_empty
             )
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                takePhoto()
-            } else {
-                Toast.makeText(requireContext(), getString(R.string.camera_permission_denied), Toast.LENGTH_SHORT).show()
-            }
         }
     }
 

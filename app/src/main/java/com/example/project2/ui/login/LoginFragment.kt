@@ -31,7 +31,9 @@ class LoginFragment : Fragment() {
     ): View? {
         binding = LoginLayoutBinding.inflate(inflater,container,false)
 
-
+        binding.noAcountTv.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
+        }
 
         binding.buttonLogin.setOnClickListener {
 

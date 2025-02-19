@@ -45,7 +45,7 @@ class AuthRepositoryFirebase : AuthRepository {
         return withContext(Dispatchers.IO) {
             safeCall {
                 // ✅ לוודא שה- email נשלח, לא ה- userName
-                val registrationResult  = firebaseAuth.createUserWithEmailAndPassword(userName, userLoginPass).await()
+                val registrationResult  = firebaseAuth.createUserWithEmailAndPassword(email, userLoginPass).await()
                 val userId = registrationResult.user?.uid!!
                 val newUser = User(userName, email) // ✅ משתמש עם שם ואימייל
                 userRef.document(userId).set(newUser).await()

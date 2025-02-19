@@ -66,7 +66,16 @@ class MainActivity : AppCompatActivity() {
                     navController.navigate(R.id.addItemFragment)
                     true
                 }
+                R.id.nav_my_recommendations -> {  // 🔥 עמוד ההמלצות שלי
+                    navController.navigate(R.id.myRecommendationsFragment)
+                    true
+                }
+                R.id.nav_favorites -> {  // 🔥 עמוד ההמלצות שלי
+                    navController.navigate(R.id.favoritesFragment)
+                    true
+                }
                 else -> false
+
             }
         }
 

@@ -77,4 +77,5 @@
     <string name="Lets_Recommend">Lets Recommend!</string>
     <string name="you_can_select_up_to_3_categories">You can select up to 3 categories</string>
     <string name="error_fetching_items">error_fetching_items</string>
+    <string name="item_deleted_successfully">item_deleted_successfully</string>
 </resources>
