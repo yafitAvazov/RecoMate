@@ -25,7 +25,7 @@ interface ItemDao {
     suspend fun updateItem(item: Item)
 
     @Query("SELECT * FROM review_table WHERE id = :itemId")
-    fun getItemById(itemId: Int): Flow<Item?>
+    fun getItemById(itemId: String): Flow<Item?>
 
 
     @Query("SELECT * FROM review_table ORDER BY id DESC")
@@ -44,6 +44,9 @@ interface ItemDao {
     @Query("SELECT * FROM review_table WHERE isLiked = 1 AND user_id = :userId")
     fun getUserFavorites(userId: String): Flow<List<Item>>
 
+    @Query("UPDATE review_table SET isLiked = :isLiked WHERE id = :itemId")
+    suspend fun updateLikeStatus(itemId: String, isLiked: Boolean)
+
 
 //    @Query("UPDATE review_table SET isLiked = 1 WHERE id = :itemId AND user_id = :userId")
 //    suspend fun addFavorite(itemId: Int, userId: String)
@@ -54,7 +57,7 @@ interface ItemDao {
 
 
     @Query("UPDATE review_table SET item_comments = :commentsJson WHERE id = :itemId")
-    suspend fun updateComments(itemId: Int, commentsJson: String)
+    suspend fun updateComments(itemId: kotlin.String, commentsJson: String)
 
 
     @Query("SELECT * FROM review_table WHERE :selectedCategories IS NULL OR ',' || REPLACE(item_category, ', ', ',') || ',' LIKE '%,' || :selectedCategories || ',%'")

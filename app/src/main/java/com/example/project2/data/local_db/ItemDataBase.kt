@@ -6,7 +6,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.project2.data.model.Item
 
-@Database(entities = [Item::class], version = 6, exportSchema = false) // 🔥 העלאת מספר גרסה
+@Database(entities = [Item::class], version = 7, exportSchema = false) // 🔥 העלאת מספר גרסה
 @TypeConverters(Converters::class) // ✅ הוספת TypeConverters כדי לשמור רשימות
 abstract class ItemDataBase : RoomDatabase() {
 
@@ -24,7 +24,7 @@ abstract class ItemDataBase : RoomDatabase() {
                     ItemDataBase::class.java,
                     "items_db"
                 )
-                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5,MIGRATION_5_6) // ✅ עדכון ה-Migration
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5,MIGRATION_5_6,MIGRATION_6_7) // ✅ עדכון ה-Migration
                     .fallbackToDestructiveMigration() // 🔥 אם יש בעיה, מבצע מחיקה מלאה
                     .build().also { instance = it }
             }
@@ -55,6 +55,11 @@ abstract class ItemDataBase : RoomDatabase() {
         }
         // ✅ הגירת גרסה 4 ל-5 (אם צריך)
         private val MIGRATION_5_6 = object : Migration(5, 6) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE review_table ADD COLUMN new_column_name TEXT DEFAULT '' NOT NULL") // 🔥 אם צריך להוסיף עמודות חדשות
+            }
+        }
+        private val MIGRATION_6_7 = object : Migration(5, 6) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE review_table ADD COLUMN new_column_name TEXT DEFAULT '' NOT NULL") // 🔥 אם צריך להוסיף עמודות חדשות
             }

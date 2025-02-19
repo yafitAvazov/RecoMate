@@ -13,7 +13,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Entity(tableName = "review_table")
 data class Item(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey val id: String = "",
     @ColumnInfo(name = "item_title") val title: String = "",
     @ColumnInfo(name = "item_comment") val comment: String = "",
     @ColumnInfo(name = "item_photo") val photo: String? = null,

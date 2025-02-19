@@ -1,6 +1,5 @@
 package com.example.project2.ui.recommendation_detail
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,7 +26,7 @@ class RecommendationDetailViewModel @Inject constructor(
         value = mutableMapOf()
     }
 
-    fun fetchItemById(itemId: Int) {
+    fun fetchItemById(itemId: String) { // 🔥 `Int` ➝ `String`
         viewModelScope.launch {
             try {
                 val item = repository.getItemById(itemId).firstOrNull()
@@ -37,6 +36,17 @@ class RecommendationDetailViewModel @Inject constructor(
             }
         }
     }
+
+
+
+    fun updateItemComments(item: Item, newComments: List<String>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateItemComments(item.id, newComments)
+            fetchItemById(item.id.toString()) // ✅ מעביר String
+        }
+    }
+
+
 
     fun setItem(item: Item) {
         _chosenItem.value = item
@@ -51,7 +61,7 @@ class RecommendationDetailViewModel @Inject constructor(
         }
     }
 
-    fun getItemById(itemId: Int) {
+    fun getItemById(itemId: String) {
         viewModelScope.launch {
             repository.getItemById(itemId).collect { item ->
                 _chosenItem.postValue(item)
@@ -59,14 +69,5 @@ class RecommendationDetailViewModel @Inject constructor(
         }
     }
 
-    /**
-     * עדכון תגובות לפריט
-     */
-    fun updateItemComments(item: Item, newComments: List<String>) {
-        viewModelScope.launch(Dispatchers.IO) { // ✅ הפעלת הקוד ב-IO Thread
-            repository.updateItemComments(item.id, newComments)
-            val updatedItem = item.copy(comments = newComments)
-            _chosenItem.postValue(updatedItem)
-        }
-    }
+
 }

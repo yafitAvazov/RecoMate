@@ -4,7 +4,6 @@ import com.example.project2.data.local_db.ItemDao
 import com.example.project2.data.model.Item
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -34,22 +33,23 @@ class ItemRepositoryLocal @Inject constructor(private val itemDao: ItemDao) {
         itemDao.deleteAll()
     }
 
-    fun getItemById(itemId: Int): Flow<Item?> = itemDao.getItemById(itemId)
+    fun getItemById(itemId: String): Flow<Item?> = itemDao.getItemById(itemId)
 
-    suspend fun updateItemComments(itemId: Int, commentsJson: String) = withContext(Dispatchers.IO) {
+    suspend fun updateItemComments(itemId: String, commentsJson: String) = withContext(Dispatchers.IO) {
         itemDao.updateComments(itemId, commentsJson)
     }
 
 
-    suspend fun updateLikeStatus(itemId: Int, isLiked: Boolean) = withContext(Dispatchers.IO) {
-        itemDao.updateLikeStatus(itemId, isLiked)
-    }
+
 
 
     fun getUserFavorites(userId: String): Flow<List<Item>> = itemDao.getUserFavorites(userId)
 
     suspend fun getFilteredItems(selectedRating: Int, selectedMaxPrice: Double): Flow<List<Item>> {
         return itemDao.getFilteredItems(selectedRating, selectedMaxPrice)
+    }
+    suspend fun updateLikeStatus(itemId: String, isLiked: Boolean) = withContext(Dispatchers.IO) {
+        itemDao.updateLikeStatus(itemId, isLiked)
     }
 
 

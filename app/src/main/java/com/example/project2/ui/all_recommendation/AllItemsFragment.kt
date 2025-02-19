@@ -195,9 +195,11 @@ class AllItemsFragment : Fragment() {
 
     private fun initializeRecyclerView() {
         adapter = ItemAdapter(emptyList(), object : ItemAdapter.ItemListener {
+
             override fun onItemClicked(index: Int) {
                 val clickedItem = adapter.items[index]
-                Toast.makeText(requireContext(), clickedItem.title, Toast.LENGTH_SHORT).show()
+                val bundle = bundleOf("itemId" to clickedItem.id) // ✅ שולח את ה-ID
+                findNavController().navigate(R.id.action_allItemsFragment_to_itemDetailsFragment, bundle)
             }
 
             override fun onItemLongClicked(index: Int) {

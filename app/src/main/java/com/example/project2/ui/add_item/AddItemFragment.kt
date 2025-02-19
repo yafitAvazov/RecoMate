@@ -24,6 +24,7 @@ import com.example.project2.R
 import com.example.project2.databinding.AddRecommendationLayoutBinding
 import java.io.File
 import com.example.project2.ui.all_recommendation.RecommendationListViewModel
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -33,6 +34,7 @@ class AddItemFragment : Fragment() {
     private var imageUri: Uri? = null
     private var selectedRating: Int = 0 // שומר את הדירוג הנבחר
     private val selectedCategories = mutableSetOf<String>() // רשימת קטגוריות שנבחרו
+    private val itemRef = FirebaseFirestore.getInstance().collection("items")
 
     private val viewModel: RecommendationListViewModel by activityViewModels()
 
@@ -95,9 +97,10 @@ class AddItemFragment : Fragment() {
                 .show()
             return
         }
+        val itemId = itemRef.document().id // 🔥 יצירת ID ייחודי בפיירבייס
 
         val item = Item(
-            id = 0, // זה יתעדכן אוטומטית ב-Firebase
+            id = itemId, // זה יתעדכן אוטומטית ב-Firebase
             userId = userId, // ✅ עכשיו יש לנו userId!
             title = title,
             comment = comment,

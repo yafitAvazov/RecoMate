@@ -45,7 +45,7 @@ class ItemRepository @Inject constructor(
 
     suspend fun updateItem(item: Item) {
         withContext(Dispatchers.IO) { // ✅ רץ ברקע
-            //itemDao.updateItem(item)
+
             itemRepositoryFirebase.updateItem(item)
             itemRepositoryLocal.updateItem(item)
 
@@ -70,7 +70,7 @@ class ItemRepository @Inject constructor(
         itemRepositoryLocal.deleteAll()
     }
 
-    suspend fun updateItemComments(itemId: Int, comments: List<String>) {
+    suspend fun updateItemComments(itemId: String, comments: List<String>) {
         withContext(Dispatchers.IO) {
             val userId = FirebaseAuth.getInstance().currentUser?.uid
             if (userId == null) {
@@ -91,9 +91,8 @@ class ItemRepository @Inject constructor(
     }
 
 
-    fun getItemById(itemId: Int): Flow<Item?> = flow {
-        val localItem =
-            withContext(Dispatchers.IO) { itemRepositoryLocal.getItemById(itemId).firstOrNull() }
+    fun getItemById(itemId: String): Flow<Item?> = flow {
+        val localItem = itemRepositoryLocal.getItemById(itemId).firstOrNull()
         if (localItem != null) {
             emit(localItem)
         } else {
@@ -130,7 +129,7 @@ class ItemRepository @Inject constructor(
         }.flowOn(Dispatchers.IO)
 
 
-    suspend fun updateLikeStatus(itemId: Int, isLiked: Boolean) {
+    suspend fun updateLikeStatus(itemId: String, isLiked: Boolean) {
         withContext(Dispatchers.IO) {
             itemRepositoryFirebase.updateLikeStatus(itemId, isLiked)
             itemRepositoryLocal.updateLikeStatus(itemId, isLiked)

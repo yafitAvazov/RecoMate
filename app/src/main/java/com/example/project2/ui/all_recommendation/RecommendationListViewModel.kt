@@ -84,7 +84,12 @@ class RecommendationListViewModel @Inject constructor(
             }
         }
     }
-
+    fun updateLikeStatus(item: Item, isLiked: Boolean) {
+        viewModelScope.launch {
+            repository.updateLikeStatus(item.id, isLiked)
+            fetchUserFavorites() // 🔥 עדכון המועדפים לאחר שינוי
+        }
+    }
 
     // ✅ פונקציה להבאת ה- User ID
     fun getCurrentUserId(): String? {
@@ -137,10 +142,16 @@ class RecommendationListViewModel @Inject constructor(
             repository.getUserFavorites().collect { _userFavorites.value = it }
         }
     }
+    fun updateLikeStatus(itemId: String, isLiked: Boolean) {
+        viewModelScope.launch {
+            repository.updateLikeStatus(itemId, isLiked) // 🔥 לא צריך המרה!
+            fetchUserFavorites()
+        }
+    }
 
     fun updateLikeStatus(itemId: Int, isLiked: Boolean) {
         viewModelScope.launch {
-            repository.updateLikeStatus(itemId, isLiked)
+            repository.updateLikeStatus(itemId.toString(), isLiked)
             fetchUserFavorites() // 🔥 מרענן את רשימת המועדפים
         }
     }

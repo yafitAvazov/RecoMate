@@ -32,7 +32,7 @@ class RecommendationDetailsFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel by viewModels<RecommendationDetailViewModel>()
     private lateinit var commentsAdapter: CommentsAdapter
-    private var itemId: Int? = null
+    private var itemId: String? = null
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -46,11 +46,13 @@ class RecommendationDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        itemId = arguments?.getInt("itemId")
 
-        itemId?.let { viewModel.fetchItemById(it) } // ✅ שולח את ה-ID ל-ViewModel
+        itemId = arguments?.getString("itemId") // ✅ ה-ID מתקבל כמחרוזת ישירות
+        itemId?.let { viewModel.fetchItemById(it) } // ✅ שולחת ל-ViewModel את ה-ID
         observeViewModel()
     }
+
+
 
     private fun observeViewModel() {
         viewModel.chosenItem.observe(viewLifecycleOwner) { item ->

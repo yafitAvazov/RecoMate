@@ -44,19 +44,27 @@ class ItemAdapter(
 
             binding.editBtn.setOnClickListener {
                 val item = items[adapterPosition]
-                val bundle = Bundle().apply {
-                    putParcelable("item", item)
-                }
+                val bundle = bundleOf("itemId" to item.id)
+
                 binding.root.findNavController().navigate(R.id.action_myRecommendationsFragment_to_updateItemFragment, bundle)
             }
         }
+
+
         override fun onClick(v: View?) {
             val navController = Navigation.findNavController(binding.root)
             val currentDestination = navController.currentDestination?.id
+            val clickedItem = items[adapterPosition]
+            callBack.onItemClicked(adapterPosition)
 
             if (currentDestination == R.id.specificCategoryItemsFragment) {
                 Toast.makeText(binding.root.context, "Long click for details", Toast.LENGTH_SHORT).show()
             return
+            }
+            if (currentDestination == R.id.allItemsFragment) {
+                navController.navigate(R.id.action_allItemsFragment_to_itemDetailsFragment)
+            } else {
+                println("⚠️ Navigation Error: Unknown source fragment!")
             }
 
             val item = items[adapterPosition]
@@ -131,17 +139,14 @@ class ItemAdapter(
             binding.likeBtn.setOnClickListener {
                 val isNowLiked = !item.isLiked
                 item.isLiked = isNowLiked
-                callBack.onItemLiked(item)
                 updateLikeButton(isNowLiked)
+
+                if (isNowLiked) {
+                    callBack.onItemLiked(item)
+                } else {
+                    callBack.onItemUnliked(item)
+                }
             }
-
-
-
-
-
-
-
-
 
 
             binding.deleteBtn.setOnClickListener {

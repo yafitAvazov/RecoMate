@@ -58,8 +58,9 @@ fun getItems(): Flow<List<Item>> = callbackFlow {
 
     suspend fun addItem(item: Item) = withContext(Dispatchers.IO) {
         val userId = auth.currentUser?.uid ?: return@withContext
-        val itemId = itemRef.document().id // יצירת ID ייחודי בפיירבייס
-        val newItem = item.copy(id = itemId.hashCode(), userId = userId)
+        val itemId = itemRef.document().id // 🔥 יצירת ID ייחודי בפיירבייס
+
+        val newItem = item.copy(id = itemId, userId = userId) // 🔥 עכשיו ה-ID הוא String
 
         try {
             itemRef.document(itemId).set(newItem).await()
@@ -70,10 +71,11 @@ fun getItems(): Flow<List<Item>> = callbackFlow {
     }
 
 
+
     suspend fun updateItem(item: Item) = withContext(Dispatchers.IO) {
         val userId = auth.currentUser?.uid ?: return@withContext
         if (item.userId == userId) {
-            itemRef.document(item.id.toString()).set(item).await()
+            itemRef.document(item.id).set(item).await()
         }
     }
 
@@ -81,7 +83,7 @@ fun getItems(): Flow<List<Item>> = callbackFlow {
         val userId = auth.currentUser?.uid ?: return@withContext
 
         try {
-            val documentRef = itemRef.document(item.id.toString())
+            val documentRef = itemRef.document(item.id)
 
             // 🔥 בדיקת קיום הפריט לפני מחיקה
             val snapshot = documentRef.get().await()
@@ -96,10 +98,18 @@ fun getItems(): Flow<List<Item>> = callbackFlow {
     }
 
 
-    suspend fun updateLikeStatus(itemId: Int, isLiked: Boolean) = withContext(Dispatchers.IO) {
-        val documentRef = itemRef.document(itemId.toString())
-        documentRef.update("isLiked", isLiked).await() // 🔥 מעדכן ישירות את Firebase
+    suspend fun updateLikeStatus(itemId: String, isLiked: Boolean) = withContext(Dispatchers.IO) {
+        val documentRef = itemRef.document(itemId)
+
+        val snapshot = documentRef.get().await()
+        if (!snapshot.exists()) {
+            println("❌ Error: Item does not exist in Firestore!")
+            return@withContext
+        }
+
+        documentRef.update("isLiked", isLiked).await() // 🔥 מעדכן בפיירבייס
     }
+
 
 
 
@@ -133,8 +143,8 @@ fun getItems(): Flow<List<Item>> = callbackFlow {
         batch.commit().await()
     }
 
-    fun getItemById(itemId: Int): Flow<Item?> = callbackFlow {
-        val listener = itemRef.document(itemId.toString()).addSnapshotListener { snapshot, e ->
+    fun getItemById(itemId: String): Flow<Item?> = callbackFlow {
+        val listener = itemRef.document(itemId).addSnapshotListener { snapshot, e ->
             if (snapshot != null) {
                 val item = snapshot.toObject(Item::class.java)
                 trySend(item)
@@ -144,15 +154,15 @@ fun getItems(): Flow<List<Item>> = callbackFlow {
         }
         awaitClose { listener.remove() }
     }
-    suspend fun updateItemComments(itemId: Int, comments: List<String>) = withContext(Dispatchers.IO) {
+    suspend fun updateItemComments(itemId: String, comments: List<String>) = withContext(Dispatchers.IO) {
         val userId = auth.currentUser?.uid ?: return@withContext
-        val itemSnapshot = itemRef.document(itemId.toString()).get().await()
+        val itemSnapshot = itemRef.document(itemId).get().await()
 
         // בדיקה האם הפריט קיים והאם המשתמש המחובר הוא הבעלים
         val item = itemSnapshot.toObject(Item::class.java)
         if (item != null && item.userId == userId) {
             val commentsJson = com.google.gson.Gson().toJson(comments)
-            itemRef.document(itemId.toString()).update("item_comments", commentsJson).await()
+            itemRef.document(itemId).update("item_comments", commentsJson).await()
         } else {
             println("⚠️ Error: User is not authorized to update this item's comments")
         }

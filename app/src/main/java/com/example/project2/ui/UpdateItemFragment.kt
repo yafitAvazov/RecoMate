@@ -25,7 +25,7 @@ class UpdateItemFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: RecommendationDetailViewModel by activityViewModels()
 
-    private var existingItemId: Int? = null
+    private var existingItemId: String? = null
     private var selectedRating: Int = 0
     private val selectedCategories = mutableSetOf<String>()
     private var imageUri: Uri? = null
@@ -104,7 +104,7 @@ class UpdateItemFragment : Fragment() {
         val address = binding.editAddressEditText.text.toString()
 
         val updatedItem = Item(
-            id = existingItemId ?: 0,
+            id = existingItemId ?: "",
             title = title,
             price = price,
             link = link,

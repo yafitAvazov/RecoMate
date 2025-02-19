@@ -26,7 +26,15 @@ class Converters {
     fun fromLikedByMap(value: Map<String, Boolean>?): String {
         return Gson().toJson(value) // 🔥 ממיר את המפה למחרוזת JSON
     }
+    @TypeConverter
+    fun fromLong(value: Long?): String {
+        return value?.toString() ?: ""
+    }
 
+    @TypeConverter
+    fun toLong(value: String?): Long {
+        return value?.toLongOrNull() ?: 0L
+    }
 //    @TypeConverter
 //    fun toLikedByMap(value: String): Map<String, Boolean> {
 //        return Gson().fromJson(value, object : TypeToken<Map<String, Boolean>>() {}.type) // 🔥 ממיר מחרוזת JSON למפה
