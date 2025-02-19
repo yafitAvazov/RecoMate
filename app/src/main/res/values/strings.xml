@@ -81,4 +81,5 @@
     <string name="beauty">Beauty</string>
     <string name="enter_adress">Enter Adress</string>
     <string name="sort_options">Sort Options</string>
+    <string name="item_deleted_successfully">item_deleted_successfully</string>
 </resources>

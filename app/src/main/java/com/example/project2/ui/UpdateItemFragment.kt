@@ -112,7 +112,8 @@ class UpdateItemFragment : Fragment() {
             photo = if (photoUriString.isEmpty()) null else photoUriString,
             rating = selectedRating,
             category = selectedCategories.joinToString(getString(R.string.separator)),
-            address = address
+            address = address,
+            userId = viewModel.currentUserId ?: "" // ✅ שימוש ב- userId מהמשתמש המחובר
         )
 
         CoroutineScope(Dispatchers.Main).launch {
@@ -123,6 +124,7 @@ class UpdateItemFragment : Fragment() {
 
 
     }
+
 
     private fun removeImage() {
         binding.imageBtn.setImageResource(R.drawable.baseline_hide_image_24)

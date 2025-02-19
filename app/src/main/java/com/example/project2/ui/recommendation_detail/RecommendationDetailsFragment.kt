@@ -11,25 +11,20 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.core.os.bundleOf
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import com.example.project2.R
 import com.example.project2.data.model.Item
 import com.example.project2.databinding.FragmentItemDetailsBinding
 import com.example.project2.ui.CommentsAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
-import com.example.project2.ui.recommendation_detail.RecommendationDetailViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.collectLatest
-
 
 @AndroidEntryPoint
 class RecommendationDetailsFragment : Fragment() {
@@ -37,7 +32,6 @@ class RecommendationDetailsFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel by viewModels<RecommendationDetailViewModel>()
     private lateinit var commentsAdapter: CommentsAdapter
-
     private var itemId: Int? = null
 
     @SuppressLint("SetTextI18n")
@@ -54,28 +48,22 @@ class RecommendationDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         itemId = arguments?.getInt("itemId")
 
-        itemId?.let { viewModel.getItemById(it) } // ✅ שולח את ה-ID ל-ViewModel
-
+        itemId?.let { viewModel.fetchItemById(it) } // ✅ שולח את ה-ID ל-ViewModel
         observeViewModel()
     }
 
     private fun observeViewModel() {
         viewModel.chosenItem.observe(viewLifecycleOwner) { item ->
-            item?.let { updateUI(it) } // ✅ הצגת הנתונים של הפריט הבודד
+            item?.let { updateUI(it) }
         }
     }
-
-
-
-
-
 
     private fun updateUI(item: Item) {
         binding.itemTitle.text = item.title.ifBlank { getString(R.string.no_title) }
         binding.itemComment.text = if (item.comment.isBlank()) getString(R.string.no_comment) else "\"${item.comment}\""
-        binding.itemPrice.text = if (item.price == 0.0) getString(R.string.no_price) else " ${item.price}"
+        binding.itemPrice.text = if (item.price == 0.0) getString(R.string.no_price) else "$${item.price}"
         binding.addressTextView.text = item.address?.ifBlank { "No address" }
-        setupCommentsSection(item) // ✅ קריאה לווידוא שהתגובות נטענות בזמן
+//        setupCommentsSection(item)
 
         // קישור ולחיצה עליו
         if (item.link.isNotEmpty()) {
@@ -91,14 +79,12 @@ class RecommendationDetailsFragment : Fragment() {
             binding.itemTitle.setOnClickListener(null)
         }
 
-        // עדכון תמונה
         if (item.photo.isNullOrEmpty()) {
             binding.itemImage.setImageResource(R.drawable.baseline_hide_image_24)
         } else {
             binding.itemImage.setImageURI(Uri.parse(item.photo))
         }
 
-        // עדכון דירוג כוכבים
         val stars = listOf(binding.star1, binding.star2, binding.star3, binding.star4, binding.star5)
         stars.forEachIndexed { index, imageView ->
             imageView.setImageResource(
@@ -106,10 +92,8 @@ class RecommendationDetailsFragment : Fragment() {
             )
         }
 
-        // עדכון קטגוריות
         setupCategoryText(item.category.split(", ").filter { it.isNotBlank() })
 
-        // הצגת הכתובת אם קיימת
         if (item.address.isNullOrEmpty()) {
             binding.addressTextView.visibility = View.GONE
             binding.showAddressButton.visibility = View.GONE
@@ -128,9 +112,8 @@ class RecommendationDetailsFragment : Fragment() {
                 Toast.makeText(requireContext(), "No address to check", Toast.LENGTH_SHORT).show()
             }
         }
-
         setupCommentsSection(item)
-    }
+        }
 
     private fun setupCategoryText(categories: List<String>) {
         val formattedCategories = if (categories.isEmpty()) {
@@ -140,7 +123,6 @@ class RecommendationDetailsFragment : Fragment() {
         }
         binding.itemCategory.text = formattedCategories
     }
-
     private fun setupCommentsSection(item: Item) {
         binding?.let { binding -> // ✅ בדיקה שה-Binding עדיין קיים
             val commentsRecyclerView = binding.root.findViewById<RecyclerView>(R.id.comments_recycler_view)
@@ -173,11 +155,28 @@ class RecommendationDetailsFragment : Fragment() {
         }
     }
 
+//    private fun setupCommentsSection(item: Item) {
+//        binding.commentsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+//        commentsAdapter = CommentsAdapter(mutableListOf())
+//        binding.commentsRecyclerView.adapter = commentsAdapter
+//
+//        viewModel.chosenItem.observe(viewLifecycleOwner) { itemData ->
+//            commentsAdapter.updateComments(itemData?.comments?.toMutableList() ?: mutableListOf())
+//        }
+//
+//        binding.addCommentButton.setOnClickListener {
+//            val newComment = binding.commentInput.text.toString().trim()
+//            if (newComment.isNotEmpty()) {
+//                val commentsList = item.comments.toMutableList().apply { add(newComment) }
+//                viewModel.updateItemComments(item, commentsList)
+//                commentsAdapter.updateComments(commentsList)
+//                binding.commentInput.text.clear()
+//            }
+//        }
+//    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 }
-
-
-

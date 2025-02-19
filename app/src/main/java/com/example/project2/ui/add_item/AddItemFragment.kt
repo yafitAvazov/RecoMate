@@ -53,38 +53,59 @@ class AddItemFragment : Fragment() {
             }
         }
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = AddRecommendationLayoutBinding.inflate(inflater, container, false)
-        setupCategoryButtons() // הגדרת לחצני הקטגוריות
+        setupCategoryButtons()
 
         // הגדרת כפתור Finish להוספת פריט
         binding.finishBtn.setOnClickListener {
-            val title = if (binding.itemTitle.text.toString().isBlank()) "" else binding.itemTitle.text.toString()
-            val comment = if (binding.itemComment.text.toString().isBlank()) "" else binding.itemComment.text.toString()
-            val photo = imageUri?.toString()
-            val priceText = binding.price.text.toString()
-            val address = if (binding.addressEdt.text.isNullOrBlank()) "" else binding.addressEdt.text.toString()
+            addNewItem()
+        }
 
-            val link = if (binding.itemLink.text.toString().isBlank()) "" else binding.itemLink.text.toString()
-            val selectedCategoryText = if (selectedCategories.isEmpty()) "" else selectedCategories.joinToString(", ")
-            val price = priceText.toDoubleOrNull() ?: 0.0
-            val item = Item(
-                title = title,
-                comment = comment,
-                photo = photo,
-                price = price,
-                category = selectedCategoryText,
-                link = link,
-                rating = selectedRating,
-                address = address
-            )
+        binding.imageBtn.setOnClickListener {
+            showImagePickerDialog()
+        }
 
-            viewModel.addItem(item)
+        setupStarRating()
+
+        return binding.root
+    }
+
+    private fun addNewItem() {
+        val title = binding.itemTitle.text.toString().takeIf { it.isNotBlank() } ?: ""
+        val comment = binding.itemComment.text.toString().takeIf { it.isNotBlank() } ?: ""
+        val photo = imageUri?.toString()
+        val priceText = binding.price.text.toString()
+        val address = binding.addressEdt.text.toString().takeIf { it.isNotBlank() } ?: ""
+        val link = binding.itemLink.text.toString().takeIf { it.isNotBlank() } ?: ""
+        val selectedCategoryText = selectedCategories.takeIf { it.isNotEmpty() }?.joinToString(", ") ?: ""
+        val price = priceText.toDoubleOrNull() ?: 0.0
+
+        val userId = viewModel.getCurrentUserId() // ✅ השגת ה-User ID של המשתמש המחובר
+
+        if (userId == null) {
+            Toast.makeText(requireContext(), "Error: User not logged in!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val item = Item(
+            id = 0, // זה יתעדכן אוטומטית ב-Firebase
+            userId = userId, // ✅ עכשיו יש לנו userId!
+            title = title,
+            comment = comment,
+            photo = photo,
+            price = price,
+            category = selectedCategoryText,
+            link = link,
+            rating = selectedRating,
+            address = address
+        )
+
+        viewModel.addItem(item)
 
             // הצגת Toast לאחר הוספת ההמלצה
             Toast.makeText(requireContext(), getString(R.string.recommendation_published), Toast.LENGTH_SHORT).show()

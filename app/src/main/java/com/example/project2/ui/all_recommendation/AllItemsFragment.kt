@@ -2,16 +2,13 @@ package com.example.project2.ui.all_recommendation
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.SeekBar
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -20,6 +17,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.project2.R
+import com.example.project2.data.model.Item
 import com.example.project2.databinding.AllRecommendationsLayoutBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -35,8 +33,9 @@ class AllItemsFragment : Fragment() {
     private var selectedSortButton: Button? = null // Track selected button for color change
 
 
+    private var showingUserItems = false // ✅ משתנה שמנהל האם להציג את הפריטים של המשתמש בלבד
 
-    private val viewModel: RecommendationListViewModel by activityViewModels()
+    private val viewModel: RecommendationListViewModel by viewModels()
     private lateinit var adapter: ItemAdapter
 
     override fun onCreateView(
@@ -47,22 +46,31 @@ class AllItemsFragment : Fragment() {
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupStarRating()
 
         initializeRecyclerView()
         setupDrawerFilters(view)
-        setupItemSwipeHandling()
-
         observeViewModel()
-        viewModel.fetchItems() // טוען את הנתונים בתחילת הצגת המסך
-        viewModel.fetchItems() // טוען את הנתונים בתחילת הצגת המסך
+        viewModel.fetchItems() // ✅ מביא את כל ההמלצות
+        viewModel.fetchUserItems() // ✅ מביא את ההמלצות של המשתמש המחובר
+        viewModel.fetchUserFavorites() // ✅ מביא את רשימת המועדפים של המשתמש
 
         binding.actionDelete.setOnClickListener {
             showDeleteAllConfirmationDialog()
         }
+
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true) // ✅ מאפשר הצגת תפריט
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     private fun setupStarRating() {
@@ -103,11 +111,37 @@ class AllItemsFragment : Fragment() {
     private fun deleteAllItems() {
         viewModel.deleteAll()
 
-        // 🟢 עדכון LiveData כדי להפעיל את ה-Observer
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_sign_out) {
+            viewModel.signOut()
+            findNavController().navigate(R.id.action_allItemsFragment_to_loginFragment)
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+
+
+    private fun updateItemList() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.items.collectLatest { itemList ->
-                adapter.updateList(itemList)
-                binding.recycler.scrollToPosition(0) // ✅ גלילה לראש הרשימה לאחר מחיקה
+            if (showingUserItems) {
+                viewModel.userItems.collectLatest { userItemList ->
+                    adapter.updateList(userItemList)
+                }
+            } else {
+                viewModel.items.collectLatest { itemList ->
+                    adapter.updateList(itemList)
+                }
+            }
+        }
+    }
+
+    private fun deleteAllItems() {
+        viewModel.deleteAllUserItems()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.userItems.collectLatest { userItemList ->
+                adapter.updateList(userItemList)
+                binding.recycler.scrollToPosition(0)
             }
         }
 
@@ -127,38 +161,65 @@ class AllItemsFragment : Fragment() {
 
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) { // ✅ רק כאשר ה-Fragment פעיל
-                viewModel.items.collectLatest { itemList ->
-                    binding?.let { binding ->
-                        binding.progressBar.visibility = View.GONE
-                        binding.recycler.visibility = View.VISIBLE
-                        adapter.updateList(itemList)
-                    }
-                }}
+            viewModel.items.collectLatest { itemList ->
+                binding.progressBar.visibility = View.GONE
+                binding.recycler.visibility = View.VISIBLE
+                adapter.updateList(itemList)
+            }
+        }
 
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.userItems.collectLatest { userItemList ->
+                if (showingUserItems) {
+                    binding.progressBar.visibility = View.GONE
+                    binding.recycler.visibility = View.VISIBLE
+                    adapter.updateList(userItemList)
+                }
+            }
+        }
 
-//            launch {
-//                viewModel.filteredItems.collectLatest { filteredList ->
-//                    binding.progressBar.visibility = View.GONE
-//                    binding.recycler.visibility = View.VISIBLE
-//                    adapter.updateList(filteredList)
-//                }
-//            }
+        // ✅ מעקב אחר רשימת המועדפים של המשתמש ועדכון התצוגה
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.userFavorites.collectLatest { favoriteItems ->
+                binding.progressBar.visibility = View.GONE
+                binding.recycler.visibility = View.VISIBLE
+                adapter.updateList(favoriteItems) // 🔥 עכשיו המועדפים מתעדכנים נכון!
+            }
         }
     }
+
 
 
     private fun initializeRecyclerView() {
         adapter = ItemAdapter(emptyList(), object : ItemAdapter.ItemListener {
             override fun onItemClicked(index: Int) {
-
+                val clickedItem = adapter.items[index]
+                Toast.makeText(requireContext(), clickedItem.title, Toast.LENGTH_SHORT).show()
             }
 
             override fun onItemLongClicked(index: Int) {
                 val item = adapter.items[index]
                 val bundle = bundleOf("itemId" to item.id)
                 findNavController().navigate(R.id.action_allItemsFragment_to_itemDetailsFragment, bundle)
+            }
+            override fun onItemDeleted(item: Item) {
+                viewModel.deleteItem(item) // 🔥 מוחק מה-DB המקומי ומה-Firebase
+
+                viewLifecycleOwner.lifecycleScope.launch {
+                    // 🔥 מחכים שהמחיקה תסתיים ואז מעדכנים את הרשימה
+                    viewModel.fetchItems()
+                    viewModel.fetchUserItems()
+                }
+
+                Toast.makeText(requireContext(), "Recommendation deleted!", Toast.LENGTH_SHORT).show()
+            }
+            override fun onItemLiked(item: Item) {
+                viewModel.updateLikeStatus(item.id, true) // 🔥 שומר את הלייק
+            }
+
+            override fun onItemUnliked(item: Item) {
+                viewModel.updateLikeStatus(item.id, false) // 🔥 מסיר מהמועדפים
             }
         })
 
@@ -238,7 +299,6 @@ class AllItemsFragment : Fragment() {
             drawerLayout.closeDrawer(GravityCompat.END)
         }
 
-        // Reset filters
         resetFilterButton.setOnClickListener {
             resetFilters()
         }
@@ -304,32 +364,6 @@ class AllItemsFragment : Fragment() {
         viewModel.fetchItems()
     }
 
-
-    private fun setupItemSwipeHandling() {
-        ItemTouchHelper(object : ItemTouchHelper.Callback() {
-            override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) =
-                makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
-
-            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder) = false
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val item = adapter.itemAt(viewHolder.adapterPosition)
-
-                AlertDialog.Builder(requireContext())
-                    .setTitle(getString(R.string.delete_confirmation))
-                    .setMessage(getString(R.string.delete_confirmation_message))
-                    .setPositiveButton(getString(R.string.yes)) { _, _ ->
-                        viewModel.deleteItem(item)
-                        adapter.notifyItemRemoved(viewHolder.adapterPosition)
-                    }
-                    .setNegativeButton(getString(R.string.no)) { _, _ ->
-                        adapter.notifyItemChanged(viewHolder.adapterPosition)
-                    }
-                    .setCancelable(false)
-                    .show()
-            }
-        }).attachToRecyclerView(binding.recycler)
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
