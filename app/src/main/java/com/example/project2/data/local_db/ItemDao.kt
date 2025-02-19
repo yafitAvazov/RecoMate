@@ -44,11 +44,6 @@ interface ItemDao {
     fun getItemsByCategory(selectedCategories: String?): Flow<List<Item>>
 
 
-
-
-
-
-
     @Query( "DELETE FROM review_table")
     fun deleteAll()
 
@@ -60,7 +55,6 @@ interface ItemDao {
     AND item_price <= :selectedMinPrice
 """)
     suspend fun getFilteredItems(
-        selectedCategories: String?,
         selectedRating: Int,
         selectedMinPrice: Double
     ): List<Item>
