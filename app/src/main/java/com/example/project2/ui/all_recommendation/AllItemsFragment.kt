@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.project2.R
 import com.example.project2.data.model.Item
 import com.example.project2.databinding.AllRecommendationsLayoutBinding
+import com.example.project2.ui.recommendation_detail.RecommendationDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -34,9 +35,11 @@ class AllItemsFragment : Fragment() {
 
 
     private var showingUserItems = false // ✅ משתנה שמנהל האם להציג את הפריטים של המשתמש בלבד
-
     private val viewModel: RecommendationListViewModel by viewModels()
     private lateinit var adapter: ItemAdapter
+
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,9 +60,11 @@ class AllItemsFragment : Fragment() {
         viewModel.fetchUserItems() // ✅ מביא את ההמלצות של המשתמש המחובר
         viewModel.fetchUserFavorites() // ✅ מביא את רשימת המועדפים של המשתמש
 
-        binding.actionDelete.setOnClickListener {
-            showDeleteAllConfirmationDialog()
-        }
+
+
+//        binding.actionDelete.setOnClickListener {
+//            showDeleteAllConfirmationDialog()
+//        }
 
     }
 

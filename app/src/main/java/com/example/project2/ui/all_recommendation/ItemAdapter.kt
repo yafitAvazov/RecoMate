@@ -40,7 +40,7 @@ class ItemAdapter(
 
         init {
             binding.root.setOnClickListener(this)
-            binding.root.setOnLongClickListener(this)
+            binding.root.setOnLongClickListener(null)
 
             binding.editBtn.setOnClickListener {
                 val item = items[adapterPosition]
@@ -77,25 +77,10 @@ class ItemAdapter(
         override fun onClick(v: View?) {
             val navController = Navigation.findNavController(binding.root)
             val currentDestination = navController.currentDestination?.id
-            val clickedItem = items[adapterPosition]
-            callBack.onItemClicked(adapterPosition)
-
-            if (currentDestination == R.id.specificCategoryItemsFragment) {
-                Toast.makeText(binding.root.context, binding.root.context.getString(R.string.long_click_for_details), Toast.LENGTH_SHORT).show()
-
-            return
-            }
-            if (currentDestination == R.id.allItemsFragment) {
-                navController.navigate(R.id.action_allItemsFragment_to_itemDetailsFragment)
-            } else {
-                println(binding.root.context.getString(R.string.navigation_error_unknown_source_fragment))
-            }
-
-            val item = items[adapterPosition]
+            val item = items[adapterPosition] // 🔥 מקבל את הפריט שנלחץ
             val bundle = bundleOf("itemId" to item.id)
 
-
-
+            // 🔥 מנווטים לפרטי הפריט רק בלחיצה רגילה
             when (currentDestination) {
                 R.id.allItemsFragment -> {
                     navController.navigate(R.id.action_allItemsFragment_to_itemDetailsFragment, bundle)
@@ -103,18 +88,25 @@ class ItemAdapter(
                 R.id.myRecommendationsFragment -> {
                     navController.navigate(R.id.action_myRecommendationsFragment_to_itemDetailsFragment, bundle)
                 }
+                R.id.specificCategoryItemsFragment -> {
+                    navController.navigate(R.id.action_specificCategoryItemsFragment_to_itemDetailsFragment, bundle)
+                }
                 else -> {
                     // במקרה שאין יעד מתאים (אופציונלי - רק לדיוג)
-                    println(binding.root.context.getString(R.string.navigation_error_unknown_source_fragment))
+                    Toast.makeText(binding.root.context,
+                        binding.root.context.getString(R.string.navigation_error_unknown_source_fragment),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
 
 
 
+
         override fun onLongClick(v: View?): Boolean {
-            callBack.onItemLongClicked(adapterPosition)
-            return true
+            return false
+
         }
 
         fun bind(item: Item, currentUserId: String?) {
@@ -145,7 +137,8 @@ class ItemAdapter(
             if (item.userId == currentUserId) {
                 // 🔥 אם המשתמש המחובר הוא זה שפרסם את ההמלצה
                 binding.itemCard.setCardBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.green))
-                binding.itemCard.setContentPadding(5, 5, 5, 5)
+                binding.itemCard.setContentPadding(6, 6, 6, 6)
+
                 binding.editBtn.visibility = View.VISIBLE
                 binding.deleteBtn.visibility = View.VISIBLE
                 binding.likeBtn.visibility = View.GONE

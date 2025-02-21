@@ -19,11 +19,11 @@
         <!-- כותרת -->
         <TextView
             android:id="@+id/title"
-            android:textColor="@color/white"
+            android:textColor="@color/green"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/my_recommendations"
-            android:textSize="30sp"
+            android:textSize="35sp"
             android:textStyle="bold"
             android:layout_marginTop="16dp"
             android:layout_marginStart="16dp"
@@ -53,6 +53,8 @@
             android:layout_height="0dp"
             android:clipToPadding="false"
             android:paddingTop="16dp"
+            android:padding="18dp"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
 

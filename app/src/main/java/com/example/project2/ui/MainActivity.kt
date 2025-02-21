@@ -18,10 +18,21 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
+    private val PREFS_NAME = "prefs"
+    private val KEY_POPUP_COUNTER = "popup_counter"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // 🔥 איפוס המונה בכניסה לאפליקציה
+        val sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        sharedPreferences.edit().putInt(KEY_POPUP_COUNTER, 0).apply()
+
+        // 🔥 בדיקת ערך המונה בכניסה לאפליקציה
+        val updatedCounter = sharedPreferences.getInt(KEY_POPUP_COUNTER, 0)
+        android.util.Log.d("PopupDebug", "Counter Reset onCreate: $updatedCounter")
+
 
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar) // ✅ כעת אין התנגשויות
@@ -79,6 +90,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
         // התאמה לשולי המערכת כדי למנוע חפיפה עם כפתורי הניווט
         ViewCompat.setOnApplyWindowInsetsListener(bottomNavigationView) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -97,5 +109,9 @@ class MainActivity : AppCompatActivity() {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         }
+
     }
+
+
+
 }

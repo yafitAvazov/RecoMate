@@ -19,7 +19,9 @@
         android:id="@+id/categoriesFragment"
         android:name="com.example.project2.ui.categories.CategoriesFragment"
         android:label="Categories">
-
+        <action
+            android:id="@+id/action_allItemsFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
         <action
             android:id="@+id/action_categoriesFragment_to_allItemsFragment"
             app:destination="@id/allItemsFragment" />
@@ -146,6 +148,9 @@
             android:id="@+id/action_myRecommendationsFragment_to_itemDetailsFragment"
             app:destination="@id/itemDetailsFragment" />
         <action
+            android:id="@+id/action_allItemsFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
             android:id="@+id/action_myRecommendationsFragment_to_updateItemFragment"
             app:destination="@id/updateItemFragment" />
 
@@ -160,7 +165,9 @@
         <action
             android:id="@+id/action_favoritesFragment_to_allItemsFragment"
             app:destination="@id/allItemsFragment" />
-
+        <action
+            android:id="@+id/action_allItemsFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
         <!-- ניווט לדף הפרטים של פריט -->
         <action
             android:id="@+id/action_favoritesFragment_to_itemDetailsFragment"

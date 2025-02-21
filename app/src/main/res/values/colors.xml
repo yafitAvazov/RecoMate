@@ -11,7 +11,7 @@
     <color name="dark_gray">#95989D</color>
     <color name="light_gray">#EDECEC</color>
     <color name="dark_blue">#0D1B2A</color>
-    <color name="light_blue">#62C1F4</color>
+    <color name="light_blue">#62EDF4</color>
     <color name="purple_500">#6200EE</color> <!-- Purple -->
 
     <color name="primary">#6200EE</color>
@@ -32,8 +32,8 @@
 
         <color name="divider">#BDBDBD</color>
 
-    <color name="green">#5EF2B1</color>
-
+    <color name="green">#47E99E</color>
+    <color name="light_green">#A63EF0A1</color>
 
 
 

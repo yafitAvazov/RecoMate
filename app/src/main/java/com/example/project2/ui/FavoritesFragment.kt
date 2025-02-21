@@ -2,6 +2,9 @@ package com.example.project2.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -33,7 +36,21 @@ class FavoritesFragment : Fragment() {
         _binding = FavoriteRecommendationLayoutBinding.inflate(inflater, container, false)
         return binding.root
     }
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true) // ✅ מאפשר הצגת תפריט
+    }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_sign_out) {
+            viewModel.signOut()
+            findNavController().navigate(R.id.action_allItemsFragment_to_loginFragment)
+        }
+        return super.onOptionsItemSelected(item)
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

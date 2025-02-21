@@ -17,6 +17,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="3dp"
+        android:id="@+id/item_card_inside"
+
         app:cardCornerRadius="14dp"
         app:cardElevation="0dp"
         android:backgroundTint="@color/blue">
