@@ -103,15 +103,22 @@ class ItemRepository @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
-    fun getFilteredItems(selectedRating: Int, selectedMaxPrice: Double): Flow<Resource<List<Item>>> = flow {
-        emit(Resource.loading()) // ✅ Emit loading state
-        try {
-            val result = itemRepositoryLocal.getFilteredItems(selectedRating, selectedMaxPrice)
-            emit(Resource.success(result.firstOrNull() ?: emptyList())) // ✅ Collect the Flow and return list
-        } catch (e: Exception) {
-            emit(Resource.error("Error fetching filtered items: ${e.message}", emptyList())) // ✅ Handle error
+    fun getFilteredItems(selectedRating: Int, selectedMaxPrice: Double): Flow<List<Item>> = flow {
+        val firebaseItems = itemRepositoryFirebase.getItems() // ✅ Fetch all items from Firebase first
+            .firstOrNull()
+            ?.filter { item ->
+                item.rating >= selectedRating && item.price <= selectedMaxPrice // ✅ Apply filtering
+            } ?: emptyList()
+
+        if (firebaseItems.isEmpty()) {
+            println("🔥 DEBUG: No items match the filter criteria in Firestore!")
+        } else {
+            println("🔥 DEBUG: ${firebaseItems.size} items found after filtering!")
         }
+
+        emit(firebaseItems) // ✅ Emit filtered list from Firestore
     }.flowOn(Dispatchers.IO)
+
 
 
 

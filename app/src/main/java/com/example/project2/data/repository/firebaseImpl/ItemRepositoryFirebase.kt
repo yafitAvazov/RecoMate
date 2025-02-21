@@ -116,25 +116,26 @@ fun getItems(): Flow<List<Item>> = callbackFlow {
 
     fun getUserFavorites(): Flow<List<Item>> = callbackFlow {
         val listener = itemRef
-            .whereEqualTo("liked", true) // ✅ Ensure this matches Firestore field name
+            .whereEqualTo("liked", true) // ✅ Ensure Firestore returns only liked items
             .addSnapshotListener { snapshot, e ->
                 if (e != null) {
-                    close(e) // Close flow on error
+                    close(e)
                     return@addSnapshotListener
                 }
 
                 val items = snapshot?.toObjects(Item::class.java) ?: emptyList()
 
                 if (items.isEmpty()) {
-                    println("🔥 DEBUG: No favorites found in Firestore!")
+                    println("🔥 DEBUG: No liked items found in Firestore!")
                 } else {
-                    println("🔥 DEBUG: ${items.size} favorite items found!")
+                    println("🔥 DEBUG: ${items.size} liked items found!")
                 }
 
                 trySend(items).isSuccess
             }
         awaitClose { listener.remove() }
     }
+
 
 
 

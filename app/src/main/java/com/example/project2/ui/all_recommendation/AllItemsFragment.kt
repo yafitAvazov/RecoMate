@@ -171,37 +171,16 @@ class AllItemsFragment : Fragment() {
 
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) { // ✅ Runs only when fragment is visible
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.items.collectLatest { itemList ->
                     binding.progressBar.visibility = View.GONE
                     binding.recycler.visibility = View.VISIBLE
-                    adapter.updateList(itemList) // ✅ Refreshes RecyclerView with latest data
-                }
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.userItems.collectLatest { userItemList ->
-                    if (showingUserItems) {
-                        binding.progressBar.visibility = View.GONE
-                        binding.recycler.visibility = View.VISIBLE
-                        adapter.updateList(userItemList)
-                    }
-                }
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.userFavorites.collectLatest { favoriteItems ->
-                    binding.progressBar.visibility = View.GONE
-                    binding.recycler.visibility = View.VISIBLE
-                    adapter.updateList(favoriteItems)
+                    adapter.updateList(itemList) // ✅ Ensure all items are updated, not just liked ones
                 }
             }
         }
     }
+
 
 
 

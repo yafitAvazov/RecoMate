@@ -85,12 +85,16 @@ class FavoritesFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.userFavorites.collectLatest { favoriteItems ->
                 if (favoriteItems.isEmpty()) {
+                    println("🔥 DEBUG: No favorites found in RecyclerView!")
                     Toast.makeText(requireContext(), "No favorites found!", Toast.LENGTH_SHORT).show()
+                } else {
+                    println("🔥 DEBUG: ${favoriteItems.size} items found in RecyclerView!")
                 }
-                adapter.updateList(favoriteItems) // ✅ Ensure RecyclerView updates
+                adapter.updateList(favoriteItems) // ✅ Updates RecyclerView
             }
         }
     }
+
 
 
     override fun onDestroyView() {

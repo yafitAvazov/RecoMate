@@ -64,13 +64,18 @@ class RecommendationListViewModel @Inject constructor(
 
     fun fetchFilteredItems(selectedRating: Int, selectedMaxPrice: Double) {
         viewModelScope.launch {
-            repository.getFilteredItems(selectedRating, selectedMaxPrice) // ✅ Collect the Flow
-                .collect { resource: Resource<List<Item>> -> // ✅ Explicitly define the type
-                    _filteredItems.value = resource // ✅ Assign Resource<List<Item>> properly
-                    _items.value = resource.data ?: emptyList() // ✅ Extract List<Item>
+            repository.getFilteredItems(selectedRating, selectedMaxPrice)
+                .collectLatest { filteredItems ->
+                    if (filteredItems.isEmpty()) {
+                        println("🔥 DEBUG: No matching items found!")
+                    } else {
+                        println("🔥 DEBUG: ${filteredItems.size} items found!")
+                    }
+                    _items.value = filteredItems // ✅ Updates list with filtered results
                 }
         }
     }
+
 
 
 
@@ -105,12 +110,21 @@ class RecommendationListViewModel @Inject constructor(
 
 
 
+
     fun updateLikeStatus(itemId: String, isLiked: Boolean) {
         viewModelScope.launch {
             repository.updateLikeStatus(itemId, isLiked)
-            fetchUserFavorites() // ✅ Refresh favorites after update
+
+            // ✅ Update only the liked status in _items, without filtering out non-liked items
+            _items.value = _items.value.map { item ->
+                if (item.id == itemId) item.copy(isLiked = isLiked) else item
+            }
+
+            fetchUserFavorites() // ✅ This updates _userFavorites, but _items remains unchanged
         }
     }
+
+
 
     fun addItem(item: Item) {
         viewModelScope.launch {
