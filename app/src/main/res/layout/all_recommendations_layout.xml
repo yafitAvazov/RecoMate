@@ -22,7 +22,7 @@
             android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="All Recommendations"
+            android:text="@string/all_rec_layout_all_recommendations_text"
             android:textSize="30sp"
             android:textStyle="bold"
             android:layout_marginTop="16dp"

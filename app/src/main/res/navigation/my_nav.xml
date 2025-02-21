@@ -176,6 +176,9 @@
         <action
             android:id="@+id/action_specificCategoryItemsFragment_to_itemDetailsFragment"
             app:destination="@id/itemDetailsFragment" />
+        <action
+            android:id="@+id/action_specificCategoryItemsFragment_to_updateItemFragment"
+            app:destination="@id/updateItemFragment" />
     </fragment>
 
 </navigation>

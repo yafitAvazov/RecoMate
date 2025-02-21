@@ -82,4 +82,9 @@
     <string name="enter_adress">Enter Adress</string>
     <string name="sort_options">Sort Options</string>
     <string name="item_deleted_successfully">item_deleted_successfully</string>
+    <string name="categories_layout_categories_text">CATEGORIES</string>
+    <string name="categories_layout_all_text">ALL</string>
+    <string name="all_rec_layout_all_recommendations_text">All Recommendations</string>
+    <string name="fav_rec_layout_my_favorites_text">My Favorites</string>
+    <string name="update_rec_layout_update_button">Update</string>
 </resources>

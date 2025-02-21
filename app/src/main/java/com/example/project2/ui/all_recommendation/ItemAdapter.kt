@@ -44,10 +44,28 @@ class ItemAdapter(
 
             binding.editBtn.setOnClickListener {
                 val item = items[adapterPosition]
-                val bundle = bundleOf("itemId" to item.id)
+                val bundle = bundleOf("item" to item) // ✅ Pass full Item object
 
-                binding.root.findNavController().navigate(R.id.action_myRecommendationsFragment_to_updateItemFragment, bundle)
+                val navController = binding.root.findNavController()
+                val currentDestination = navController.currentDestination?.id
+
+                when (currentDestination) {
+                    R.id.allItemsFragment -> {
+                        navController.navigate(R.id.action_allItemsFragment_to_updateItemFragment, bundle)
+                    }
+                    R.id.myRecommendationsFragment -> {
+                        navController.navigate(R.id.action_myRecommendationsFragment_to_updateItemFragment, bundle)
+                    }
+                    R.id.specificCategoryItemsFragment -> {
+                        navController.navigate(R.id.action_specificCategoryItemsFragment_to_updateItemFragment, bundle)
+                    }
+                    else -> {
+                        Toast.makeText(binding.root.context, "Navigation Error: Unknown Source Fragment", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
+
+
         }
 
 

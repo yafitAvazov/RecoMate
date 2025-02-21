@@ -63,6 +63,12 @@ class AllItemsFragment : Fragment() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.fetchItems()
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true) // ✅ מאפשר הצגת תפריט
@@ -164,33 +170,38 @@ class AllItemsFragment : Fragment() {
 
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.items.collectLatest { itemList ->
-                binding.progressBar.visibility = View.GONE
-                binding.recycler.visibility = View.VISIBLE
-                adapter.updateList(itemList)
-            }
-        }
-
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.userItems.collectLatest { userItemList ->
-                if (showingUserItems) {
+            repeatOnLifecycle(Lifecycle.State.STARTED) { // ✅ Runs only when fragment is visible
+                viewModel.items.collectLatest { itemList ->
                     binding.progressBar.visibility = View.GONE
                     binding.recycler.visibility = View.VISIBLE
-                    adapter.updateList(userItemList)
+                    adapter.updateList(itemList) // ✅ Refreshes RecyclerView with latest data
                 }
             }
         }
 
-        // ✅ מעקב אחר רשימת המועדפים של המשתמש ועדכון התצוגה
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.userFavorites.collectLatest { favoriteItems ->
-                binding.progressBar.visibility = View.GONE
-                binding.recycler.visibility = View.VISIBLE
-                adapter.updateList(favoriteItems) // 🔥 עכשיו המועדפים מתעדכנים נכון!
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.userItems.collectLatest { userItemList ->
+                    if (showingUserItems) {
+                        binding.progressBar.visibility = View.GONE
+                        binding.recycler.visibility = View.VISIBLE
+                        adapter.updateList(userItemList)
+                    }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.userFavorites.collectLatest { favoriteItems ->
+                    binding.progressBar.visibility = View.GONE
+                    binding.recycler.visibility = View.VISIBLE
+                    adapter.updateList(favoriteItems)
+                }
             }
         }
     }
+
 
 
     private fun initializeRecyclerView() {

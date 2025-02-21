@@ -54,9 +54,12 @@ class RecommendationListViewModel @Inject constructor(
 
     fun fetchItems() {
         viewModelScope.launch {
-            repository.getItems().collect { _items.value = it }
+            repository.getItems().collectLatest { newItems ->
+                _items.emit(newItems) // ✅ Emits new data so UI updates
+            }
         }
     }
+
 
 
 

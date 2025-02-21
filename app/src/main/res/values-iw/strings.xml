@@ -70,5 +70,11 @@
     <string name="main_item_title">כותרת מוצר ראשית</string>
     <string name="Lets_Recommend">בואו נמליץ!</string>
     <string name="you_can_select_up_to_3_categories">ניתן לבחור עד 3 קטגוריות בלבד.</string>
+    <string name="categories_layout_categories_text">קטגוריות</string>
+    <string name="categories_layout_all_text">כלל הקטגוריות</string>
+    <string name="beauty">טיפוח</string>
+    <string name="all_rec_layout_all_recommendations_text">כלל ההמלצות</string>
+    <string name="fav_rec_layout_my_favorites_text">מועדפים</string>
+    <string name="update_rec_layout_update_button">עדכן</string>
 
 </resources>
