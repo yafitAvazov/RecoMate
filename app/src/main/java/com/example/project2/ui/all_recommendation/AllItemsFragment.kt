@@ -209,19 +209,15 @@ class AllItemsFragment : Fragment() {
         adapter = ItemAdapter(emptyList(), object : ItemAdapter.ItemListener {
 
             override fun onItemClicked(index: Int) {
-                val clickedItem = adapter.items[index]
-                val bundle = bundleOf("itemId" to clickedItem.id) // ✅ שולח את ה-ID
-                findNavController().navigate(R.id.action_allItemsFragment_to_itemDetailsFragment, bundle)
-            }
-
+                val item = adapter.items[index]
+                Toast.makeText(requireContext(),
+                    getString(R.string.long_click_for_details), Toast.LENGTH_SHORT).show()            }
             override fun onItemLongClicked(index: Int) {
                 val item = adapter.items[index]
                 val bundle = bundleOf("itemId" to item.id)
-                findNavController().navigate(
-                    R.id.action_allItemsFragment_to_itemDetailsFragment,
-                    bundle
-                )
+                findNavController().navigate(R.id.action_allItemsFragment_to_itemDetailsFragment, bundle)
             }
+
 
             override fun onItemDeleted(item: Item) {
                 viewModel.deleteItem(item) // 🔥 מוחק מה-DB המקומי ומה-Firebase
@@ -279,11 +275,7 @@ class AllItemsFragment : Fragment() {
                 // Highlight the selected button
                 button.setBackgroundColor(resources.getColor(R.color.purple_500))
 
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.sort_selected, button.text),
-                    Toast.LENGTH_SHORT
-                ).show()
+
             }
         }
 

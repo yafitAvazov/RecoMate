@@ -53,7 +53,7 @@
             android:id="@+id/action_allItemsFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
         <action
-            android:id="@+id/action_allItemsFragment_to_itemDetailsFragment2"
+            android:id="@+id/action_allItemsFragment_to_itemDetailsFragment"
             app:destination="@id/itemDetailsFragment" />
     </fragment>
 
