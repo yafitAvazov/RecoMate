@@ -212,12 +212,15 @@ class AllItemsFragment : Fragment() {
             }
 
             override fun onItemLiked(item: Item) {
-                viewModel.updateLikeStatus(item.id, true) // 🔥 שומר את הלייק
+                val currentUserId = viewModel.getCurrentUserId() ?: return
+                viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Pass userId instead of "true"
             }
 
             override fun onItemUnliked(item: Item) {
-                viewModel.updateLikeStatus(item.id, false) // 🔥 מסיר מהמועדפים
+                val currentUserId = viewModel.getCurrentUserId() ?: return
+                viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Pass userId instead of "false"
             }
+
         })
 
         binding.recycler.adapter = adapter

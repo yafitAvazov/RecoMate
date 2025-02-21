@@ -31,13 +31,13 @@ interface ItemDao {
     @Query("SELECT * FROM review_table WHERE id LIKE :id")
     fun getItem(id: Int): LiveData<Item>
 
-    // ✅ Fetch all user favorite items by user ID
-    @Query("SELECT * FROM review_table WHERE isLiked = 1 AND user_id = :userId")
+    @Query("SELECT * FROM review_table WHERE ',' || likedBy || ',' LIKE '%,' || :userId || ',%'")
     fun getUserFavorites(userId: String): Flow<List<Item>>
 
-    // ✅ Update like status for a specific item
-    @Query("UPDATE review_table SET isLiked = :isLiked WHERE id = :itemId")
-    suspend fun updateLikeStatus(itemId: String, isLiked: Boolean)
+
+    @Query("UPDATE review_table SET likedBy = :likedBy WHERE id = :itemId")
+    suspend fun updateLikeStatus(itemId: String, likedBy: String)
+
 
     // ✅ Update comments using JSON string
     @Query("UPDATE review_table SET item_comments = :commentsJson WHERE id = :itemId")

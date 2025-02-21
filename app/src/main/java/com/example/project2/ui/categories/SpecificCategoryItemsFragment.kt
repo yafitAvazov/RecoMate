@@ -67,16 +67,20 @@ class SpecificCategoryItemsFragment : Fragment() {
             }
 
             override fun onItemDeleted(item: Item) {
-                viewModel.updateLikeStatus(item.id, false)
+                val currentUserId = viewModel.getCurrentUserId() ?: return
+                viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Pass userId instead of "false"
             }
 
             override fun onItemLiked(item: Item) {
-                viewModel.updateLikeStatus(item.id, true)
+                val currentUserId = viewModel.getCurrentUserId() ?: return
+                viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Pass userId instead of "true"
             }
 
             override fun onItemUnliked(item: Item) {
-                viewModel.updateLikeStatus(item.id, false)
+                val currentUserId = viewModel.getCurrentUserId() ?: return
+                viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Pass userId instead of "false"
             }
+
         })
 
         binding.recycler.adapter = adapter

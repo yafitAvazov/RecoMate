@@ -6,7 +6,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.project2.data.model.Item
 
-@Database(entities = [Item::class], version = 7, exportSchema = false) // 🔥 העלאת מספר גרסה
+@Database(entities = [Item::class], version = 8, exportSchema = false) // 🔥 העלאת מספר גרסה
 @TypeConverters(Converters::class) // ✅ הוספת TypeConverters כדי לשמור רשימות
 abstract class ItemDataBase : RoomDatabase() {
 
@@ -64,6 +64,13 @@ abstract class ItemDataBase : RoomDatabase() {
                 db.execSQL("ALTER TABLE review_table ADD COLUMN new_column_name TEXT DEFAULT '' NOT NULL") // 🔥 אם צריך להוסיף עמודות חדשות
             }
         }
+        private val MIGRATION_7_8 = object : Migration(7, 8) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE review_table ADD COLUMN likedBy TEXT DEFAULT '[]' NOT NULL")
+            }
+        }
+
+
 
     }
 }

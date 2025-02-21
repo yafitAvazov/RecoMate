@@ -98,43 +98,56 @@ fun getItems(): Flow<List<Item>> = callbackFlow {
     }
 
 
-    suspend fun updateLikeStatus(itemId: String, isLiked: Boolean) = withContext(Dispatchers.IO) {
-        val documentRef = itemRef.document(itemId)
+    suspend fun updateLikeStatus(itemId: String, likedBy: List<String>) {
+        val itemRef = FirebaseFirestore.getInstance().collection("items").document(itemId)
 
-        val snapshot = documentRef.get().await()
-        if (!snapshot.exists()) {
-            println("❌ Error: Item does not exist in Firestore!")
-            return@withContext
+        try {
+            FirebaseFirestore.getInstance().runTransaction { transaction ->
+                transaction.update(itemRef, "likedBy", likedBy)
+            }.await()
+        } catch (e: Exception) {
+            println("❌ Error updating like status in Firebase: ${e.message}")
         }
-
-        documentRef.update("liked", isLiked).await() // ✅ Ensure Firebase stores it as "liked"
     }
+
+
+
+
+
+
+
 
 
 
 
 
     fun getUserFavorites(): Flow<List<Item>> = callbackFlow {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser == null) {
+            close(Exception("User not logged in"))
+            return@callbackFlow
+        }
+
+        val itemRef = FirebaseFirestore.getInstance().collection("items")
+
         val listener = itemRef
-            .whereEqualTo("liked", true) // ✅ Ensure Firestore returns only liked items
+            .whereArrayContains("likedBy", currentUser.uid) // ✅ Only fetch items the user liked
             .addSnapshotListener { snapshot, e ->
                 if (e != null) {
+                    println("❌ Firestore Error: ${e.message}")
                     close(e)
                     return@addSnapshotListener
                 }
 
                 val items = snapshot?.toObjects(Item::class.java) ?: emptyList()
-
-                if (items.isEmpty()) {
-                    println("🔥 DEBUG: No liked items found in Firestore!")
-                } else {
-                    println("🔥 DEBUG: ${items.size} liked items found!")
-                }
+                println("🔥 DEBUG: ${items.size} liked items found for user ${currentUser.uid}!")
 
                 trySend(items).isSuccess
             }
+
         awaitClose { listener.remove() }
     }
+
 
 
 

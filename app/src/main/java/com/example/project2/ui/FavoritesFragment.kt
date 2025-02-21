@@ -64,16 +64,20 @@ class FavoritesFragment : Fragment() {
             }
 
             override fun onItemDeleted(item: Item) {
-                viewModel.updateLikeStatus(item.id, false) // ✅ Unliking an item removes it from favorites
+                val currentUserId = viewModel.getCurrentUserId() ?: return
+                viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Pass `userId` instead
             }
 
             override fun onItemLiked(item: Item) {
-                viewModel.updateLikeStatus(item.id, true)
+                val currentUserId = viewModel.getCurrentUserId() ?: return
+                viewModel.updateLikeStatus(item.id, currentUserId) // ✅
             }
 
             override fun onItemUnliked(item: Item) {
-                viewModel.updateLikeStatus(item.id, false)
+                val currentUserId = viewModel.getCurrentUserId() ?: return
+                viewModel.updateLikeStatus(item.id, currentUserId) // ✅
             }
+
         })
 
         binding.recyclerMyFav.layoutManager = LinearLayoutManager(requireContext()) // ✅ Add LayoutManager
@@ -84,16 +88,23 @@ class FavoritesFragment : Fragment() {
     private fun observeFavoriteItems() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.userFavorites.collectLatest { favoriteItems ->
-                if (favoriteItems.isEmpty()) {
-                    println("🔥 DEBUG: No favorites found in RecyclerView!")
-                    Toast.makeText(requireContext(), "No favorites found!", Toast.LENGTH_SHORT).show()
-                } else {
-                    println("🔥 DEBUG: ${favoriteItems.size} items found in RecyclerView!")
-                }
-                adapter.updateList(favoriteItems) // ✅ Updates RecyclerView
+                adapter.updateList(favoriteItems) // ✅ Updates RecyclerView with only the current user's liked items
+
+                binding.recyclerMyFav.postDelayed({
+                    val currentCount = adapter.itemCount
+
+                    if (currentCount == 0) { // ✅ Show toast only if no liked items exist
+                        println("🔥 DEBUG: No favorites found for current user in RecyclerView!")
+                        Toast.makeText(requireContext(), "No favorites found!", Toast.LENGTH_SHORT).show()
+                    } else {
+                        println("🔥 DEBUG: ${currentCount} favorite items found in RecyclerView!")
+                        Toast.makeText(requireContext(), "$currentCount favorite items found!", Toast.LENGTH_SHORT).show()
+                    }
+                }, 800) // ✅ Ensures Firestore finishes loading before checking RecyclerView state
             }
         }
     }
+
 
 
 

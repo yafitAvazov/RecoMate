@@ -141,16 +141,17 @@ class ItemAdapter(
                     if (index < item.rating) R.drawable.star_full else R.drawable.star_empty
                 )
             }
-            // ✅ הצגת הכפתורים הנכונים
+
+            // ✅ Display correct buttons based on item ownership
             if (item.userId == currentUserId) {
-                // 🔥 אם המשתמש המחובר הוא זה שפרסם את ההמלצה
+                // 🔥 If the logged-in user is the owner of the item
                 binding.itemCard.setCardBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.green))
                 binding.itemCard.setContentPadding(5, 5, 5, 5)
                 binding.editBtn.visibility = View.VISIBLE
                 binding.deleteBtn.visibility = View.VISIBLE
                 binding.likeBtn.visibility = View.GONE
             } else {
-                // 🔥 אם זו המלצה של משתמש אחר
+                // 🔥 If the item belongs to another user
                 binding.itemCard.setCardBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.light_blue))
 
                 binding.editBtn.visibility = View.GONE
@@ -158,36 +159,33 @@ class ItemAdapter(
                 binding.likeBtn.visibility = View.VISIBLE
             }
 
+            // ✅ Update Like Button State
+            val isLiked = currentUserId?.let { item.likedBy.contains(it) } ?: false
             binding.likeBtn.setImageResource(
-                if (item.isLiked) R.drawable.baseline_favorite_24 else R.drawable.baseline_favorite_border_24
+                if (isLiked) R.drawable.baseline_favorite_24 else R.drawable.baseline_favorite_border_24
             )
 
+            // ✅ Handle Like Button Click
             binding.likeBtn.setOnClickListener {
-                val isNowLiked = !item.isLiked
-                item.isLiked = isNowLiked
-                updateLikeButton(isNowLiked)
+                if (currentUserId == null) return@setOnClickListener // Ensure user is logged in
 
-                if (isNowLiked) {
-                    callBack.onItemLiked(item.copy(isLiked = true))
-                } else {
-                    callBack.onItemUnliked(item.copy(isLiked = false))
-                }
+                val updatedLikedBy = if (isLiked) item.likedBy - currentUserId else item.likedBy + currentUserId
+                callBack.onItemLiked(item.copy(likedBy = updatedLikedBy))
             }
 
-
+            // ✅ Handle Delete Button Click
             binding.deleteBtn.setOnClickListener {
                 AlertDialog.Builder(binding.root.context)
                     .setTitle(binding.root.context.getString(R.string.delete_confirmation))
                     .setMessage(binding.root.context.getString(R.string.are_you_sure_you_want_to_delete_this_recommendation))
                     .setPositiveButton(binding.root.context.getString(R.string.yes)) { _, _ ->
-                        callBack.onItemDeleted(item) // ✅ מעביר למחיקה גם מההמלצות שלי וגם מכל ההמלצות
+                        callBack.onItemDeleted(item)
                     }
                     .setNegativeButton(binding.root.context.getString(R.string.no), null)
                     .show()
             }
-
-
         }
+
 
     }
 
