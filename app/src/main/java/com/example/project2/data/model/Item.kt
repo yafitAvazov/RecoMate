@@ -6,6 +6,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.PropertyName
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.parcelize.Parcelize
@@ -24,7 +25,11 @@ data class Item(
     @ColumnInfo(name = "item_address") val address: String? = null,
     @ColumnInfo(name = "item_comments") val comments: List<String> = emptyList(),
     @ColumnInfo(name = "user_id") val userId: String = "",
-    @ColumnInfo(name = "isLiked") var isLiked: Boolean = false // 🔥 פשוט, ברור, בלי `Map` // ✅ תיקון נכון!
+
+    @get:PropertyName("liked") // ✅ Maps Firebase "liked" to Room's "isLiked"
+    @set:PropertyName("liked")
+    @ColumnInfo(name = "isLiked") var isLiked: Boolean = false // ✅ Room uses "isLiked"
 ) : Parcelable
+
 
 

@@ -139,8 +139,22 @@ class ItemRepository @Inject constructor(
 
     fun getUserFavorites(): Flow<List<Item>> = flow {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@flow
-        emitAll(itemRepositoryLocal.getUserFavorites(userId)) // 🔥 מעביר את ה-userId ל- ItemRepositoryLocal
+
+        // ✅ Fetch both local and Firebase favorites
+        val localFavorites = itemRepositoryLocal.getUserFavorites(userId).firstOrNull() ?: emptyList()
+        val firebaseFavorites = itemRepositoryFirebase.getUserFavorites().firstOrNull() ?: emptyList()
+
+        val combinedFavorites = (localFavorites + firebaseFavorites).distinctBy { it.id }
+
+        if (combinedFavorites.isEmpty()) {
+            println("🔥 DEBUG: No favorite items found in Firebase or Local DB!")
+        } else {
+            println("🔥 DEBUG: ${combinedFavorites.size} favorite items found!")
+        }
+
+        emit(combinedFavorites) // ✅ Ensures all liked items appear
     }.flowOn(Dispatchers.IO)
+
 
 
 

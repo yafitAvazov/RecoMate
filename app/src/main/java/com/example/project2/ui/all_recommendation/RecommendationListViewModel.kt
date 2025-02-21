@@ -8,7 +8,6 @@ import com.example.project2.data.repository.AuthRepository
 import com.example.project2.data.repository.ItemRepository
 import com.example.project2.utils.Resource
 import com.google.firebase.auth.FirebaseAuth
-
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -22,16 +21,11 @@ class RecommendationListViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    //    private val _items = MutableStateFlow<List<Item>>(emptyList())
-//    val items: StateFlow<List<Item>> get() = _items.asStateFlow()
     private val _items = MutableStateFlow<List<Item>>(emptyList())
     val items: StateFlow<List<Item>> = _items.asStateFlow()
 
     private val _userItems = MutableStateFlow<List<Item>>(emptyList())
-    val userItems: StateFlow<List<Item>> get() = _userItems.asStateFlow()
-
-
-
+    val userItems: StateFlow<List<Item>> = _userItems.asStateFlow()
 
     private val _filteredItems = MutableStateFlow<Resource<List<Item>>>(Resource.loading(emptyList()))
     val filteredItems: StateFlow<Resource<List<Item>>> = _filteredItems.asStateFlow()
@@ -42,58 +36,71 @@ class RecommendationListViewModel @Inject constructor(
     init {
         fetchItems()
         fetchUserItems()
-//        fetchUserFavorites()
-
+        fetchUserFavorites() // ✅ Ensure favorites load when ViewModel initializes
     }
 
     fun signOut() {
         authRepository.logout()
-        _userItems.value = emptyList() // ✅ מנקה את הרשימה כדי למנוע טעינת נתונים אחרי ההתנתקות
+        _userItems.value = emptyList() // ✅ Clear user items on logout
+        _userFavorites.value = emptyList() // ✅ Clear favorites on logout
     }
-
 
     fun fetchItems() {
         viewModelScope.launch {
-            repository.getItems().collect { _items.value = it }
+            repository.getItems()
+                .collect { itemList -> _items.value = itemList }
         }
     }
 
-
+    fun getCurrentUserId(): String? {
+        return FirebaseAuth.getInstance().currentUser?.uid
+    }
 
     fun fetchFilteredItems(selectedRating: Int, selectedMaxPrice: Double) {
         viewModelScope.launch {
-            repository.getFilteredItems(selectedRating, selectedMaxPrice) // ✅ Collect the Flow
-                .collect { resource: Resource<List<Item>> -> // ✅ Explicitly define the type
-                    _filteredItems.value = resource // ✅ Assign Resource<List<Item>> properly
-                    _items.value = resource.data ?: emptyList() // ✅ Extract List<Item>
+            repository.getFilteredItems(selectedRating, selectedMaxPrice)
+                .collect { resource: Resource<List<Item>> ->
+                    _filteredItems.value = resource
+                    _items.value = resource.data ?: emptyList()
+                }
+        }
+    }
+
+    fun fetchUserItems() {
+        viewModelScope.launch {
+            val currentUser = FirebaseAuth.getInstance().currentUser
+            if (currentUser == null) {
+                _userItems.value = emptyList()
+                return@launch
+            }
+            repository.getUserItems()
+                .collect { itemList -> _userItems.value = itemList }
+        }
+    }
+
+    fun fetchUserFavorites() {
+        viewModelScope.launch {
+            repository.getUserFavorites()
+                .collectLatest { likedItems ->
+                    if (likedItems.isEmpty()) {
+                        println("🔥 DEBUG: No liked items found in ViewModel!")
+                    } else {
+                        println("🔥 DEBUG: ${likedItems.size} liked items found!")
+                    }
+                    _userFavorites.value = likedItems // ✅ Updates StateFlow
                 }
         }
     }
 
 
 
-    fun fetchUserItems() {
-        viewModelScope.launch {
-            val currentUser = FirebaseAuth.getInstance().currentUser
-            if (currentUser == null) {
-                _userItems.value = emptyList() // ✅ אם המשתמש התנתק, מחזירים רשימה ריקה
-                return@launch
-            }
-            repository.getUserItems().collect { itemList ->
-                _userItems.value = itemList
-            }
-        }
-    }
-    fun updateLikeStatus(item: Item, isLiked: Boolean) {
-        viewModelScope.launch {
-            repository.updateLikeStatus(item.id, isLiked)
-            fetchUserFavorites() // 🔥 עדכון המועדפים לאחר שינוי
-        }
-    }
 
-    // ✅ פונקציה להבאת ה- User ID
-    fun getCurrentUserId(): String? {
-        return FirebaseAuth.getInstance().currentUser?.uid
+
+    fun updateLikeStatus(itemId: String, isLiked: Boolean) {
+        viewModelScope.launch {
+            repository.updateLikeStatus(itemId, isLiked)
+            fetchUserFavorites() // ✅ Refresh favorites after update
+        }
     }
 
     fun addItem(item: Item) {
@@ -114,47 +121,23 @@ class RecommendationListViewModel @Inject constructor(
 
     fun deleteItem(item: Item) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteItem(item) // 🔥 מוחק מה-Firebase ומה-Local DB
-
+            repository.deleteItem(item)
             withContext(Dispatchers.Main) {
-                _items.value = _items.value.filterNot { it.id == item.id } // 🔥 מוחק מרשימת כל ההמלצות
-                _userItems.value = _userItems.value.filterNot { it.id == item.id } // 🔥 מוחק מרשימת ההמלצות שלי
+                _items.value = _items.value.filterNot { it.id == item.id }
+                _userItems.value = _userItems.value.filterNot { it.id == item.id }
+                _userFavorites.value = _userFavorites.value.filterNot { it.id == item.id } // ✅ Remove from favorites too
             }
-
         }
     }
-
-
-//    fun updateLikeStatus(item: Item) {
-//        viewModelScope.launch {
-//            repository.updateLikeStatus(item.id, item.isLiked)
-//        }
-//    }
 
     fun deleteAllUserItems() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteAllUserItems()
             _userItems.value = emptyList()
-        }
-    }
-    fun fetchUserFavorites() {
-        viewModelScope.launch {
-            repository.getUserFavorites().collect { _userFavorites.value = it }
-        }
-    }
-    fun updateLikeStatus(itemId: String, isLiked: Boolean) {
-        viewModelScope.launch {
-            repository.updateLikeStatus(itemId, isLiked) // 🔥 לא צריך המרה!
-            fetchUserFavorites()
+            _userFavorites.value = emptyList()
         }
     }
 
-    fun updateLikeStatus(itemId: Int, isLiked: Boolean) {
-        viewModelScope.launch {
-            repository.updateLikeStatus(itemId.toString(), isLiked)
-            fetchUserFavorites() // 🔥 מרענן את רשימת המועדפים
-        }
-    }
     fun fetchSortedItems(sortBy: String) {
         viewModelScope.launch {
             val sortedList = when (sortBy) {
@@ -166,30 +149,11 @@ class RecommendationListViewModel @Inject constructor(
             _items.value = sortedList
         }
     }
-        fun fetchItemsByCategory(category: String) {
-            viewModelScope.launch {
-                repository.getItemsByCategory(category).collect { itemList ->
-                    _items.value = itemList
-                }
-            }
+
+    fun fetchItemsByCategory(category: String) {
+        viewModelScope.launch {
+            repository.getItemsByCategory(category)
+                .collect { itemList -> _items.value = itemList }
         }
-
-
-
-
-
-
-//    fun addFavorite(itemId: Int) { // ✅ מקבל רק את ה-ID
-//        viewModelScope.launch {
-//            repository.addFavorite(itemId)
-//        }
-//    }
-//
-//    fun removeFavorite(itemId: Int) { // ✅ מקבל רק את ה-ID
-//        viewModelScope.launch {
-//            repository.removeFavorite(itemId)
-//        }
-//    }
-
-
+    }
 }

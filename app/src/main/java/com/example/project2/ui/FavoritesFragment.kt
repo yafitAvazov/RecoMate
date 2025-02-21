@@ -38,10 +38,15 @@ class FavoritesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initializeRecyclerView()
-        observeFavoriteItems()
 
-        viewModel.fetchUserFavorites() // ✅ הבאת רשימת המועדפים
+        // ✅ Fetch favorites when fragment is created
+        viewModel.fetchUserFavorites()
+
+        observeFavoriteItems()
     }
+
+
+
 
     private fun initializeRecyclerView() {
         adapter = ItemAdapter(emptyList(), object : ItemAdapter.ItemListener {
@@ -59,9 +64,8 @@ class FavoritesFragment : Fragment() {
             }
 
             override fun onItemDeleted(item: Item) {
-                viewModel.updateLikeStatus(item.id, false) // ❌ מסיר מהמועדפים
+                viewModel.updateLikeStatus(item.id, false) // ✅ Unliking an item removes it from favorites
             }
-
 
             override fun onItemLiked(item: Item) {
                 viewModel.updateLikeStatus(item.id, true)
@@ -70,17 +74,20 @@ class FavoritesFragment : Fragment() {
             override fun onItemUnliked(item: Item) {
                 viewModel.updateLikeStatus(item.id, false)
             }
-
         })
 
-        binding.recyclerMyFav.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerMyFav.layoutManager = LinearLayoutManager(requireContext()) // ✅ Add LayoutManager
         binding.recyclerMyFav.adapter = adapter
     }
+
 
     private fun observeFavoriteItems() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.userFavorites.collectLatest { favoriteItems ->
-                adapter.updateList(favoriteItems) // 🔥 רק הפריטים עם `isLiked = true`
+                if (favoriteItems.isEmpty()) {
+                    Toast.makeText(requireContext(), "No favorites found!", Toast.LENGTH_SHORT).show()
+                }
+                adapter.updateList(favoriteItems) // ✅ Ensure RecyclerView updates
             }
         }
     }
@@ -91,3 +98,6 @@ class FavoritesFragment : Fragment() {
         _binding = null
     }
 }
+
+
+

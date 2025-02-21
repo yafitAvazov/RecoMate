@@ -28,15 +28,13 @@ class ItemAdapter(
     interface ItemListener {
         fun onItemClicked(index: Int)
         fun onItemLongClicked(index: Int)
-        fun onItemDeleted(item: Item) // ✅ פונקציה חדשה למחיקת פריט
-        fun onItemLiked(item: Item) // ✅ הוספת לפריטים אהובים
-
-        fun onItemUnliked(item: Item) // ✅ הסרת פריטים אהובים
-
+        fun onItemDeleted(item: Item)
+        fun onItemLiked(item: Item)
+        fun onItemUnliked(item: Item)
     }
 
-    inner class ItemViewHolder(val binding: RecommendationLayoutBinding)
-        : RecyclerView.ViewHolder(binding.root), View.OnClickListener, View.OnLongClickListener {
+    inner class ItemViewHolder(val binding: RecommendationLayoutBinding) :
+        RecyclerView.ViewHolder(binding.root), View.OnClickListener, View.OnLongClickListener {
 
         init {
             binding.root.setOnClickListener(this)
@@ -45,9 +43,15 @@ class ItemAdapter(
             binding.editBtn.setOnClickListener {
                 val item = items[adapterPosition]
                 val bundle = bundleOf("itemId" to item.id)
-
-                binding.root.findNavController().navigate(R.id.action_myRecommendationsFragment_to_updateItemFragment, bundle)
+                binding.root.findNavController()
+                    .navigate(R.id.action_myRecommendationsFragment_to_updateItemFragment, bundle)
             }
+        }
+
+        private fun updateLikeButton(isLiked: Boolean) {
+            binding.likeBtn.setImageResource(
+                if (isLiked) R.drawable.baseline_favorite_24 else R.drawable.baseline_favorite_border_24
+            )
         }
 
 
@@ -57,20 +61,8 @@ class ItemAdapter(
             val clickedItem = items[adapterPosition]
             callBack.onItemClicked(adapterPosition)
 
-            if (currentDestination == R.id.specificCategoryItemsFragment) {
-                Toast.makeText(binding.root.context, "Long click for details", Toast.LENGTH_SHORT).show()
-            return
-            }
-            if (currentDestination == R.id.allItemsFragment) {
-                navController.navigate(R.id.action_allItemsFragment_to_itemDetailsFragment)
-            } else {
-                println("⚠️ Navigation Error: Unknown source fragment!")
-            }
-
             val item = items[adapterPosition]
             val bundle = bundleOf("itemId" to item.id)
-
-
 
             when (currentDestination) {
                 R.id.allItemsFragment -> {
@@ -80,13 +72,10 @@ class ItemAdapter(
                     navController.navigate(R.id.action_myRecommendationsFragment_to_itemDetailsFragment, bundle)
                 }
                 else -> {
-                    // במקרה שאין יעד מתאים (אופציונלי - רק לדיוג)
                     println("⚠️ Navigation Error: Unknown source fragment!")
                 }
             }
         }
-
-
 
         override fun onLongClick(v: View?): Boolean {
             callBack.onItemLongClicked(adapterPosition)
@@ -94,7 +83,7 @@ class ItemAdapter(
         }
 
         fun bind(item: Item, currentUserId: String?) {
-            binding.itemTitle.text = if (item.title == "") binding.root.context.getString(R.string.no_title) else item.title
+            binding.itemTitle.text = if (item.title.isBlank()) binding.root.context.getString(R.string.no_title) else item.title
 
             if (item.photo.isNullOrEmpty()) {
                 binding.itemImage.setImageResource(R.drawable.baseline_hide_image_24)
@@ -117,34 +106,36 @@ class ItemAdapter(
                     if (index < item.rating) R.drawable.star_full else R.drawable.star_empty
                 )
             }
-            // ✅ הצגת הכפתורים הנכונים
+
             if (item.userId == currentUserId) {
-                // 🔥 אם המשתמש המחובר הוא זה שפרסם את ההמלצה
                 binding.itemCard.setCardBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.green))
                 binding.itemCard.setContentPadding(5, 5, 5, 5)
                 binding.editBtn.visibility = View.VISIBLE
                 binding.deleteBtn.visibility = View.VISIBLE
                 binding.likeBtn.visibility = View.GONE
             } else {
-                // 🔥 אם זו המלצה של משתמש אחר
                 binding.itemCard.setCardBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.light_blue))
-
                 binding.editBtn.visibility = View.GONE
                 binding.deleteBtn.visibility = View.GONE
                 binding.likeBtn.visibility = View.VISIBLE
             }
 
-            // ✅ עדכון מצב הלב (ריק או מלא) בעת לחיצה
-//            var isLiked = item.isLiked // נניח שיש שדה כזה בפריט
+            binding.likeBtn.setImageResource(
+                if (item.isLiked) R.drawable.baseline_favorite_24 else R.drawable.baseline_favorite_border_24
+            )
+
             binding.likeBtn.setOnClickListener {
                 val isNowLiked = !item.isLiked
+
+                // ✅ Update UI immediately
                 item.isLiked = isNowLiked
                 updateLikeButton(isNowLiked)
 
+                // ✅ Pass updated item to ViewModel for database update
                 if (isNowLiked) {
-                    callBack.onItemLiked(item)
+                    callBack.onItemLiked(item.copy(isLiked = true))
                 } else {
-                    callBack.onItemUnliked(item)
+                    callBack.onItemUnliked(item.copy(isLiked = false))
                 }
             }
 
@@ -154,71 +145,41 @@ class ItemAdapter(
                     .setTitle("Delete Confirmation")
                     .setMessage("Are you sure you want to delete this recommendation?")
                     .setPositiveButton("Yes") { _, _ ->
-                        callBack.onItemDeleted(item) // ✅ מעביר למחיקה גם מההמלצות שלי וגם מכל ההמלצות
+                        callBack.onItemDeleted(item)
                     }
                     .setNegativeButton("No", null)
                     .show()
             }
-
-
-        }
-        // פונקציה שמשנה את צבע הלב
-        private fun updateLikeButton(isLiked: Boolean) {
-            binding.likeBtn.setImageResource(
-                if (isLiked) R.drawable.baseline_favorite_24 else R.drawable.baseline_favorite_border_24
-            )
-        }
-        // ✅ פונקציה לעדכון הלייק במסד הנתונים (אם רוצים)
-        private fun updateItemLikeStatus(itemId: Int, isLiked: Boolean) {
-            val likeStatus = hashMapOf("isLiked" to isLiked)
-            FirebaseFirestore.getInstance().collection("items")
-                .document(itemId.toString())
-                .update(likeStatus as Map<String, Any>)
         }
     }
 
+    fun updateList(newItems: List<Item>) {
+        val diffCallback = object : DiffUtil.Callback() {
+            override fun getOldListSize() = items.size
+            override fun getNewListSize() = newItems.size
 
-    fun itemAt(position: Int): Item {
-        return items[position]
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return items[oldItemPosition].id == newItems[newItemPosition].id
+            }
+
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return items[oldItemPosition] == newItems[newItemPosition]
+            }
+        }
+
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        items = newItems
+        diffResult.dispatchUpdatesTo(this)
     }
-
-    fun deleteItem(item: Item) {
-        val newList = items.toMutableList().apply { remove(item) }
-        updateList(newList) // 🔥 מעדכן את הרשימה אחרי מחיקה
-    }
-
-//    fun updateList(newItems: List<Item>) {
-//        val diffCallback = object : DiffUtil.Callback() {
-//            override fun getOldListSize() = items.size
-//            override fun getNewListSize() = newItems.size
-//            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-//                return items[oldItemPosition].id == newItems[newItemPosition].id
-//            }
-//
-//            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-//                return items[oldItemPosition] == newItems[newItemPosition]
-//            }
-//        }
-//
-//        val diffResult = DiffUtil.calculateDiff(diffCallback)
-//        items = newItems
-//        diffResult.dispatchUpdatesTo(this)
-//    }
-fun updateList(newItems: List<Item>) {
-    items = newItems
-    notifyDataSetChanged()
-}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ItemViewHolder(RecommendationLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid // ✅ מזהה המשתמש המחובר
-        val item = items[position]
-        holder.bind(item, currentUserId) // ✅ שולח את הפריט ל-ViewHolder
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+        holder.bind(items[position], currentUserId)
+    }
 
-
-        }
     override fun getItemCount(): Int = items.size
-
 }
+

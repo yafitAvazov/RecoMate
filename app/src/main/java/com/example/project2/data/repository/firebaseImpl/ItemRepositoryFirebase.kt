@@ -107,19 +107,39 @@ fun getItems(): Flow<List<Item>> = callbackFlow {
             return@withContext
         }
 
-        documentRef.update("isLiked", isLiked).await() // 🔥 מעדכן בפיירבייס
+        documentRef.update("liked", isLiked).await() // ✅ Ensure Firebase stores it as "liked"
     }
+
 
 
 
 
     fun getUserFavorites(): Flow<List<Item>> = callbackFlow {
-        val listener = itemRef.whereEqualTo("isLiked", true).addSnapshotListener { snapshot, _ ->
-            val items = snapshot?.toObjects(Item::class.java) ?: emptyList()
-            trySend(items)
-        }
+        val listener = itemRef
+            .whereEqualTo("liked", true) // ✅ Ensure this matches Firestore field name
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    close(e) // Close flow on error
+                    return@addSnapshotListener
+                }
+
+                val items = snapshot?.toObjects(Item::class.java) ?: emptyList()
+
+                if (items.isEmpty()) {
+                    println("🔥 DEBUG: No favorites found in Firestore!")
+                } else {
+                    println("🔥 DEBUG: ${items.size} favorite items found!")
+                }
+
+                trySend(items).isSuccess
+            }
         awaitClose { listener.remove() }
     }
+
+
+
+
+
 
 //    suspend fun addFavorite(itemId: Int, userId: String) = withContext(Dispatchers.IO) {
 //        updateLikeStatus(itemId, userId, true) // ✅ עדכון במועדפים
@@ -158,15 +178,21 @@ fun getItems(): Flow<List<Item>> = callbackFlow {
         val userId = auth.currentUser?.uid ?: return@withContext
         val itemSnapshot = itemRef.document(itemId).get().await()
 
-        // בדיקה האם הפריט קיים והאם המשתמש המחובר הוא הבעלים
+        // ✅ Ensure `userId` is checked before updating comments
+        if (!itemSnapshot.exists()) {
+            println("⚠️ Error: Item does not exist in Firestore")
+            return@withContext
+        }
+
         val item = itemSnapshot.toObject(Item::class.java)
-        if (item != null && item.userId == userId) {
+        if (item != null && item.userId == userId) {  // ✅ Now using `userId` in the check
             val commentsJson = com.google.gson.Gson().toJson(comments)
             itemRef.document(itemId).update("item_comments", commentsJson).await()
         } else {
             println("⚠️ Error: User is not authorized to update this item's comments")
         }
     }
+
     fun getItemsByCategory(category: String): Flow<List<Item>> = callbackFlow {
         val listener = itemRef.whereEqualTo("category", category)
             .addSnapshotListener { snapshot, e ->
