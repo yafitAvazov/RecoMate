@@ -33,8 +33,8 @@ class ItemAdapter(
         fun onItemUnliked(item: Item)
     }
 
-    inner class ItemViewHolder(val binding: RecommendationLayoutBinding) :
-        RecyclerView.ViewHolder(binding.root), View.OnClickListener, View.OnLongClickListener {
+    inner class ItemViewHolder(val binding: RecommendationLayoutBinding)
+        : RecyclerView.ViewHolder(binding.root), View.OnClickListener, View.OnLongClickListener {
 
         init {
             binding.root.setOnClickListener(this)
@@ -42,10 +42,28 @@ class ItemAdapter(
 
             binding.editBtn.setOnClickListener {
                 val item = items[adapterPosition]
-                val bundle = bundleOf("itemId" to item.id)
-                binding.root.findNavController()
-                    .navigate(R.id.action_myRecommendationsFragment_to_updateItemFragment, bundle)
+                val bundle = bundleOf("item" to item.id) // ✅ Pass full Item object
+
+                val navController = binding.root.findNavController()
+                val currentDestination = navController.currentDestination?.id
+
+                when (currentDestination) {
+                    R.id.allItemsFragment -> {
+                        navController.navigate(R.id.action_allItemsFragment_to_updateItemFragment, bundle)
+                    }
+                    R.id.myRecommendationsFragment -> {
+                        navController.navigate(R.id.action_myRecommendationsFragment_to_updateItemFragment, bundle)
+                    }
+                    R.id.specificCategoryItemsFragment -> {
+                        navController.navigate(R.id.action_specificCategoryItemsFragment_to_updateItemFragment, bundle)
+                    }
+                    else -> {
+                        Toast.makeText(binding.root.context, "Navigation Error: Unknown Source Fragment", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
+
+
         }
 
         private fun updateLikeButton(isLiked: Boolean) {
@@ -53,8 +71,6 @@ class ItemAdapter(
                 if (isLiked) R.drawable.baseline_favorite_24 else R.drawable.baseline_favorite_border_24
             )
         }
-
-
         override fun onClick(v: View?) {
             val navController = Navigation.findNavController(binding.root)
             val currentDestination = navController.currentDestination?.id
@@ -72,10 +88,13 @@ class ItemAdapter(
                     navController.navigate(R.id.action_myRecommendationsFragment_to_itemDetailsFragment, bundle)
                 }
                 else -> {
+                    // במקרה שאין יעד מתאים (אופציונלי - רק לדיוג)
                     println("⚠️ Navigation Error: Unknown source fragment!")
                 }
             }
         }
+
+
 
         override fun onLongClick(v: View?): Boolean {
             callBack.onItemLongClicked(adapterPosition)
@@ -106,14 +125,16 @@ class ItemAdapter(
                     if (index < item.rating) R.drawable.star_full else R.drawable.star_empty
                 )
             }
-
+            // ✅ הצגת הכפתורים הנכונים
             if (item.userId == currentUserId) {
+                // 🔥 אם המשתמש המחובר הוא זה שפרסם את ההמלצה
                 binding.itemCard.setCardBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.green))
                 binding.itemCard.setContentPadding(5, 5, 5, 5)
                 binding.editBtn.visibility = View.VISIBLE
                 binding.deleteBtn.visibility = View.VISIBLE
                 binding.likeBtn.visibility = View.GONE
             } else {
+                // 🔥 אם זו המלצה של משתמש אחר
                 binding.itemCard.setCardBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.light_blue))
                 binding.editBtn.visibility = View.GONE
                 binding.deleteBtn.visibility = View.GONE
@@ -126,12 +147,9 @@ class ItemAdapter(
 
             binding.likeBtn.setOnClickListener {
                 val isNowLiked = !item.isLiked
-
-                // ✅ Update UI immediately
                 item.isLiked = isNowLiked
                 updateLikeButton(isNowLiked)
 
-                // ✅ Pass updated item to ViewModel for database update
                 if (isNowLiked) {
                     callBack.onItemLiked(item.copy(isLiked = true))
                 } else {
@@ -145,12 +163,15 @@ class ItemAdapter(
                     .setTitle("Delete Confirmation")
                     .setMessage("Are you sure you want to delete this recommendation?")
                     .setPositiveButton("Yes") { _, _ ->
-                        callBack.onItemDeleted(item)
+                        callBack.onItemDeleted(item) // ✅ מעביר למחיקה גם מההמלצות שלי וגם מכל ההמלצות
                     }
                     .setNegativeButton("No", null)
                     .show()
             }
+
+
         }
+
     }
 
     fun updateList(newItems: List<Item>) {
@@ -178,8 +199,9 @@ class ItemAdapter(
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
         holder.bind(items[position], currentUserId)
-    }
 
+
+        }
     override fun getItemCount(): Int = items.size
-}
 
+}
