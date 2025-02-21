@@ -39,17 +39,20 @@ class RegisterFragment : Fragment(){
 
             // ✅ בדיקת אימייל בפורמט חוקי
             if (email.isNullOrEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                Toast.makeText(requireContext(), "Please enter a valid email address", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.please_enter_a_valid_email_address), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             if (password.isNullOrEmpty() || password.length < 6) {
-                Toast.makeText(requireContext(), "Password must be at least 6 characters", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.password_must_be_at_least_6_characters), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             if (password != confirmPassword) {
-                Toast.makeText(requireContext(), "Passwords do not match", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.passwords_do_not_match), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -74,13 +77,14 @@ class RegisterFragment : Fragment(){
                     binding.userRegisterButton.isEnabled = false
                 }
                 Resource.Status.SUCCESS -> {
-                    Toast.makeText(requireContext(), "Registration successful", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.registration_successful), Toast.LENGTH_SHORT).show()
                     findNavController().navigate(R.id.action_registerFragment_to_categoriesFragment)
                 }
                 Resource.Status.ERROR -> {
                     binding.registerProgress.isVisible = false
                     binding.userRegisterButton.isEnabled = true
-                    Toast.makeText(requireContext(), it.message ?: "Error occurred", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), it.message ?: getString(R.string.error_occurred), Toast.LENGTH_SHORT).show()
                 }
             }
         }

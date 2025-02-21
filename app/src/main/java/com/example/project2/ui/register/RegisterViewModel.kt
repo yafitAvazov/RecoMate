@@ -16,7 +16,8 @@ class RegisterViewModel(private val repository: AuthRepository) : ViewModel() {
     fun createUser(userName:String, email:String,  userLoginPass: String,
                    userLoginPassAgain: String) {
         val error = if(email.isEmpty() || userName.isEmpty() || userLoginPass.isEmpty() || userLoginPassAgain.isEmpty())
-            "Empty Strings"
+            "Empty fields"
+
         else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             "Not a valid email"
         }else null

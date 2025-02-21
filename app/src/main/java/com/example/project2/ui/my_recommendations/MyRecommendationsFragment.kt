@@ -91,14 +91,16 @@ class MyRecommendationsFragment : Fragment() {
                     viewModel.fetchUserItems()
                 }
 
-                Toast.makeText(requireContext(), "Recommendation deleted!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.recommendation_deleted), Toast.LENGTH_SHORT).show()
 
 
         }
             override fun onItemLiked(item: Item) {
                 viewModel.updateLikeStatus(item.id, true) // ✅ מעביר את ה-ID של הפריט + ערך `true
 
-            Toast.makeText(requireContext(), "Like status updated!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.like_status_updated), Toast.LENGTH_SHORT).show()
             }
             override fun onItemUnliked(item: Item) {
                 viewModel.updateLikeStatus(item.id, false) // ✅ מסיר מהמועדפים

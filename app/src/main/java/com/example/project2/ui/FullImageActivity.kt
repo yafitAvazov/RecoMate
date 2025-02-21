@@ -37,7 +37,7 @@ class FullImageActivity : AppCompatActivity() {
 
             fullImageView.setImageURI(Uri.parse(imageUri))
         } else {
-            Toast.makeText(this, "אין תמונה להצגה", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.no_image_to_show), Toast.LENGTH_SHORT).show()
             finish()
         }
             }

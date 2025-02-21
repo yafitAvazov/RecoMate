@@ -7,7 +7,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Add a comment...">
+        android:hint="@string/add_a_comment">
 
         <com.google.android.material.textfield.TextInputEditText
             android:background="@color/white"
@@ -21,7 +21,7 @@
         android:id="@+id/add_comment_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="post"
+        android:text="@string/post"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:backgroundTint="@color/light_blue"
         android:layout_marginTop="8dp"

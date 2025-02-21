@@ -57,7 +57,8 @@ class SpecificCategoryItemsFragment : Fragment() {
         adapter = ItemAdapter(emptyList(), object : ItemAdapter.ItemListener {
             override fun onItemClicked(index: Int) {
                 val item = adapter.items[index]
-                Toast.makeText(requireContext(), "Long click for details", Toast.LENGTH_SHORT).show()            }
+                Toast.makeText(requireContext(),
+                    getString(R.string.long_click_for_details), Toast.LENGTH_SHORT).show()            }
 
             override fun onItemLongClicked(index: Int) {
                 val item = adapter.items[index]
@@ -66,15 +67,15 @@ class SpecificCategoryItemsFragment : Fragment() {
             }
 
             override fun onItemDeleted(item: Item) {
-                TODO("Not yet implemented")
+                viewModel.updateLikeStatus(item.id, false)
             }
 
             override fun onItemLiked(item: Item) {
-                TODO("Not yet implemented")
+                viewModel.updateLikeStatus(item.id, true)
             }
 
             override fun onItemUnliked(item: Item) {
-                TODO("Not yet implemented")
+                viewModel.updateLikeStatus(item.id, false)
             }
         })
 

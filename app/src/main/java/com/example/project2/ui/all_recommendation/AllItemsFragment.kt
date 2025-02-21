@@ -92,7 +92,8 @@ class AllItemsFragment : Fragment() {
             starView.setOnClickListener {
                 selectedRating = rating
                 updateStars(rating)
-                Toast.makeText(requireContext(), "Minimum rating set: $rating ⭐", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.minimum_rating_set,selectedRating.toString()), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -231,7 +232,7 @@ class AllItemsFragment : Fragment() {
                     viewModel.fetchUserItems()
                 }
 
-                Toast.makeText(requireContext(), "Recommendation deleted!", Toast.LENGTH_SHORT)
+                Toast.makeText(requireContext(), getString(R.string.item_deleted_successfully), Toast.LENGTH_SHORT)
                     .show()
             }
 
@@ -280,7 +281,7 @@ class AllItemsFragment : Fragment() {
 
                 Toast.makeText(
                     requireContext(),
-                    "Sort selected: ${button.text}",
+                    getString(R.string.sort_selected, button.text),
                     Toast.LENGTH_SHORT
                 ).show()
             }

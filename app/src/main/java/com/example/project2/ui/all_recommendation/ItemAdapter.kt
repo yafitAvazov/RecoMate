@@ -60,7 +60,8 @@ class ItemAdapter(
                         navController.navigate(R.id.action_specificCategoryItemsFragment_to_updateItemFragment, bundle)
                     }
                     else -> {
-                        Toast.makeText(binding.root.context, "Navigation Error: Unknown Source Fragment", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(binding.root.context,
+                            binding.root.context.getString(R.string.navigation_error_unknown_source_fragment), Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -76,13 +77,14 @@ class ItemAdapter(
             callBack.onItemClicked(adapterPosition)
 
             if (currentDestination == R.id.specificCategoryItemsFragment) {
-                Toast.makeText(binding.root.context, "Long click for details", Toast.LENGTH_SHORT).show()
+                Toast.makeText(binding.root.context, binding.root.context.getString(R.string.long_click_for_details), Toast.LENGTH_SHORT).show()
+
             return
             }
             if (currentDestination == R.id.allItemsFragment) {
                 navController.navigate(R.id.action_allItemsFragment_to_itemDetailsFragment)
             } else {
-                println("⚠️ Navigation Error: Unknown source fragment!")
+                println(binding.root.context.getString(R.string.navigation_error_unknown_source_fragment))
             }
 
             val item = items[adapterPosition]
@@ -99,7 +101,7 @@ class ItemAdapter(
                 }
                 else -> {
                     // במקרה שאין יעד מתאים (אופציונלי - רק לדיוג)
-                    println("⚠️ Navigation Error: Unknown source fragment!")
+                    println(binding.root.context.getString(R.string.navigation_error_unknown_source_fragment))
                 }
             }
         }
@@ -169,12 +171,12 @@ class ItemAdapter(
 
             binding.deleteBtn.setOnClickListener {
                 AlertDialog.Builder(binding.root.context)
-                    .setTitle("Delete Confirmation")
-                    .setMessage("Are you sure you want to delete this recommendation?")
-                    .setPositiveButton("Yes") { _, _ ->
+                    .setTitle(binding.root.context.getString(R.string.delete_confirmation))
+                    .setMessage(binding.root.context.getString(R.string.are_you_sure_you_want_to_delete_this_recommendation))
+                    .setPositiveButton(binding.root.context.getString(R.string.yes)) { _, _ ->
                         callBack.onItemDeleted(item) // ✅ מעביר למחיקה גם מההמלצות שלי וגם מכל ההמלצות
                     }
-                    .setNegativeButton("No", null)
+                    .setNegativeButton(binding.root.context.getString(R.string.no), null)
                     .show()
             }
 

@@ -87,4 +87,50 @@
     <string name="all_rec_layout_all_recommendations_text">All Recommendations</string>
     <string name="fav_rec_layout_my_favorites_text">My Favorites</string>
     <string name="update_rec_layout_update_button">Update</string>
+    <string name="login_successful">Login successful</string>
+    <string name="long_click_for_details">Long click for details</string>
+    <string name="no_address">No address</string>
+    <string name="no_address_to_check">No address to check</string>
+    <string name="navigation_error_unknown_source_fragment">Navigation Error: Unknown Source Fragment</string>
+    <string name="are_you_sure_you_want_to_delete_this_recommendation">Are you sure you want to delete this recommendation?</string>
+    <string name="address_optional">Address (Optional)</string>
+    <string name="top_items">TOP ITEMS 🔥</string>
+    <string name="sort_by_price_low_to_high">Sort by Price: Low to High</string>
+    <string name="sort_by_price_high_to_low">Sort by Price: High to Low</string>
+    <string name="sort_by_stars_high_to_low">Sort by Stars: High to Low</string>
+    <string name="post">post</string>
+    <string name="items_image" translatable="false">items image</string>
+    <string name="location_icon" translatable="false">location icon</string>
+    <string name="location">Location</string>
+    <string name="show_adress">Show address</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="phone_no">Phone No</string>
+    <string name="password">Password</string>
+    <string name="register">Register</string>
+    <string name="full_size_image" translatable="false">Full size image</string>
+    <string name="close">close</string>
+    <string name="username">Username</string>
+    <string name="profile_picture">profile picture</string>
+    <string name="like_button" translatable="false">like button</string>
+    <string name="log_into_your_account">Log Into Your Account</string>
+    <string name="login">Login</string>
+    <string name="don_t_have_an_acount_yet_click_to_register">Don\'t have an acount yet, click to register</string>
+    <string name="let_s_recommend">Let\'s Recommend!</string>
+    <string name="create_an_account">Create an Account</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="edit_address">Edit address</string>
+    <string name="no_image_to_show">No image to show</string>
+    <string name="only_3_categories_are_allowed">Only 3 categories are allowed</string>
+    <string name="please_enter_a_valid_email_address">Please enter a valid email address</string>
+    <string name="password_must_be_at_least_6_characters">Password must be at least 6 characters</string>
+    <string name="passwords_do_not_match">Passwords do not match</string>
+    <string name="registration_successful">Registration successful</string>
+    <string name="error_occurred">Error occurred</string>
+    <string name="recommendation_deleted">Recommendation deleted!</string>
+    <string name="like_status_updated">Like status updated!</string>
+    <string name="minimum_rating_set">Minimum rating set: %1$s ⭐</string>
+    <string name="sort_selected">Sort selected: %1$s</string>
+    <string name="error_user_not_logged_in">Error: User not logged in!</string>
 </resources>

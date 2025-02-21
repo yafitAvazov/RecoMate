@@ -93,7 +93,8 @@ class AddItemFragment : Fragment() {
         val userId = viewModel.getCurrentUserId() // ✅ השגת ה-User ID של המשתמש המחובר
 
         if (userId == null) {
-            Toast.makeText(requireContext(), "Error: User not logged in!", Toast.LENGTH_SHORT)
+            Toast.makeText(requireContext(),
+                getString(R.string.error_user_not_logged_in), Toast.LENGTH_SHORT)
                 .show()
             return
         }
