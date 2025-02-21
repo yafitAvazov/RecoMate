@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitCenter"
-        android:contentDescription="תמונה בגודל מלא" />
+        android:contentDescription="@string/full_size_image" />
 
     <!-- כפתור סגירה -->
     <ImageButton
@@ -20,7 +20,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/baseline_close_24"
 
-        android:contentDescription="סגור"
+        android:contentDescription="@string/close"
         android:layout_gravity="top|end" />
 
 </FrameLayout>

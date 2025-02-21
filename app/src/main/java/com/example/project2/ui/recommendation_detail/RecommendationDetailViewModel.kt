@@ -26,7 +26,7 @@ class RecommendationDetailViewModel @Inject constructor(
         value = mutableMapOf()
     }
 
-    fun fetchItemById(itemId: String) { // 🔥 `Int` ➝ `String`
+    fun fetchItemById(itemId: String) {
         viewModelScope.launch {
             try {
                 val item = repository.getItemById(itemId).firstOrNull()
@@ -42,7 +42,7 @@ class RecommendationDetailViewModel @Inject constructor(
     fun updateItemComments(item: Item, newComments: List<String>) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateItemComments(item.id, newComments)
-            fetchItemById(item.id.toString()) // ✅ מעביר String
+            fetchItemById(item.id) // ✅ מעביר String
         }
     }
 

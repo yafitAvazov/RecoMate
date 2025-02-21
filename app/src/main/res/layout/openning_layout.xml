@@ -26,7 +26,7 @@
             android:layout_height="85dp"
             android:layout_gravity="center"
             android:backgroundTint="@color/white"
-            android:text="Let's Recommend!"
+            android:text="@string/let_s_recommend"
             android:textColor="@color/blue"
             android:textSize="25sp" />
     </LinearLayout>

@@ -64,7 +64,7 @@ class RecommendationDetailsFragment : Fragment() {
         binding.itemTitle.text = item.title.ifBlank { getString(R.string.no_title) }
         binding.itemComment.text = if (item.comment.isBlank()) getString(R.string.no_comment) else "\"${item.comment}\""
         binding.itemPrice.text = if (item.price == 0.0) getString(R.string.no_price) else "$${item.price}"
-        binding.addressTextView.text = item.address?.ifBlank { "No address" }
+        binding.addressTextView.text = item.address?.ifBlank { getString(R.string.no_address) }
 //        setupCommentsSection(item)
 
         // קישור ולחיצה עליו
@@ -94,7 +94,7 @@ class RecommendationDetailsFragment : Fragment() {
             )
         }
 
-        setupCategoryText(item.category.split(", ").filter { it.isNotBlank() })
+        setupCategoryText(item.category.split(getString(R.string.separator)).filter { it.isNotBlank() })
 
         if (item.address.isNullOrEmpty()) {
             binding.addressTextView.visibility = View.GONE
@@ -111,7 +111,8 @@ class RecommendationDetailsFragment : Fragment() {
                 val bundle = bundleOf("address" to item.address)
                 findNavController().navigate(R.id.action_itemDetailsFragment_to_mapFragment, bundle)
             } else {
-                Toast.makeText(requireContext(), "No address to check", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.no_address_to_check), Toast.LENGTH_SHORT).show()
             }
         }
         setupCommentsSection(item)

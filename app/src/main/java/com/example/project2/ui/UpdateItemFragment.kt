@@ -82,7 +82,7 @@ class UpdateItemFragment : Fragment() {
             imageUri = Uri.parse(item.photo)
         }
         if (item.address.isNullOrEmpty()){
-            binding.editAddressEditText.setText("No address")
+            binding.editAddressEditText.setText(context?.getString(R.string.no_address))
         }
         else
         {
@@ -186,7 +186,8 @@ class UpdateItemFragment : Fragment() {
                         selectedCategories.add(category)
                         button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gray))
                     } else {
-                        Toast.makeText(requireContext(), "ניתן לבחור עד 3 קטגוריות בלבד", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.only_3_categories_are_allowed), Toast.LENGTH_SHORT).show()
                     }
                 }
             }
