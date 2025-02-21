@@ -5,8 +5,11 @@ import com.example.project2.data.model.Item
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import com.google.gson.Gson
+import kotlinx.coroutines.flow.firstOrNull
 import javax.inject.Inject
 import javax.inject.Singleton
+
 
 @Singleton
 class ItemRepositoryLocal @Inject constructor(private val itemDao: ItemDao) {
@@ -48,9 +51,10 @@ class ItemRepositoryLocal @Inject constructor(private val itemDao: ItemDao) {
     suspend fun getFilteredItems(selectedRating: Int, selectedMaxPrice: Double): Flow<List<Item>> {
         return itemDao.getFilteredItems(selectedRating, selectedMaxPrice)
     }
-    suspend fun updateLikeStatus(itemId: String, isLiked: Boolean) = withContext(Dispatchers.IO) {
-        itemDao.updateLikeStatus(itemId, isLiked)
+    suspend fun updateLikeStatus(itemId: String, likedByJson: String) = withContext(Dispatchers.IO) {
+        itemDao.updateLikeStatus(itemId, likedByJson) // ✅ Directly update the database
     }
+
 
 
 

@@ -114,14 +114,15 @@ class MyRecommendationsFragment : Fragment() {
 
         }
             override fun onItemLiked(item: Item) {
-                viewModel.updateLikeStatus(item.id, true) // ✅ מעביר את ה-ID של הפריט + ערך `true
+                val currentUserId = viewModel.getCurrentUserId() ?: return
+                viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Pass userId instead of "true"
+            }
 
-            Toast.makeText(requireContext(),
-                getString(R.string.like_status_updated), Toast.LENGTH_SHORT).show()
-            }
             override fun onItemUnliked(item: Item) {
-                viewModel.updateLikeStatus(item.id, false) // ✅ מסיר מהמועדפים
+                val currentUserId = viewModel.getCurrentUserId() ?: return
+                viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Pass userId instead of "false"
             }
+
 
 
         })

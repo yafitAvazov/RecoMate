@@ -5,12 +5,16 @@ import com.example.project2.data.repository.firebaseImpl.ItemRepositoryFirebase
 import com.example.project2.data.model.Item
 import com.example.project2.utils.Resource
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.channels.awaitClose
 
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -135,31 +139,67 @@ class ItemRepository @Inject constructor(
         }.flowOn(Dispatchers.IO)
 
 
-    suspend fun updateLikeStatus(itemId: String, isLiked: Boolean) {
+
+
+
+    suspend fun updateLikeStatus(itemId: String, userId: String) {
         withContext(Dispatchers.IO) {
-            itemRepositoryFirebase.updateLikeStatus(itemId, isLiked)
-            itemRepositoryLocal.updateLikeStatus(itemId, isLiked)
+            val item = itemRepositoryLocal.getItemById(itemId).firstOrNull()
+                ?: itemRepositoryFirebase.getItemById(itemId).firstOrNull()
+                ?: return@withContext
+
+            val isAlreadyLiked = item.likedBy.contains(userId)
+            val updatedLikedBy = if (isAlreadyLiked) item.likedBy - userId else item.likedBy + userId
+
+            // ✅ Only update if there's a change
+            if (updatedLikedBy != item.likedBy) {
+                val likedByJson = Gson().toJson(updatedLikedBy)
+
+                itemRepositoryFirebase.updateLikeStatus(itemId, updatedLikedBy)
+                itemRepositoryLocal.updateLikeStatus(itemId, likedByJson)
+            }
         }
     }
 
 
-    fun getUserFavorites(): Flow<List<Item>> = flow {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@flow
 
-        // ✅ Fetch both local and Firebase favorites
-        val localFavorites = itemRepositoryLocal.getUserFavorites(userId).firstOrNull() ?: emptyList()
-        val firebaseFavorites = itemRepositoryFirebase.getUserFavorites().firstOrNull() ?: emptyList()
 
-        val combinedFavorites = (localFavorites + firebaseFavorites).distinctBy { it.id }
 
-        if (combinedFavorites.isEmpty()) {
-            println("🔥 DEBUG: No favorite items found in Firebase or Local DB!")
-        } else {
-            println("🔥 DEBUG: ${combinedFavorites.size} favorite items found!")
+
+
+    fun getUserFavorites(): Flow<List<Item>> = callbackFlow {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser == null) {
+            close(Exception("User not logged in"))
+            return@callbackFlow
         }
 
-        emit(combinedFavorites) // ✅ Ensures all liked items appear
-    }.flowOn(Dispatchers.IO)
+        val itemRef = FirebaseFirestore.getInstance().collection("items") // ✅ Ensure Firestore reference is correct
+
+        val listener = itemRef
+            .whereArrayContains("likedBy", currentUser.uid) // ✅ Fetch only items liked by the logged-in user
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    println("❌ Firestore Error: ${e.message}")
+                    close(e)
+                    return@addSnapshotListener
+                }
+
+                val items = snapshot?.toObjects(Item::class.java) ?: emptyList()
+
+                if (items.isEmpty()) {
+                    println("🔥 DEBUG: No liked items found for user ${currentUser.uid} in Firestore!")
+                } else {
+                    println("🔥 DEBUG: ${items.size} liked items found for user ${currentUser.uid}!")
+                }
+
+                trySend(items).isSuccess
+            }
+
+        awaitClose { listener.remove() }
+    }
+
+
 
 
 

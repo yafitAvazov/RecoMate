@@ -26,9 +26,11 @@ data class Item(
     @ColumnInfo(name = "item_comments") val comments: List<String> = emptyList(),
     @ColumnInfo(name = "user_id") val userId: String = "",
 
-    @get:PropertyName("liked") // ✅ Maps Firebase "liked" to Room's "isLiked"
-    @set:PropertyName("liked")
-    @ColumnInfo(name = "isLiked") var isLiked: Boolean = false // ✅ Room uses "isLiked"
+
+    @get:PropertyName("likedBy") // ✅ Firestore field to track users who liked the item
+    @set:PropertyName("likedBy")
+    @ColumnInfo(name = "likedBy") var likedBy: List<String> = emptyList()
+
 ) : Parcelable
 
 

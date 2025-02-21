@@ -96,12 +96,7 @@ class RecommendationListViewModel @Inject constructor(
         viewModelScope.launch {
             repository.getUserFavorites()
                 .collectLatest { likedItems ->
-                    if (likedItems.isEmpty()) {
-                        println("🔥 DEBUG: No liked items found in ViewModel!")
-                    } else {
-                        println("🔥 DEBUG: ${likedItems.size} liked items found!")
-                    }
-                    _userFavorites.value = likedItems // ✅ Updates StateFlow
+                    _userFavorites.value = likedItems
                 }
         }
     }
@@ -111,18 +106,14 @@ class RecommendationListViewModel @Inject constructor(
 
 
 
-    fun updateLikeStatus(itemId: String, isLiked: Boolean) {
+
+    fun updateLikeStatus(itemId: String, userId: String) {
         viewModelScope.launch {
-            repository.updateLikeStatus(itemId, isLiked)
-
-            // ✅ Update only the liked status in _items, without filtering out non-liked items
-            _items.value = _items.value.map { item ->
-                if (item.id == itemId) item.copy(isLiked = isLiked) else item
-            }
-
-            fetchUserFavorites() // ✅ This updates _userFavorites, but _items remains unchanged
+            repository.updateLikeStatus(itemId, userId)
         }
     }
+
+
 
 
 
