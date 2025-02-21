@@ -72,24 +72,23 @@ class ItemRepository @Inject constructor(
 
     suspend fun updateItemComments(itemId: String, comments: List<String>) {
         withContext(Dispatchers.IO) {
-            val userId = FirebaseAuth.getInstance().currentUser?.uid
-            if (userId == null) {
-                println("⚠️ Error: User not logged in")
-                return@withContext
-            }
-
-            // עדכון ב-Firebase (רק אם המשתמש הוא הבעלים של ההמלצה)
-            val firebaseItem = itemRepositoryFirebase.getItemById(itemId).firstOrNull()
-            if (firebaseItem != null && firebaseItem.userId == userId) {
-                itemRepositoryFirebase.updateItemComments(itemId, comments)
-            }
+            // עדכון ב-Firebase
+            itemRepositoryFirebase.updateItemComments(itemId, comments)
 
             // עדכון במסד הנתונים המקומי (Room)
             val commentsJson = com.google.gson.Gson().toJson(comments)
             itemRepositoryLocal.updateItemComments(itemId, commentsJson)
         }
     }
+    suspend fun getUsernameByUserId(userId: String): String? {
+        return itemRepositoryFirebase.getUsernameByUserId(userId)
+    }
 
+//    // ✅ עדכון תגובות לפריט בפיירבייס ובמקומית
+//    suspend fun updateItemComments(itemId: String, comments: List<String>) {
+//        itemRepositoryFirebase.updateItemComments(itemId, comments)
+//        itemRepositoryLocal.updateItemComments(itemId, comments)
+//    }
 
     fun getItemById(itemId: String): Flow<Item?> = flow {
         val localItem = itemRepositoryLocal.getItemById(itemId).firstOrNull()
@@ -161,6 +160,8 @@ class ItemRepository @Inject constructor(
 
         emit(combinedFavorites) // ✅ Ensures all liked items appear
     }.flowOn(Dispatchers.IO)
+
+
 
 
 

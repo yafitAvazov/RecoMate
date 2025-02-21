@@ -11,6 +11,7 @@ class CommentsAdapter(private var comments: MutableList<String>) :
     RecyclerView.Adapter<CommentsAdapter.CommentViewHolder>() {
 
     class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val userName: TextView = itemView.findViewById(R.id.user_name)
         val commentText: TextView = itemView.findViewById(R.id.comment_text)
     }
 
@@ -21,8 +22,14 @@ class CommentsAdapter(private var comments: MutableList<String>) :
     }
 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
-        holder.commentText.text = comments[position]
+        val commentParts = comments[position].split(": ", limit = 2)
+        val userName = commentParts.getOrNull(0) ?: "אנונימי"
+        val commentText = commentParts.getOrNull(1) ?: comments[position]
+
+        holder.userName.text = userName // 🔥 שם המשתמש
+        holder.commentText.text = commentText // 🔥 התגובה עצמה
     }
+
 
     override fun getItemCount(): Int = comments.size
 
@@ -30,4 +37,6 @@ class CommentsAdapter(private var comments: MutableList<String>) :
         comments = newComments.toMutableList()
         notifyDataSetChanged()
     }
+
+
 }

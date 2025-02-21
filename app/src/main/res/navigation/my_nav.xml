@@ -98,11 +98,16 @@
     <fragment
         android:id="@+id/itemDetailsFragment"
         android:name="com.example.project2.ui.recommendation_detail.RecommendationDetailsFragment"
-        android:label="ItemDetailsFragment" >
+        android:label="ItemDetailsFragment"
+        app:destination="@id/itemDetailsFragment">
         <argument
             android:name="selectedItem"
             app:argType="com.example.project2.data.model.Item"
             app:nullable="false" />
+        <argument
+            android:name="itemId"
+            app:argType="string"
+            app:nullable="false" /> <!-- 🔥 הוספת ה-ID כמחרוזת -->
         <action
             android:id="@+id/action_itemDetailsFragment_to_mapFragment"
             app:destination="@id/mapFragment" />

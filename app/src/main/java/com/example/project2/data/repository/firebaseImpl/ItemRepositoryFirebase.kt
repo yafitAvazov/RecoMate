@@ -1,8 +1,12 @@
 package com.example.project2.data.repository.firebaseImpl
 
+import android.app.Application
+import android.widget.Toast
 import com.example.project2.data.model.Item
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import dagger.hilt.android.internal.Contexts.getApplication
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
@@ -10,6 +14,7 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
+
 
 @Singleton
 class ItemRepositoryFirebase @Inject constructor() {
@@ -176,23 +181,41 @@ fun getItems(): Flow<List<Item>> = callbackFlow {
         awaitClose { listener.remove() }
     }
     suspend fun updateItemComments(itemId: String, comments: List<String>) = withContext(Dispatchers.IO) {
-        val userId = auth.currentUser?.uid ?: return@withContext
-        val itemSnapshot = itemRef.document(itemId).get().await()
+        val documentRef = itemRef.document(itemId)
 
-        // ✅ Ensure `userId` is checked before updating comments
+        // 🔥 ודא שקיים פריט עם ה-ID
+        val itemSnapshot = documentRef.get().await()
         if (!itemSnapshot.exists()) {
             println("⚠️ Error: Item does not exist in Firestore")
             return@withContext
         }
 
-        val item = itemSnapshot.toObject(Item::class.java)
-        if (item != null && item.userId == userId) {  // ✅ Now using `userId` in the check
-            val commentsJson = com.google.gson.Gson().toJson(comments)
-            itemRef.document(itemId).update("item_comments", commentsJson).await()
-        } else {
-            println("⚠️ Error: User is not authorized to update this item's comments")
+        // 🔥 שמירת התגובות כ-Array בפיירבייס
+        documentRef.update("comments", comments).await()
+        println("✅ Comments updated successfully")
+    }
+
+    suspend fun getUsernameByUserId(userId: String): String? = withContext(Dispatchers.IO) {
+        try {
+            val userSnapshot = FirebaseFirestore.getInstance()
+                .collection("users") // 🔥 ודאי שהשם מדויק - בדיוק כמו ב-Firestore
+                .document(userId)
+                .get()
+                .await()
+
+            // 🔥 בדיקת הנתונים שנשלפו מה-Database
+            println("🔥 DEBUG: Document data: ${userSnapshot.data}")
+            val username = userSnapshot.getString("name")
+            println("🔥 DEBUG: Username: $username")
+
+            return@withContext username
+        } catch (e: Exception) {
+            println("❌ Error fetching username: ${e.message}")
+            return@withContext null
         }
     }
+
+
 
     fun getItemsByCategory(category: String): Flow<List<Item>> = callbackFlow {
         val listener = itemRef.whereEqualTo("category", category)

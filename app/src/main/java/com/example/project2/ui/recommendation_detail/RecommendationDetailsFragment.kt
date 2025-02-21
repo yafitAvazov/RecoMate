@@ -48,17 +48,35 @@ class RecommendationDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         itemId = arguments?.getString("itemId") // ✅ ה-ID מתקבל כמחרוזת ישירות
-        itemId?.let { viewModel.fetchItemById(it) } // ✅ שולחת ל-ViewModel את ה-ID
-        observeViewModel()
-    }
+        itemId?.let {
 
+            viewModel.fetchItemById(it)
+            setupCommentsAdapter()
 
-
-    private fun observeViewModel() {
-        viewModel.chosenItem.observe(viewLifecycleOwner) { item ->
-            item?.let { updateUI(it) }
+            observeViewModel(it) // 🔥 מעבירה את ה-ID לפונקציה
         }
     }
+    private fun setupCommentsAdapter() {
+        commentsAdapter = CommentsAdapter(mutableListOf()) // 🔥 אתחול פעם אחת בלבד עם רשימה ריקה
+    }
+    private fun observeViewModel(itemId: String) {
+        viewModel.getItemById(itemId).observe(viewLifecycleOwner) { updatedItem ->
+            updatedItem?.let {
+                updateUI(it) // 🔥 עדכון כל ה-UI
+                val updatedComments = it.comments ?: emptyList()
+                commentsAdapter.updateComments(updatedComments) // 🔥 עדכון התגובות
+            }
+        }
+    }
+
+
+
+
+//    private fun observeViewModel() {
+//        viewModel.chosenItem.observe(viewLifecycleOwner) { item ->
+//            item?.let { updateUI(it) }
+//        }
+//    }
 
     private fun updateUI(item: Item) {
         binding.itemTitle.text = item.title.ifBlank { getString(R.string.no_title) }
@@ -127,36 +145,57 @@ class RecommendationDetailsFragment : Fragment() {
         binding.itemCategory.text = formattedCategories
     }
     private fun setupCommentsSection(item: Item) {
-        binding?.let { binding -> // ✅ בדיקה שה-Binding עדיין קיים
+        binding?.let { binding ->
             val commentsRecyclerView = binding.root.findViewById<RecyclerView>(R.id.comments_recycler_view)
             val commentInput = binding.root.findViewById<EditText>(R.id.comment_input)
             val addCommentButton = binding.root.findViewById<Button>(R.id.add_comment_button)
 
             commentsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-            commentsAdapter = CommentsAdapter(mutableListOf())
+            commentsAdapter = CommentsAdapter(item.comments.toMutableList()) // 🔥 אתחול עם רשימה מה-Item
             commentsRecyclerView.adapter = commentsAdapter
 
-            viewModel.chosenItem.observe(viewLifecycleOwner) { item: Item? ->
-                val commentsList = item?.comments ?: emptyList()
-                commentsAdapter.updateComments(commentsList.toMutableList())
+            // 🔥 הקשבה לתגובות בזמן אמת
+            viewModel.getItemById(item.id).observe(viewLifecycleOwner) { updatedItem ->
+                val updatedComments = updatedItem?.comments ?: emptyList()
+                commentsAdapter.updateComments(updatedComments.toMutableList())
             }
 
             addCommentButton.setOnClickListener {
                 val newComment = commentInput.text.toString().trim()
                 if (newComment.isNotEmpty()) {
                     val currentItem = viewModel.chosenItem.value ?: return@setOnClickListener
-                    val commentsList = currentItem.comments.toMutableList().apply { add(newComment) }
 
-                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                        viewModel.updateItemComments(currentItem, commentsList)
+                    // 🔥 קבלת שם המשתמש מה-ViewModel
+                    viewModel.getUsername().observe(viewLifecycleOwner) { userName ->
+                        val commentsList = currentItem.comments.toMutableList()
+
+                        // 🔥 בדיקת שם המשתמש ב-Logcat
+                        println("🔥 DEBUG: Username for comment: $userName")
+
+                        // 🔥 הוספת שם המשתמש לתגובה
+                        val commentWithUserName = "${userName ?: "אנונימי"}: $newComment"
+                        commentsList.add(commentWithUserName)
+
+                        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                            viewModel.updateItemComments(currentItem.id, commentsList)
+                        }
+
+                        viewModel.refreshItemComments(currentItem.id)
+                        commentInput.text.clear()
                     }
+                }
+            }
 
-                    commentsAdapter.updateComments(commentsList)
-                    commentInput.text.clear()
+            commentInput.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    commentsRecyclerView.postDelayed({
+                        commentsRecyclerView.scrollToPosition(commentsAdapter.itemCount - 1) // ✅ מבטיח שהגלילה תישמר
+                    }, 200)
                 }
             }
         }
     }
+
 
 //    private fun setupCommentsSection(item: Item) {
 //        binding.commentsRecyclerView.layoutManager = LinearLayoutManager(requireContext())

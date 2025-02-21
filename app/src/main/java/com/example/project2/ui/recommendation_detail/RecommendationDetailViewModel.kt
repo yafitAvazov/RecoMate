@@ -1,5 +1,7 @@
 package com.example.project2.ui.recommendation_detail
 
+import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecommendationDetailViewModel @Inject constructor(
-    private val repository: ItemRepository
+    private val repository: ItemRepository,
 ) : ViewModel() {
 
     private val _chosenItem = MutableLiveData<Item?>()
@@ -25,26 +27,57 @@ class RecommendationDetailViewModel @Inject constructor(
     val commentsMap = MutableLiveData<MutableMap<String, MutableList<String>>>().apply {
         value = mutableMapOf()
     }
-
     fun fetchItemById(itemId: String) {
         viewModelScope.launch {
-            try {
-                val item = repository.getItemById(itemId).firstOrNull()
+            repository.getItemById(itemId).collect { item ->
+                _chosenItem.value = item
+            }
+        }
+    }
+
+    fun getUsername(): LiveData<String?> {
+        val liveData = MutableLiveData<String?>()
+        viewModelScope.launch(Dispatchers.IO) {
+            val userId = FirebaseAuth.getInstance().currentUser?.uid
+
+            // 🔥 בדיקת userId
+            println("🔥 DEBUG: Current User ID: $userId")
+
+            if (userId != null) {
+                val username = repository.getUsernameByUserId(userId)
+                liveData.postValue(username)
+            } else {
+                liveData.postValue(null)
+            }
+        }
+        return liveData
+    }
+
+
+//    fun getCurrentUserName(): String? {
+//        val currentUser = FirebaseAuth.getInstance().currentUser
+//        return currentUser?.displayName ?: currentUser?.email // מציג שם או דוא"ל אם אין שם
+//    }
+
+
+
+    fun updateItemComments(itemId: String, newComments: List<String>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateItemComments(itemId, newComments)
+        refreshItemComments(itemId) // 🔥 טוען מחדש את התגובות מהפיירבייס
+        }
+    }
+
+
+    fun refreshItemComments(itemId: String) {
+        viewModelScope.launch {
+            repository.getItemById(itemId).collect { item ->
                 _chosenItem.postValue(item)
-            } catch (e: Exception) {
-                _chosenItem.postValue(null)
             }
         }
     }
 
 
-
-    fun updateItemComments(item: Item, newComments: List<String>) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.updateItemComments(item.id, newComments)
-            fetchItemById(item.id) // ✅ מעביר String
-        }
-    }
 
 
 
@@ -61,13 +94,16 @@ class RecommendationDetailViewModel @Inject constructor(
         }
     }
 
-    fun getItemById(itemId: String) {
+    fun getItemById(itemId: String): LiveData<Item?> {
+        val liveData = MutableLiveData<Item?>()
         viewModelScope.launch {
             repository.getItemById(itemId).collect { item ->
-                _chosenItem.postValue(item)
+                liveData.postValue(item)
             }
         }
+        return liveData
     }
+
 
 
 }
