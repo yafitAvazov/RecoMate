@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -18,6 +19,7 @@ import com.example.project2.data.model.Item
 import com.example.project2.databinding.FavoriteRecommendationLayoutBinding
 import com.example.project2.ui.all_recommendation.ItemAdapter
 import com.example.project2.ui.all_recommendation.RecommendationListViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -55,15 +57,17 @@ class FavoritesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initializeRecyclerView()
-
-        // ✅ Fetch favorites when fragment is created
-        viewModel.fetchUserFavorites()
-
         observeFavoriteItems()
+
+        viewModel.fetchUserFavorites() // ✅ הבאת רשימת המועדפים
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            // טיפול בלחיצה אחורה לעדכון הנוויגיישן באר וחזרה לכל ההמלצות
+            findNavController().navigate(R.id.allItemsFragment)
+
+            requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+                ?.selectedItemId = R.id.nav_all_recommendation
+        }
     }
-
-
-
 
     private fun initializeRecyclerView() {
         adapter = ItemAdapter(emptyList(), object : ItemAdapter.ItemListener {
@@ -85,6 +89,7 @@ class FavoritesFragment : Fragment() {
                 viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Pass `userId` instead
             }
 
+
             override fun onItemLiked(item: Item) {
                 val currentUserId = viewModel.getCurrentUserId() ?: return
                 viewModel.updateLikeStatus(item.id, currentUserId) // ✅
@@ -100,7 +105,6 @@ class FavoritesFragment : Fragment() {
         binding.recyclerMyFav.layoutManager = LinearLayoutManager(requireContext()) // ✅ Add LayoutManager
         binding.recyclerMyFav.adapter = adapter
     }
-
 
     private fun observeFavoriteItems() {
         viewLifecycleOwner.lifecycleScope.launch {
@@ -123,13 +127,8 @@ class FavoritesFragment : Fragment() {
     }
 
 
-
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 }
-
-
-

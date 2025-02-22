@@ -20,6 +20,7 @@ import com.example.project2.R
 import com.example.project2.data.model.Item
 import com.example.project2.databinding.AllRecommendationsLayoutBinding
 import com.example.project2.ui.recommendation_detail.RecommendationDetailViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -35,11 +36,9 @@ class AllItemsFragment : Fragment() {
 
 
     private var showingUserItems = false // ✅ משתנה שמנהל האם להציג את הפריטים של המשתמש בלבד
+
     private val viewModel: RecommendationListViewModel by viewModels()
     private lateinit var adapter: ItemAdapter
-
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,6 +65,13 @@ class AllItemsFragment : Fragment() {
 //            showDeleteAllConfirmationDialog()
 //        }
 
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            // טיפול בלחיצה אחורה לעדכון הנוויגיישן באר וחזרה לכל ההמלצות
+            findNavController().navigate(R.id.categoriesFragment)
+
+            requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+                ?.selectedItemId = R.id.nav_categories
+            }
     }
 
     override fun onResume() {
@@ -188,7 +194,6 @@ class AllItemsFragment : Fragment() {
 
 
 
-
     private fun initializeRecyclerView() {
         adapter = ItemAdapter(emptyList(), object : ItemAdapter.ItemListener {
 
@@ -201,7 +206,6 @@ class AllItemsFragment : Fragment() {
                 val bundle = bundleOf("itemId" to item.id)
                 findNavController().navigate(R.id.action_allItemsFragment_to_itemDetailsFragment, bundle)
             }
-
 
             override fun onItemDeleted(item: Item) {
                 viewModel.deleteItem(item) // 🔥 מוחק מה-DB המקומי ומה-Firebase
@@ -225,7 +229,6 @@ class AllItemsFragment : Fragment() {
                 val currentUserId = viewModel.getCurrentUserId() ?: return
                 viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Pass userId instead of "false"
             }
-
         })
 
         binding.recycler.adapter = adapter

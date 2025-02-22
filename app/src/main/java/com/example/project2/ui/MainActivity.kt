@@ -77,16 +77,17 @@ class MainActivity : AppCompatActivity() {
                     navController.navigate(R.id.addItemFragment)
                     true
                 }
-                R.id.nav_my_recommendations -> {  // 🔥 עמוד ההמלצות שלי
+                R.id.nav_my_recommendations -> {
                     navController.navigate(R.id.myRecommendationsFragment)
                     true
                 }
-                R.id.nav_favorites -> {  // 🔥 עמוד ההמלצות שלי
+                R.id.nav_favorites -> {
                     navController.navigate(R.id.favoritesFragment)
                     true
                 }
                 else -> false
-
+            }.also {
+                bottomNavigationView.menu.findItem(item.itemId).isChecked = true // ✅ עדכון מצב הניווט בתפריט
             }
         }
 

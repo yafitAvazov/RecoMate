@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
@@ -23,7 +24,7 @@ class MapFragment : Fragment() {
         address = arguments?.getString("address")
     }
 
-    @SuppressLint("SetJavaScriptEnabled", "ClickableViewAccessibility")
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,7 +37,13 @@ class MapFragment : Fragment() {
         return binding.root
     }
 
-    @SuppressLint("JavascriptInterface", "ClickableViewAccessibility")
+    private fun focusOnAddress(address: String) {
+        val jsCode = "focusOnLocation('${address.replace("'", "\\'")}');"
+        Log.d("MapFragment", "Focusing on address: $address")
+        binding.mapWebView.evaluateJavascript(jsCode, null)
+    }
+
+
     private fun setupWebView() {
         binding.mapWebView.apply {
             settings.apply {
@@ -51,11 +58,18 @@ class MapFragment : Fragment() {
             }
             setOnTouchListener { v, event ->
                 v.parent.requestDisallowInterceptTouchEvent(true)
+
+                if (event.action == MotionEvent.ACTION_UP) {
+                    v.performClick() // ✅ קריאה ל-performClick עבור נגישות
+                }
+
                 v.onTouchEvent(event)
+                true
             }
 
+
             WebView.setWebContentsDebuggingEnabled(true)
-            addJavascriptInterface(this@MapFragment, "Android")
+            addJavascriptInterface(this@MapFragment, "Android") //השגיאה בגלל שיש העברה של הפרגמנט לפונקציה של ג'אווה סקריפט
 
             webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView?, url: String?) {
@@ -82,12 +96,6 @@ class MapFragment : Fragment() {
 
         // טעינת הקובץ רק פעם אחת
         binding.mapWebView.loadUrl("file:///android_asset/map.html")
-    }
-
-    private fun focusOnAddress(address: String) {
-        val jsCode = "focusOnLocation('${address.replace("'", "\\'")}');"
-        Log.d("MapFragment", "Focusing on address: $address")
-        binding.mapWebView.evaluateJavascript(jsCode, null)
     }
 
     override fun onDestroyView() {

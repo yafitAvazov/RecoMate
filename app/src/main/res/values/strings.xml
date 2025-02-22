@@ -79,7 +79,7 @@
     <string name="error_fetching_items">error_fetching_items</string>
     <string name="category_chosen">Category chosen: %1$s</string>
     <string name="beauty">Beauty</string>
-    <string name="enter_adress">Enter Adress</string>
+    <string name="enter_adress">Enter Address</string>
     <string name="sort_options">Sort Options</string>
     <string name="item_deleted_successfully">item_deleted_successfully</string>
     <string name="categories_layout_categories_text">CATEGORIES</string>
@@ -131,7 +131,7 @@
     <string name="recommendation_deleted">Recommendation deleted!</string>
     <string name="like_status_updated">Like status updated!</string>
     <string name="minimum_rating_set">Minimum rating set: %1$s ⭐</string>
-    <string name="sort_selected">Sort selected: %1$s</string>
+    <string name="sort_selected">Sort selected: %s</string>
     <string name="error_user_not_logged_in">Error: User not logged in!</string>
 
 </resources>
