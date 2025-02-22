@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.project2.R
 import com.example.project2.databinding.CategoriesLayoutBinding
 import com.example.project2.ui.model.Category
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -60,10 +61,10 @@ class CategoriesFragment : Fragment() {
             findNavController().navigate(R.id.action_categoriesFragment_to_specificCategoryItemsFragment, bundle)
         }
         binding.allCategoriesButton.setOnClickListener {
-            val bundle = Bundle().apply {
-                putString("categoryName", "ALL")
-            }
-            findNavController().navigate(R.id.action_categoriesFragment_to_specificCategoryItemsFragment, bundle)
+
+            findNavController().navigate(R.id.action_categoriesFragment_to_allItemsFragment)
+            requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+                ?.selectedItemId = R.id.nav_all_recommendation
         }
 
         recyclerView.adapter = categoryAdapter
