@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
@@ -57,11 +58,18 @@ class MapFragment : Fragment() {
             }
             setOnTouchListener { v, event ->
                 v.parent.requestDisallowInterceptTouchEvent(true)
+
+                if (event.action == MotionEvent.ACTION_UP) {
+                    v.performClick() // ✅ קריאה ל-performClick עבור נגישות
+                }
+
                 v.onTouchEvent(event)
+                true
             }
 
+
             WebView.setWebContentsDebuggingEnabled(true)
-            addJavascriptInterface(this@MapFragment, "Android")
+            addJavascriptInterface(this@MapFragment, "Android") //השגיאה בגלל שיש העברה של הפרגמנט לפונקציה של ג'אווה סקריפט
 
             webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView?, url: String?) {
