@@ -60,6 +60,11 @@ class AllItemsFragment : Fragment() {
         viewModel.fetchUserItems() // ✅ מביא את ההמלצות של המשתמש המחובר
         viewModel.fetchUserFavorites() // ✅ מביא את רשימת המועדפים של המשתמש
 
+        binding.topItemsButton.setOnClickListener {
+            viewModel.fetchTopLikedItems()
+        }
+
+
 
 
 //        binding.actionDelete.setOnClickListener {
@@ -184,14 +189,26 @@ class AllItemsFragment : Fragment() {
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.items.collectLatest { itemList ->
-                    binding.progressBar.visibility = View.GONE
-                    binding.recycler.visibility = View.VISIBLE
-                    adapter.updateList(itemList) // ✅ Ensure all items are updated, not just liked ones
+                launch {
+                    viewModel.items.collectLatest { itemList ->
+                        binding.progressBar.visibility = View.GONE
+                        binding.recycler.visibility = View.VISIBLE
+                        adapter.updateList(itemList) // ✅ Show all items by default
+                    }
+                }
+
+                launch {
+                    viewModel.topLikedItems.collectLatest { topItemList ->
+                        if (topItemList.isNotEmpty()) {
+                            adapter.updateList(topItemList) // ✅ Show top liked items when requested
+                        }
+                    }
                 }
             }
         }
     }
+
+
 
 
 

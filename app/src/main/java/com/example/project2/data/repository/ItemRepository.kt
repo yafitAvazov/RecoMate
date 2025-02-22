@@ -39,6 +39,9 @@ class ItemRepository @Inject constructor(
 //    }.flowOn(Dispatchers.IO)
     fun getItems(): Flow<List<Item>> = itemRepositoryFirebase.getItems()
 
+    fun getTopLikedItems(): Flow<List<Item>> = itemRepositoryFirebase.getTopLikedItems()
+
+
 
     fun getUserItems(): Flow<List<Item>> = itemRepositoryFirebase.getUserItems()
 

@@ -30,6 +30,9 @@ class RecommendationListViewModel @Inject constructor(
     private val _userItems = MutableStateFlow<List<Item>>(emptyList())
     val userItems: StateFlow<List<Item>> get() = _userItems.asStateFlow()
 
+    private val _topLikedItems = MutableStateFlow<List<Item>>(emptyList())
+    val topLikedItems: StateFlow<List<Item>> = _topLikedItems.asStateFlow()
+
 
 
 
@@ -191,6 +194,15 @@ class RecommendationListViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateItemComments(item.id, newComments)
             fetchItemById(item.id) // ✅ מעביר String
+        }
+    }
+
+
+    fun fetchTopLikedItems() {
+        viewModelScope.launch {
+            repository.getTopLikedItems().collectLatest { topItems ->
+                _topLikedItems.value = topItems
+            }
         }
     }
 
