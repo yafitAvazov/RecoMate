@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.project2.R
+import com.example.project2.data.model.CategoryMapper
 import com.example.project2.data.model.Item
 import com.example.project2.databinding.SpecificCategoryItemsBinding
 import com.example.project2.ui.all_recommendation.ItemAdapter
@@ -86,17 +87,15 @@ class SpecificCategoryItemsFragment : Fragment() {
     }
 
     private fun loadItems(category: String) {
+        val categoryKey = CategoryMapper.getCategoryId(category,requireContext())
         lifecycleScope.launch {
-            if (category == "ALL") {
-                viewModel.fetchItems() // טוען את כל הפריטים ללא סינון
-            } else {
-                viewModel.fetchItemsByCategory(category)
-            }
+            viewModel.fetchItemsByCategory(categoryKey.toString()) // ✅ Uses universal key
             viewModel.items.collectLatest { items ->
                 adapter.updateList(items)
             }
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

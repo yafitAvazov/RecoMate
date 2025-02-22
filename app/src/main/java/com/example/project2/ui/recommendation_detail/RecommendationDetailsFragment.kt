@@ -19,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.project2.R
+import com.example.project2.data.model.CategoryMapper
 import com.example.project2.data.model.Item
 import com.example.project2.databinding.FragmentItemDetailsBinding
 import com.example.project2.ui.CommentsAdapter
@@ -94,7 +95,8 @@ class RecommendationDetailsFragment : Fragment() {
             )
         }
 
-        setupCategoryText(item.category.split(getString(R.string.separator)).filter { it.isNotBlank() })
+        setupCategoryText(item.category) // שולח את המזהים לפונקציה שתתרגם
+
 
         if (item.address.isNullOrEmpty()) {
             binding.addressTextView.visibility = View.GONE
@@ -118,14 +120,18 @@ class RecommendationDetailsFragment : Fragment() {
         setupCommentsSection(item)
         }
 
-    private fun setupCategoryText(categories: List<String>) {
-        val formattedCategories = if (categories.isEmpty()) {
+    private fun setupCategoryText(categoryString: String) {
+        val categoryIds = categoryString.split(",").mapNotNull { it.toIntOrNull() } // המרת מזהים לרשימה של מספרים
+        val localizedCategories = categoryIds.map { CategoryMapper.getLocalizedCategory(it, requireContext()) }
+
+        val formattedCategories = if (localizedCategories.isEmpty()) {
             getString(R.string.no_category)
         } else {
-            categories.joinToString(" | ")
+            localizedCategories.joinToString(" | ") // מציג שמות קטגוריות מופרדות עם "|"
         }
         binding.itemCategory.text = formattedCategories
     }
+
     private fun setupCommentsSection(item: Item) {
         binding?.let { binding -> // ✅ בדיקה שה-Binding עדיין קיים
             val commentsRecyclerView = binding.root.findViewById<RecyclerView>(R.id.comments_recycler_view)

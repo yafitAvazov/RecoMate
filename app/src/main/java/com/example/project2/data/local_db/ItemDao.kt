@@ -60,10 +60,14 @@ interface ItemDao {
     suspend fun updateComments(itemId: kotlin.String, commentsJson: String)
 
 
-    @Query("SELECT * FROM review_table WHERE :selectedCategories IS NULL OR ',' || REPLACE(item_category, ', ', ',') || ',' LIKE '%,' || :selectedCategories || ',%'")
-    fun getItemsByCategory(selectedCategories: String?): Flow<List<Item>>
+//    @Query("SELECT * FROM review_table WHERE :selectedCategories IS NULL OR ',' || REPLACE(item_category, ', ', ',') || ',' LIKE '%,' || :selectedCategories || ',%'")
+//    fun getItemsByCategory(selectedCategories: String?): Flow<List<Item>>
 
-
+    @Query("""
+    SELECT * FROM review_table 
+    WHERE (',' || item_category || ',' LIKE '%,' || :categoryId || ',%')
+""")
+    fun getItemsByCategory(categoryId: String): Flow<List<Item>>
 
 
     @Query("DELETE FROM review_table")

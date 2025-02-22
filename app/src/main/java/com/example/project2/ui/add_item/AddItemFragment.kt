@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings.Global.getString
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +20,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.project2.data.model.Item
 import com.example.project2.R
+import com.example.project2.data.model.CategoryMapper
 import com.example.project2.databinding.AddRecommendationLayoutBinding
 import java.io.File
 import com.example.project2.ui.all_recommendation.RecommendationListViewModel
@@ -86,11 +86,13 @@ class AddItemFragment : Fragment() {
         val priceText = binding.price.text.toString()
         val address = binding.addressEdt.text.toString().takeIf { it.isNotBlank() } ?: ""
         val link = binding.itemLink.text.toString().takeIf { it.isNotBlank() } ?: ""
-        val selectedCategoryText =
-            selectedCategories.takeIf { it.isNotEmpty() }?.joinToString(", ") ?: ""
-        val price = priceText.toDoubleOrNull() ?: 0.0
 
-        val userId = viewModel.getCurrentUserId() // ✅ השגת ה-User ID של המשתמש המחובר
+        // המרת שמות קטגוריות למספרים
+        val categoryIds = selectedCategories.mapNotNull { CategoryMapper.getCategoryId(it, requireContext()) }
+        val categoryString = categoryIds.joinToString(",") // נשמור בפורמט "1,3,5"
+
+        val price = priceText.toDoubleOrNull() ?: 0.0
+        val userId = viewModel.getCurrentUserId()
 
         if (userId == null) {
             Toast.makeText(requireContext(),
@@ -98,16 +100,17 @@ class AddItemFragment : Fragment() {
                 .show()
             return
         }
-        val itemId = itemRef.document().id // 🔥 יצירת ID ייחודי בפיירבייס
+
+        val itemId = itemRef.document().id // יצירת ID ייחודי בפיירבייס
 
         val item = Item(
-            id = itemId, // זה יתעדכן אוטומטית ב-Firebase
-            userId = userId, // ✅ עכשיו יש לנו userId!
+            id = itemId,
+            userId = userId,
             title = title,
             comment = comment,
             photo = photo,
             price = price,
-            category = selectedCategoryText,
+            category = categoryString, // ✅ עכשיו תומך בכמה קטגוריות
             link = link,
             rating = selectedRating,
             address = address
@@ -115,7 +118,6 @@ class AddItemFragment : Fragment() {
 
         viewModel.addItem(item)
 
-        // הצגת Toast לאחר הוספת ההמלצה
         Toast.makeText(
             requireContext(),
             getString(R.string.recommendation_published),
@@ -124,6 +126,8 @@ class AddItemFragment : Fragment() {
 
         findNavController().navigate(R.id.action_addItemFragment_to_allItemsFragment)
     }
+
+
 
 
 

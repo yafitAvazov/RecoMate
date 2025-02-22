@@ -23,7 +23,7 @@ class MapFragment : Fragment() {
         address = arguments?.getString("address")
     }
 
-    @SuppressLint("SetJavaScriptEnabled", "ClickableViewAccessibility")
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,7 +36,13 @@ class MapFragment : Fragment() {
         return binding.root
     }
 
-    @SuppressLint("JavascriptInterface", "ClickableViewAccessibility")
+    private fun focusOnAddress(address: String) {
+        val jsCode = "focusOnLocation('${address.replace("'", "\\'")}');"
+        Log.d("MapFragment", "Focusing on address: $address")
+        binding.mapWebView.evaluateJavascript(jsCode, null)
+    }
+
+
     private fun setupWebView() {
         binding.mapWebView.apply {
             settings.apply {
@@ -82,12 +88,6 @@ class MapFragment : Fragment() {
 
         // טעינת הקובץ רק פעם אחת
         binding.mapWebView.loadUrl("file:///android_asset/map.html")
-    }
-
-    private fun focusOnAddress(address: String) {
-        val jsCode = "focusOnLocation('${address.replace("'", "\\'")}');"
-        Log.d("MapFragment", "Focusing on address: $address")
-        binding.mapWebView.evaluateJavascript(jsCode, null)
     }
 
     override fun onDestroyView() {
