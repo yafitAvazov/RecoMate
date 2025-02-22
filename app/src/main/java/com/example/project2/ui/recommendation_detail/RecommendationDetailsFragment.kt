@@ -1,6 +1,5 @@
 package com.example.project2.ui.recommendation_detail
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -35,7 +34,6 @@ class RecommendationDetailsFragment : Fragment() {
     private lateinit var commentsAdapter: CommentsAdapter
     private var itemId: String? = null
 
-    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -75,7 +73,7 @@ class RecommendationDetailsFragment : Fragment() {
         binding.itemComment.text = if (item.comment.isBlank()) getString(R.string.no_comment) else "\"${item.comment}\""
         binding.itemPrice.text = if (item.price == 0.0) getString(R.string.no_price) else "$${item.price}"
         binding.addressTextView.text = item.address?.ifBlank { getString(R.string.no_address) }
-//        setupCommentsSection(item)
+//          setupCommentsSection(item)
 
         // קישור ולחיצה עליו
         if (item.link.isNotEmpty()) {

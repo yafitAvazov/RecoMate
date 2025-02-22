@@ -3,6 +3,7 @@ package com.example.project2.ui.all_recommendation
 import android.os.Bundle
 import android.view.*
 import android.widget.*
+import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat

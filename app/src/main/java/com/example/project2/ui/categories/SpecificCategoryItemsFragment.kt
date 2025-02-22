@@ -65,13 +65,11 @@ class SpecificCategoryItemsFragment : Fragment() {
         adapter = ItemAdapter(emptyList(), object : ItemAdapter.ItemListener {
             override fun onItemClicked(index: Int) {
                 val item = adapter.items[index]
-                Toast.makeText(requireContext(),
-                    getString(R.string.long_click_for_details), Toast.LENGTH_SHORT).show()            }
+                val bundle = bundleOf("itemId" to item.id)
+                findNavController().navigate(R.id.action_specificCategoryItemsFragment_to_itemDetailsFragment, bundle)       }
 
             override fun onItemLongClicked(index: Int) {
-                val item = adapter.items[index]
-                val bundle = bundleOf("itemId" to item.id)
-                findNavController().navigate(R.id.action_specificCategoryItemsFragment_to_itemDetailsFragment, bundle)
+
             }
 
             override fun onItemDeleted(item: Item) {
