@@ -157,6 +157,7 @@ class RecommendationDetailsFragment : Fragment() {
                         viewModel.updateItemComments(currentItem, commentsList)
                     }
 
+
                     commentsAdapter.updateComments(commentsList)
                     commentInput.text.clear()
                 }

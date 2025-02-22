@@ -169,13 +169,31 @@ class RecommendationListViewModel @Inject constructor(
             _items.value = sortedList
         }
     }
-        fun fetchItemsByCategory(category: String) {
-            viewModelScope.launch {
-                repository.getItemsByCategory(category).collect { itemList ->
-                    _items.value = itemList
-                }
+    fun fetchItemsByCategory(category: String) {
+        viewModelScope.launch {
+            repository.getItemsByCategory(category).collect { itemList ->
+                _items.value = itemList
             }
         }
+    }
+    fun fetchItemById(itemId: String) {
+        viewModelScope.launch {
+            try {
+                val item = repository.getItemById(itemId).firstOrNull()
+                _items.value = listOfNotNull(item) // ✅ מעדכן את ה-StateFlow
+            } catch (e: Exception) {
+                _items.value = emptyList() // ✅ במקרה של שגיאה מחזיר רשימה ריקה
+            }
+        }
+    }
+
+    fun updateItemComments(item: Item, newComments: List<String>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateItemComments(item.id, newComments)
+            fetchItemById(item.id) // ✅ מעביר String
+        }
+    }
+
 
 
 
