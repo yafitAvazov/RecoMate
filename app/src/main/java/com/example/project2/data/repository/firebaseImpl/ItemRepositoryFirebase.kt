@@ -243,5 +243,22 @@ fun getItems(): Flow<List<Item>> = callbackFlow {
         awaitClose { listener.remove() }
     }
 
+    fun getTopLikedItems(): Flow<List<Item>> = callbackFlow {
+        val listener = itemRef
+            .orderBy("likedBy", com.google.firebase.firestore.Query.Direction.DESCENDING) // Order by most liked
+            .limit(5) // Limit to top 5
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    close(e)
+                    return@addSnapshotListener
+                }
+                val items = snapshot?.toObjects(Item::class.java) ?: emptyList()
+                trySend(items).isSuccess
+            }
+
+        awaitClose { listener.remove() }
+    }
+
+
 
 }
