@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContentProviderCompat.requireContext
@@ -24,6 +25,7 @@ import com.example.project2.data.model.CategoryMapper
 import com.example.project2.databinding.AddRecommendationLayoutBinding
 import java.io.File
 import com.example.project2.ui.all_recommendation.RecommendationListViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -125,13 +127,21 @@ class AddItemFragment : Fragment() {
         ).show()
 
         findNavController().navigate(R.id.action_addItemFragment_to_allItemsFragment)
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView).selectedItemId = R.id.nav_all_recommendation
     }
 
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            // טיפול בלחיצה אחורה לעדכון הנוויגיישן באר וחזרה לכל ההמלצות
+            findNavController().navigate(R.id.allItemsFragment)
 
-
-
+            requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+                ?.selectedItemId = R.id.nav_all_recommendation
+        }
+    }
 
 
     private fun showImagePickerDialog() {

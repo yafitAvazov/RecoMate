@@ -121,7 +121,7 @@
     <string name="recommendation_deleted">המלצה נמחקה!</string>
     <string name="like_status_updated">הלייק עודכן בהצלחה!</string>
     <string name="minimum_rating_set">דירוג מינימלי: %1$s ⭐</string>
-    <string name="sort_selected">מיון נבחר: %1%s</string>
+    <string name="sort_selected">מיון נבחר: %s</string>
     <string name="error_user_not_logged_in">שגיאה: משתמש לא מחובר!</string>
 
 </resources>

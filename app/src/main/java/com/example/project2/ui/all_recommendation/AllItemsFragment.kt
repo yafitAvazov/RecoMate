@@ -3,6 +3,7 @@ package com.example.project2.ui.all_recommendation
 import android.os.Bundle
 import android.view.*
 import android.widget.*
+import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.project2.R
 import com.example.project2.data.model.Item
 import com.example.project2.databinding.AllRecommendationsLayoutBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -59,6 +61,13 @@ class AllItemsFragment : Fragment() {
 
         binding.actionDelete.setOnClickListener {
             showDeleteAllConfirmationDialog()
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            // טיפול בלחיצה אחורה לעדכון הנוויגיישן באר וחזרה לכל ההמלצות
+            findNavController().navigate(R.id.categoriesFragment)
+
+            requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+                ?.selectedItemId = R.id.nav_categories
         }
 
     }
