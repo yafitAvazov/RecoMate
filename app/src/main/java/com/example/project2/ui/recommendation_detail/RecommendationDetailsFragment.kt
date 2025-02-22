@@ -1,6 +1,5 @@
 package com.example.project2.ui.recommendation_detail
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -19,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.project2.R
+import com.example.project2.data.model.CategoryMapper
 import com.example.project2.data.model.Item
 import com.example.project2.databinding.FragmentItemDetailsBinding
 import com.example.project2.ui.CommentsAdapter
@@ -34,7 +34,6 @@ class RecommendationDetailsFragment : Fragment() {
     private lateinit var commentsAdapter: CommentsAdapter
     private var itemId: String? = null
 
-    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -69,21 +68,12 @@ class RecommendationDetailsFragment : Fragment() {
         }
     }
 
-
-
-
-//    private fun observeViewModel() {
-//        viewModel.chosenItem.observe(viewLifecycleOwner) { item ->
-//            item?.let { updateUI(it) }
-//        }
-//    }
-
     private fun updateUI(item: Item) {
         binding.itemTitle.text = item.title.ifBlank { getString(R.string.no_title) }
         binding.itemComment.text = if (item.comment.isBlank()) getString(R.string.no_comment) else "\"${item.comment}\""
         binding.itemPrice.text = if (item.price == 0.0) getString(R.string.no_price) else "$${item.price}"
         binding.addressTextView.text = item.address?.ifBlank { getString(R.string.no_address) }
-//        setupCommentsSection(item)
+//          setupCommentsSection(item)
 
         // קישור ולחיצה עליו
         if (item.link.isNotEmpty()) {
@@ -112,7 +102,8 @@ class RecommendationDetailsFragment : Fragment() {
             )
         }
 
-        setupCategoryText(item.category.split(getString(R.string.separator)).filter { it.isNotBlank() })
+        setupCategoryText(item.category) // שולח את המזהים לפונקציה שתתרגם
+
 
         if (item.address.isNullOrEmpty()) {
             binding.addressTextView.visibility = View.GONE
@@ -136,11 +127,14 @@ class RecommendationDetailsFragment : Fragment() {
         setupCommentsSection(item)
         }
 
-    private fun setupCategoryText(categories: List<String>) {
-        val formattedCategories = if (categories.isEmpty()) {
+    private fun setupCategoryText(categoryString: String) {
+        val categoryIds = categoryString.split(",").mapNotNull { it.toIntOrNull() } // המרת מזהים לרשימה של מספרים
+        val localizedCategories = categoryIds.map { CategoryMapper.getLocalizedCategory(it, requireContext()) }
+
+        val formattedCategories = if (localizedCategories.isEmpty()) {
             getString(R.string.no_category)
         } else {
-            categories.joinToString(" | ")
+            localizedCategories.joinToString(" | ") // מציג שמות קטגוריות מופרדות עם "|"
         }
         binding.itemCategory.text = formattedCategories
     }
@@ -195,7 +189,6 @@ class RecommendationDetailsFragment : Fragment() {
             }
         }
     }
-
 
 //    private fun setupCommentsSection(item: Item) {
 //        binding.commentsRecyclerView.layoutManager = LinearLayoutManager(requireContext())

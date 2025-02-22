@@ -22,6 +22,8 @@ class RecommendationListViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
+    //    private val _items = MutableStateFlow<List<Item>>(emptyList())
+//    val items: StateFlow<List<Item>> get() = _items.asStateFlow()
     private val _items = MutableStateFlow<List<Item>>(emptyList())
     val items: StateFlow<List<Item>> = _items.asStateFlow()
 
@@ -81,7 +83,6 @@ class RecommendationListViewModel @Inject constructor(
 
 
 
-
     fun fetchUserItems() {
         viewModelScope.launch {
             val currentUser = FirebaseAuth.getInstance().currentUser
@@ -116,10 +117,6 @@ class RecommendationListViewModel @Inject constructor(
         }
     }
 
-
-
-
-
     fun addItem(item: Item) {
         viewModelScope.launch {
             repository.addItem(item)
@@ -149,6 +146,13 @@ class RecommendationListViewModel @Inject constructor(
         }
     }
 
+
+//    fun updateLikeStatus(item: Item) {
+//        viewModelScope.launch {
+//            repository.updateLikeStatus(item.id, item.isLiked)
+//        }
+//    }
+
     fun deleteAllUserItems() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteAllUserItems()
@@ -168,11 +172,21 @@ class RecommendationListViewModel @Inject constructor(
             _items.value = sortedList
         }
     }
-
     fun fetchItemsByCategory(category: String) {
         viewModelScope.launch {
-            repository.getItemsByCategory(category)
-                .collect { itemList -> _items.value = itemList }
+            repository.getItemsByCategory(category).collect { itemList ->
+                _items.value = itemList
+            }
+        }
+    }
+    fun fetchItemById(itemId: String) {
+        viewModelScope.launch {
+            try {
+                val item = repository.getItemById(itemId).firstOrNull()
+                _items.value = listOfNotNull(item) // ✅ מעדכן את ה-StateFlow
+            } catch (e: Exception) {
+                _items.value = emptyList() // ✅ במקרה של שגיאה מחזיר רשימה ריקה
+            }
         }
     }
 
@@ -183,5 +197,32 @@ class RecommendationListViewModel @Inject constructor(
             }
         }
     }
+
+
+    fun updateItemComments(item: Item, newComments: List<String>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateItemComments(item.id, newComments)
+            fetchItemById(item.id) // ✅ מעביר String
+        }
+    }
+
+
+
+
+
+
+
+//    fun addFavorite(itemId: Int) { // ✅ מקבל רק את ה-ID
+//        viewModelScope.launch {
+//            repository.addFavorite(itemId)
+//        }
+//    }
+//
+//    fun removeFavorite(itemId: Int) { // ✅ מקבל רק את ה-ID
+//        viewModelScope.launch {
+//            repository.removeFavorite(itemId)
+//        }
+//    }
+
 
 }

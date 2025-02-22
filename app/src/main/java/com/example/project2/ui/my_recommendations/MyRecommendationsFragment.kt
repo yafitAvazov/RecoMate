@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -20,6 +21,7 @@ import com.example.project2.data.model.Item
 import com.example.project2.databinding.MyRecommendationLayoutBinding
 import com.example.project2.ui.all_recommendation.ItemAdapter
 import com.example.project2.ui.all_recommendation.RecommendationListViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -65,6 +67,13 @@ class MyRecommendationsFragment : Fragment() {
         binding.actionDelete.setOnClickListener {
             showDeleteAllConfirmationDialog()
 
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            // טיפול בלחיצה אחורה לעדכון הנוויגיישן באר וחזרה לכל ההמלצות
+            findNavController().navigate(R.id.allItemsFragment)
+
+            requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+                ?.selectedItemId = R.id.nav_all_recommendation
         }
 //        binding.actionDelete.setOnClickListener {
 //            lastSelectedItem?.let { item ->
