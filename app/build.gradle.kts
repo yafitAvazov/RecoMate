@@ -5,7 +5,7 @@ plugins {
     id("kotlin-kapt")
     id("org.jetbrains.kotlin.plugin.parcelize")
     id("com.google.gms.google-services")
-    id("com.google.firebase.crashlytics") // ✅ הוסף את Crashlytics Gradle Plugin
+    id("com.google.firebase.crashlytics")
 
 }
 
@@ -72,7 +72,7 @@ dependencies {
     val lifecycle_version = "2.6.1"
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version")
-    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version") // ✅ עבור collectLatest
+    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version")
 
 
     // Glide for image loading
@@ -93,7 +93,7 @@ dependencies {
 
 
     // 📌 Firebase - שימוש ב-BOM לניהול תלויות
-    implementation(platform("com.google.firebase:firebase-bom:33.1.0")) // ✅ גרסה יציבה!
+    implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-analytics")
@@ -102,7 +102,7 @@ dependencies {
     // Coroutines - גרסה חדשה יותר
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3") // ✅ לפיירבייס
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 
     implementation ("com.github.bumptech.glide:glide:4.15.1")
     kapt ("com.github.bumptech.glide:compiler:4.15.1")

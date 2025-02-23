@@ -31,7 +31,7 @@ class MyRecommendationsFragment : Fragment() {
     private var _binding: MyRecommendationLayoutBinding? = null
     private val binding get() = _binding!!
     private val viewModel: RecommendationListViewModel by viewModels()
-    private lateinit var adapter: ItemAdapter // ✅ משתנה לשמירת המתאם
+    private lateinit var adapter: ItemAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,7 +42,7 @@ class MyRecommendationsFragment : Fragment() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true) // ✅ מאפשר הצגת תפריט
+        setHasOptionsMenu(true)
     }
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main_menu, menu)
@@ -60,7 +60,7 @@ class MyRecommendationsFragment : Fragment() {
 
         initializeRecyclerView()
         observeUserItems()
-        viewModel.fetchUserItems() // 🔥 קריאה להמלצות של המשתמש בלבד
+        viewModel.fetchUserItems()
 
 
         binding.actionDelete.setOnClickListener {
@@ -68,17 +68,12 @@ class MyRecommendationsFragment : Fragment() {
 
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            // טיפול בלחיצה אחורה לעדכון הנוויגיישן באר וחזרה לכל ההמלצות
+
             findNavController().navigate(R.id.allItemsFragment)
 
             requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
                 ?.selectedItemId = R.id.nav_all_recommendation
         }
-//        binding.actionDelete.setOnClickListener {
-//            lastSelectedItem?.let { item ->
-//                showDeleteItemConfirmationDialog(item)
-//            } ?: Toast.makeText(requireContext(), "No item selected!", Toast.LENGTH_SHORT).show()
-//        }
 
 
     }
@@ -110,7 +105,7 @@ class MyRecommendationsFragment : Fragment() {
 
             override fun onItemDeleted(item: Item) {
                 try {
-                    viewModel.deleteItem(item) // 🔥 Deletes from Firestore & Local DB
+                    viewModel.deleteItem(item)
 
                     viewLifecycleOwner.lifecycleScope.launch {
                         try {
@@ -131,7 +126,7 @@ class MyRecommendationsFragment : Fragment() {
             override fun onItemLiked(item: Item) {
                 try {
                     val currentUserId = viewModel.getCurrentUserId() ?: throw Exception("User not logged in")
-                    viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Update Firestore
+                    viewModel.updateLikeStatus(item.id, currentUserId)
                 } catch (e: Exception) {
                     Toast.makeText(requireContext(), "Failed to like item: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
@@ -140,7 +135,7 @@ class MyRecommendationsFragment : Fragment() {
             override fun onItemUnliked(item: Item) {
                 try {
                     val currentUserId = viewModel.getCurrentUserId() ?: throw Exception("User not logged in")
-                    viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Update Firestore
+                    viewModel.updateLikeStatus(item.id, currentUserId)
                 } catch (e: Exception) {
                     Toast.makeText(requireContext(), "Failed to unlike item: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
@@ -150,14 +145,14 @@ class MyRecommendationsFragment : Fragment() {
 
         })
 
-        binding.recycler.layoutManager = LinearLayoutManager(requireContext()) // ✅ מגדיר רשימה אנכית
+        binding.recycler.layoutManager = LinearLayoutManager(requireContext())
         binding.recycler.adapter = adapter
     }
 
     private fun observeUserItems() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.userItems.collectLatest { itemList ->
-                adapter.updateList(itemList) // ✅ עדכון הרשימה עם הנתונים החדשים
+                adapter.updateList(itemList)
             }
         }
     }
@@ -171,18 +166,6 @@ class MyRecommendationsFragment : Fragment() {
             .setNegativeButton(getString(R.string.no), null)
             .show()
     }
-
-//    private fun showDeleteItemConfirmationDialog(item: Item) {
-//        AlertDialog.Builder(requireContext())
-//            .setTitle(getString(R.string.delete_confirmation)) // 🔥 כותרת
-//            .setMessage(getString(R.string.delete_confirmation_message)) // ✅ תוכן ההודעה
-//            .setPositiveButton(getString(R.string.yes)) { _, _ ->
-//                viewModel.deleteItem(item) // ✅ מוחק מה-DB
-//                Toast.makeText(requireContext(), getString(R.string.item_deleted_successfully), Toast.LENGTH_SHORT).show()
-//            }
-//            .setNegativeButton(getString(R.string.no), null) // ❌ אם המשתמש לוחץ "לא", הדיאלוג פשוט נסגר
-//            .show()
-//    }
 
 
     override fun onDestroyView() {

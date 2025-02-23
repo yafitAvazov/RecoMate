@@ -25,18 +25,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // 🔥 איפוס המונה בכניסה לאפליקציה
+
         val sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
         sharedPreferences.edit().putInt(KEY_POPUP_COUNTER, 0).apply()
 
-        // 🔥 בדיקת ערך המונה בכניסה לאפליקציה
+
         val updatedCounter = sharedPreferences.getInt(KEY_POPUP_COUNTER, 0)
         android.util.Log.d("PopupDebug", "Counter Reset onCreate: $updatedCounter")
 
 
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar) // ✅ כעת אין התנגשויות
-        supportActionBar?.setDisplayShowTitleEnabled(false) // ✅ מסיר את הכותרת של ה-Toolbar ומאפשר לוגו
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         val content = findViewById<View>(android.R.id.content)
         content.post {
@@ -50,10 +50,10 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
-        // קישור ה-BottomNavigationView ל-NavController
+
         bottomNavigationView.setupWithNavController(navController)
 
-        // מאזין לשינויים בניווט ומסתיר את ה-BottomNavigationView אם המשתמש ב-StartFragment
+
         navController.addOnDestinationChangedListener { _, destination, _ ->
             bottomNavigationView.visibility = when (destination.id) {
                 R.id.startFragment, R.id.loginFragment, R.id.registerFragment -> View.GONE
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // מאזין ללחיצות בתפריט הניווט
+
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_all_recommendation -> {
@@ -86,15 +86,15 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> false
             }.also {
-                bottomNavigationView.menu.findItem(item.itemId).isChecked = true // ✅ עדכון מצב הניווט בתפריט
+                bottomNavigationView.menu.findItem(item.itemId).isChecked = true
             }
         }
 
 
-        // התאמה לשולי המערכת כדי למנוע חפיפה עם כפתורי הניווט
+
         ViewCompat.setOnApplyWindowInsetsListener(bottomNavigationView) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(0, 0, 0, systemBars.bottom) // מרים את ה-BottomNavigationView מעל הכפתורים
+            v.setPadding(0, 0, 0, systemBars.bottom)
             insets
         }
     }

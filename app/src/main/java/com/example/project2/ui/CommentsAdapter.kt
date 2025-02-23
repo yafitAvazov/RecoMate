@@ -26,8 +26,8 @@ class CommentsAdapter(private var comments: MutableList<String>) :
         val userName = commentParts.getOrNull(0) ?: "אנונימי"
         val commentText = commentParts.getOrNull(1) ?: comments[position]
 
-        holder.userName.text = userName // 🔥 שם המשתמש
-        holder.commentText.text = commentText // 🔥 התגובה עצמה
+        holder.userName.text = userName
+        holder.commentText.text = commentText
     }
 
 

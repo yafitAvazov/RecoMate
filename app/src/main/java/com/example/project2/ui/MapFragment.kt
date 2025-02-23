@@ -100,7 +100,7 @@ class MapFragment : Fragment() {
             }
         }
 
-        // Load the map file once
+
         binding.mapWebView.loadUrl("file:///android_asset/map.html")
     }
 

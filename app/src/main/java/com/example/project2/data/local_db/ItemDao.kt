@@ -37,21 +37,18 @@ interface ItemDao {
     @Query("SELECT * FROM review_table WHERE ',' || likedBy || ',' LIKE '%,' || :userId || ',%'")
     fun getUserFavorites(userId: String): Flow<List<Item>>
 
-//    @Query("UPDATE review_table SET isLiked = :isLiked WHERE id = :itemId")
-//    suspend fun updateLikeStatus(itemId: String, isLiked: Boolean)
 
 
     @Query("UPDATE review_table SET likedBy = :likedBy WHERE id = :itemId")
     suspend fun updateLikeStatus(itemId: String, likedBy: String)
 
 
-    // ✅ Update comments using JSON string
+
     @Query("UPDATE review_table SET item_comments = :commentsJson WHERE id = :itemId")
     suspend fun updateComments(itemId: String, commentsJson: String)
 
 
-//    @Query("SELECT * FROM review_table WHERE :selectedCategories IS NULL OR ',' || REPLACE(item_category, ', ', ',') || ',' LIKE '%,' || :selectedCategories || ',%'")
-//    fun getItemsByCategory(selectedCategories: String?): Flow<List<Item>>
+
 
     @Query("""
     SELECT * FROM review_table 

@@ -10,13 +10,11 @@
     >
 
 
-    <!-- התוכן הראשי -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
 
-        <!-- כותרת -->
         <TextView
             android:id="@+id/title"
             android:textColor="@color/green"
@@ -45,8 +43,6 @@
 
 
 
-
-        <!-- רשימה -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler"
             android:layout_width="0dp"
@@ -62,32 +58,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/action_delete"
             app:layout_constraintVertical_bias="0.0" />
-<!--        &lt;!&ndash; ProgressBar לטעינה &ndash;&gt;-->
-<!--        <ProgressBar-->
-<!--            android:id="@+id/progressBar"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="20dp"-->
-<!--            android:visibility="gone"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/action_delete"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent" />-->
-
-<!--        &lt;!&ndash; הודעת שגיאה במקרה של תקלה &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/errorTextView"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="@string/error_fetching_items"-->
-<!--            android:textSize="18sp"-->
-<!--            android:textColor="@android:color/holo_red_dark"-->
-<!--            android:gravity="center"-->
-<!--            android:visibility="gone"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/progressBar"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent" />-->
-
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

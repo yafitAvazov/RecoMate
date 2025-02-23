@@ -5,7 +5,7 @@
         android:layout_height="match_parent"
         tools:context=".ui.MapFragment">
 
-        <!-- WebView for displaying the Leaflet map -->
+
         <WebView
             android:id="@+id/mapWebView"
             android:layout_width="match_parent"

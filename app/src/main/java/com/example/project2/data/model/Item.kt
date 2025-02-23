@@ -27,7 +27,7 @@ data class Item(
     @ColumnInfo(name = "user_id") val userId: String = "",
 
 
-    @get:PropertyName("likedBy") // ✅ Firestore field to track users who liked the item
+    @get:PropertyName("likedBy")
     @set:PropertyName("likedBy")
     @ColumnInfo(name = "likedBy") var likedBy: List<String> = emptyList()
 

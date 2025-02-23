@@ -10,13 +10,13 @@
    >
 
 
-    <!-- התוכן הראשי -->
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
        >
 
-        <!-- כותרת -->
+
         <TextView
             android:id="@+id/title"
             android:textColor="@color/white"
@@ -33,16 +33,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:gravity="center" />
-<!--        <ImageView-->
-<!--            android:id="@+id/action_delete"-->
-<!--            android:layout_width="40dp"-->
-<!--            android:layout_height="40dp"-->
-<!--            android:src="@drawable/baseline_delete_24"-->
-<!--            android:layout_marginTop="8dp"-->
-<!--            android:layout_marginEnd="16dp"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/title"-->
-<!--            app:layout_constraintEnd_toStartOf="@id/reset_filter_button"-->
-<!--            />-->
+
         <Button
             android:id="@+id/topItemsButton"
             android:layout_width="wrap_content"
@@ -72,7 +63,7 @@
 
 
 
-        <!-- כפתור סינון -->
+
         <ImageView
             android:id="@+id/filter_button"
             android:layout_width="40dp"
@@ -98,7 +89,7 @@
             android:textColor="@color/black" />
 
 
-        <!-- רשימה -->
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler"
             android:layout_width="0dp"
@@ -114,7 +105,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/filter_button"
             app:layout_constraintVertical_bias="0.0" />
-        <!-- ProgressBar לטעינה -->
+
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
@@ -125,7 +116,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- הודעת שגיאה במקרה של תקלה -->
         <TextView
             android:id="@+id/errorTextView"
             android:layout_width="wrap_content"
@@ -138,25 +128,12 @@
             app:layout_constraintTop_toBottomOf="@id/progressBar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
-        <!--        &lt;!&ndash; כפתור פעולה &ndash;&gt;-->
-<!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--            android:id="@+id/fab"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_margin="16dp"-->
-<!--            android:layout_marginEnd="16dp"-->
-<!--            android:layout_marginBottom="16dp"-->
-<!--            android:backgroundTint="@color/gray"-->
-<!--            android:src="@drawable/baseline_add_24"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent" />-->
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <!-- חלון הצד לסינון -->
+
     <LinearLayout
         android:id="@+id/order_by_menu"
         android:layout_width="300dp"
@@ -186,7 +163,7 @@
                     android:gravity="center"
                     android:layout_marginBottom="16dp" />
 
-                <!-- מיון -->
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -223,7 +200,7 @@
                     style="@style/Widget.MaterialComponents.Button.TextButton"/>
 
 
-                <!-- מחיר -->
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -262,7 +239,7 @@
                         android:layout_marginTop="16dp"/>
                 </RelativeLayout>
 
-                <!-- כוכבים -->
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -323,7 +300,7 @@
 
                 </LinearLayout>
 
-                <!-- כפתור Apply -->
+
                 <Button
                     android:id="@+id/apply_button"
                     android:layout_width="wrap_content"

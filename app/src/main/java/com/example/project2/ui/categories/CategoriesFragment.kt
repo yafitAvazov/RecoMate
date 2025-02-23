@@ -93,7 +93,7 @@ class CategoriesFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true) // ✅ מאפשר הצגת תפריט
+        setHasOptionsMenu(true)
     }
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main_menu, menu)
@@ -116,13 +116,13 @@ class CategoriesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            requireActivity().finish() // ✅ סוגר את האפליקציה לחלוטין
+            requireActivity().finish()
 
         }
 
 
 
-        recyclerView = binding.recyclerView // 🟢 ה-Binding מאותחל כראוי!
+        recyclerView = binding.recyclerView
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
 
         val categories = listOf(
@@ -160,7 +160,7 @@ class CategoriesFragment : Fragment() {
     }
 
 
-    // 🟢 שחרור ה-Binding כדי למנוע Memory Leaks
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

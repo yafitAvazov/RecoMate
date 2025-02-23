@@ -12,7 +12,7 @@
 
 
 
-<!-- כרטיסיה פנימית -->
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
                 android:gravity="center_vertical"
                 tools:ignore="MissingConstraints">
 
-                <!-- תמונה -->
+
                 <ImageView
                     android:id="@+id/item_image"
                     android:layout_width="80dp"
@@ -43,7 +43,7 @@
                     android:src="@drawable/baseline_hide_image_24"
                     android:scaleType="centerCrop"/>
 
-                <!-- פרטים -->
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
                         android:textStyle="bold"
                         android:textColor="@color/white" />
 
-                    <!-- דירוג כוכבים -->
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- מחיר וכפתורי עריכה/לב -->
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
                         android:textStyle="bold"
                         android:textColor="@color/light_blue"/>
 
-                    <!-- כפתורי לב/עריכה -->
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -98,29 +98,29 @@
                         android:gravity="center"
                         android:layout_marginTop="8dp">
 
-                        <!-- לב ריק (למשתמשים אחרים) -->
+
                         <ImageView
                             android:id="@+id/like_btn"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:src="@drawable/baseline_favorite_border_24"
-                            android:visibility="gone"/> <!-- מוסתר כברירת מחדל -->
+                            android:visibility="gone"/>
 
-                        <!-- עיפרון (למשתמש שהעלה את ההמלצה) -->
+
                         <ImageView
                             android:id="@+id/edit_btn"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:src="@drawable/baseline_edit_24"
-                            android:visibility="gone"/> <!-- מוסתר כברירת מחדל -->
+                            android:visibility="gone"/>
 
-                        <!-- אייקון פח (למשתמש שהעלה את ההמלצה) -->
+
                         <ImageView
                             android:id="@+id/delete_btn"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:src="@drawable/baseline_delete_24"
-                            android:visibility="gone"/> <!-- מוסתר כברירת מחדל -->
+                            android:visibility="gone"/>
                     </LinearLayout>
                 </LinearLayout>
 

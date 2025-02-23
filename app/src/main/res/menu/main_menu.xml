@@ -6,7 +6,7 @@
         android:id="@+id/action_logo"
         android:title=""
         app:showAsAction="always"
-        app:actionLayout="@layout/custom_toolbar_logo" /> <!-- שימוש ב-Layout מותאם אישית -->
+        app:actionLayout="@layout/custom_toolbar_logo" />
 
     <item android:title="Sign out"
         android:id="@+id/action_sign_out"

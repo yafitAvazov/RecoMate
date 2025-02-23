@@ -32,11 +32,11 @@ class AllItemsFragment : Fragment() {
     private val binding get() = _binding!!
     private var selectedMaxPrice: Int = 1000
     private var selectedRating: Int = 0
-    private var selectedSort: String? = null // Track selected sort type
-    private var selectedSortButton: Button? = null // Track selected button for color change
+    private var selectedSort: String? = null
+    private var selectedSortButton: Button? = null
 
 
-    private var showingUserItems = false // ✅ משתנה שמנהל האם להציג את הפריטים של המשתמש בלבד
+    private var showingUserItems = false
 
     private val viewModel: RecommendationListViewModel by viewModels()
     private lateinit var adapter: ItemAdapter
@@ -56,9 +56,9 @@ class AllItemsFragment : Fragment() {
         initializeRecyclerView()
         setupDrawerFilters(view)
         observeViewModel()
-        viewModel.fetchItems() // ✅ מביא את כל ההמלצות
-        viewModel.fetchUserItems() // ✅ מביא את ההמלצות של המשתמש המחובר
-        viewModel.fetchUserFavorites() // ✅ מביא את רשימת המועדפים של המשתמש
+        viewModel.fetchItems()
+        viewModel.fetchUserItems()
+        viewModel.fetchUserFavorites()
 
         binding.topItemsButton.setOnClickListener {
             viewModel.fetchTopLikedItems()
@@ -67,12 +67,10 @@ class AllItemsFragment : Fragment() {
 
 
 
-//        binding.actionDelete.setOnClickListener {
-//            showDeleteAllConfirmationDialog()
-//        }
+
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            // טיפול בלחיצה אחורה לעדכון הנוויגיישן באר וחזרה לכל ההמלצות
+
             findNavController().navigate(R.id.categoriesFragment)
 
             requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
@@ -88,7 +86,7 @@ class AllItemsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true) // ✅ מאפשר הצגת תפריט
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -132,9 +130,7 @@ class AllItemsFragment : Fragment() {
     }
 
 
-    //    private fun deleteAllItems() {
-//        viewModel.deleteAll()
-//    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_sign_out) {
             viewModel.signOut()
@@ -180,7 +176,7 @@ class AllItemsFragment : Fragment() {
             .setTitle(getString(R.string.delete_confirmation))
             .setMessage(getString(R.string.all_delete_confirmation_message))
             .setPositiveButton(getString(R.string.yes)) { _, _ ->
-                deleteAllItems() // ✅ קריאה לפונקציה שמוחקת את כל הפריטים
+                deleteAllItems()
             }
             .setNegativeButton(getString(R.string.no), null)
             .show()
@@ -193,14 +189,14 @@ class AllItemsFragment : Fragment() {
                     viewModel.items.collectLatest { itemList ->
                         binding.progressBar.visibility = View.GONE
                         binding.recycler.visibility = View.VISIBLE
-                        adapter.updateList(itemList) // ✅ Show all items by default
+                        adapter.updateList(itemList)
                     }
                 }
 
                 launch {
                     viewModel.topLikedItems.collectLatest { topItemList ->
                         if (topItemList.isNotEmpty()) {
-                            adapter.updateList(topItemList) // ✅ Show top liked items when requested
+                            adapter.updateList(topItemList)
                         }
                     }
                 }
@@ -227,7 +223,7 @@ class AllItemsFragment : Fragment() {
 
             override fun onItemDeleted(item: Item) {
                 try {
-                    viewModel.deleteItem(item) // 🔥 Deletes from Firestore & Local DB
+                    viewModel.deleteItem(item)
 
                     viewLifecycleOwner.lifecycleScope.launch {
                         try {
@@ -248,7 +244,7 @@ class AllItemsFragment : Fragment() {
             override fun onItemLiked(item: Item) {
                 try {
                     val currentUserId = viewModel.getCurrentUserId() ?: throw Exception("User not logged in")
-                    viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Update Firestore
+                    viewModel.updateLikeStatus(item.id, currentUserId)
                 } catch (e: Exception) {
                     Toast.makeText(requireContext(), "Failed to like item: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
@@ -257,7 +253,7 @@ class AllItemsFragment : Fragment() {
             override fun onItemUnliked(item: Item) {
                 try {
                     val currentUserId = viewModel.getCurrentUserId() ?: throw Exception("User not logged in")
-                    viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Update Firestore
+                    viewModel.updateLikeStatus(item.id, currentUserId)
                 } catch (e: Exception) {
                     Toast.makeText(requireContext(), "Failed to unlike item: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
@@ -276,12 +272,12 @@ class AllItemsFragment : Fragment() {
         val resetFilterButton = view.findViewById<Button>(R.id.reset_filter_button)
         val applyButton = view.findViewById<Button>(R.id.apply_button)
 
-        // Sorting buttons
+
         val sortPriceAscButton = view.findViewById<Button>(R.id.sort_price_asc_button)
         val sortPriceDescButton = view.findViewById<Button>(R.id.sort_price_desc_button)
         val sortStarsDescButton = view.findViewById<Button>(R.id.sort_stars_desc_button)
 
-        // Setup sort button listeners
+
         val sortButtons = mapOf(
             sortPriceAscButton to "price_asc",
             sortPriceDescButton to "price_desc",
@@ -290,13 +286,13 @@ class AllItemsFragment : Fragment() {
 
         sortButtons.forEach { (button, sortKey) ->
             button.setOnClickListener {
-                // Track selected sort
+
                 selectedSort = sortKey
 
-                // Reset all buttons to default color
+
                 sortButtons.keys.forEach { it.setBackgroundColor(resources.getColor(R.color.gray)) }
 
-                // Highlight the selected button
+
                 button.setBackgroundColor(resources.getColor(R.color.purple_500))
 
 
@@ -304,7 +300,7 @@ class AllItemsFragment : Fragment() {
         }
 
 
-        // Open drawer on filter icon click
+
         filterButton.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.END)
         }
@@ -316,7 +312,7 @@ class AllItemsFragment : Fragment() {
                 progress: Int,
                 fromUser: Boolean
             ) {
-                selectedMaxPrice = progress  // Corrected variable name
+                selectedMaxPrice = progress
                 binding.minPrice.text = "$$progress"
             }
 
@@ -325,7 +321,7 @@ class AllItemsFragment : Fragment() {
         })
 
 
-        // Sorting actions with color change
+
         sortPriceAscButton.setOnClickListener {
             handleSortSelection(sortPriceAscButton, "price_asc")
         }
@@ -339,7 +335,7 @@ class AllItemsFragment : Fragment() {
         }
 
 
-        // Apply filters with current selections
+
         applyButton.setOnClickListener {
             applyFilters()
             drawerLayout.closeDrawer(GravityCompat.END)
@@ -351,10 +347,10 @@ class AllItemsFragment : Fragment() {
     }
 
     private fun handleSortSelection(button: Button, sortType: String) {
-        // Reset previous button color if any
+
         selectedSortButton?.setBackgroundColor(resources.getColor(R.color.gray))
 
-        // Set new selected button
+
         selectedSort = sortType
         selectedSortButton = button
         button.setBackgroundColor(resources.getColor(R.color.purple_500))
@@ -363,18 +359,17 @@ class AllItemsFragment : Fragment() {
 
 
     private fun applyFilters() {
-        // Fetch the filtered items first
+
         viewModel.fetchFilteredItems(selectedRating, selectedMaxPrice.toDouble())
 
-        // Delay the sorting to give time for the filter operation to complete
+
         viewLifecycleOwner.lifecycleScope.launch {
-            kotlinx.coroutines.delay(300) // Adjust time if needed
+            kotlinx.coroutines.delay(300)
             selectedSort?.let { sortType ->
                 viewModel.fetchSortedItems(sortType)
             }
         }
 
-        // Reset button color after apply
         selectedSortButton?.setBackgroundColor(resources.getColor(R.color.gray))
         selectedSortButton = null
     }
@@ -387,7 +382,7 @@ class AllItemsFragment : Fragment() {
         selectedMaxPrice = 1000
         binding.priceSeekBar.progress = 1000
         binding.minPrice.text = getString(R.string._1000)
-        // Reset sort button colors
+
         val sortButtons = listOf(
             binding.sortPriceAscButton,
             binding.sortPriceDescButton,
@@ -398,9 +393,9 @@ class AllItemsFragment : Fragment() {
         selectedSort = null
         selectedSortButton = null
 
-        viewModel.fetchItems() // ✅ Reload all items
+        viewModel.fetchItems()
 
-        // ✅ Force reset of _items to ensure UI updates after top items were displayed
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.items.collectLatest { itemList ->
                 adapter.updateList(itemList)
@@ -408,7 +403,6 @@ class AllItemsFragment : Fragment() {
             }
         }
 
-        // ✅ Explicitly clear top liked items to prevent interference
         viewModel.clearTopLikedItems()
     }
 

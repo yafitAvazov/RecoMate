@@ -58,7 +58,7 @@ class RecommendationDetailViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val userId = FirebaseAuth.getInstance().currentUser?.uid
 
-            // 🔥 בדיקת userId
+
             println("🔥 DEBUG: Current User ID: $userId")
 
             if (userId != null) {
@@ -72,17 +72,11 @@ class RecommendationDetailViewModel @Inject constructor(
     }
 
 
-//    fun getCurrentUserName(): String? {
-//        val currentUser = FirebaseAuth.getInstance().currentUser
-//        return currentUser?.displayName ?: currentUser?.email // מציג שם או דוא"ל אם אין שם
-//    }
-
-
 
     fun updateItemComments(itemId: String, newComments: List<String>) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateItemComments(itemId, newComments)
-        refreshItemComments(itemId) // 🔥 טוען מחדש את התגובות מהפיירבייס
+        refreshItemComments(itemId)
         }
     }
 
@@ -124,18 +118,12 @@ class RecommendationDetailViewModel @Inject constructor(
     fun fetchItemsByCategory(category: String) {
         viewModelScope.launch {
             repository.getItemsByCategory(category).collect { itemList ->
-                // ✅ התאמת החיפוש למזהים מספריים במקום שמות
+
                 _items.value = itemList.filter {
                     it.category.split(",").contains(category)
                 }
             }
         }
     }
-
-
-
-
-
-
 
 }

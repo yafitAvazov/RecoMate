@@ -60,14 +60,14 @@ class RecommendationDetailsFragment : Fragment() {
     }
 
     private fun setupCommentsAdapter() {
-        commentsAdapter = CommentsAdapter(mutableListOf()) // 🔥 אתחול פעם אחת בלבד עם רשימה ריקה
+        commentsAdapter = CommentsAdapter(mutableListOf())
     }
     private fun observeViewModel(itemId: String) {
         viewModel.getItemById(itemId).observe(viewLifecycleOwner) { updatedItem ->
             updatedItem?.let {
-                updateUI(it) // 🔥 עדכון כל ה-UI
+                updateUI(it)
                 val updatedComments = it.comments ?: emptyList()
-                commentsAdapter.updateComments(updatedComments) // 🔥 עדכון התגובות
+                commentsAdapter.updateComments(updatedComments)
             }
         }
     }
@@ -79,7 +79,7 @@ class RecommendationDetailsFragment : Fragment() {
         binding.addressTextView.text = item.address?.ifBlank { getString(R.string.no_address) }
 //          setupCommentsSection(item)
 
-        // קישור ולחיצה עליו
+
         if (item.link.isNotEmpty()) {
             binding.itemTitle.setTextColor(ContextCompat.getColor(requireContext(), R.color.purple_700))
             binding.itemTitle.paint.isUnderlineText = true
@@ -96,8 +96,8 @@ class RecommendationDetailsFragment : Fragment() {
         if (!item.photo.isNullOrEmpty()) {
             Glide.with(this)
                 .load(item.photo)
-                .placeholder(R.mipmap.ic_launcher) // Optional: Placeholder image while loading
-                .error(R.drawable.baseline_hide_image_24) // Optional: Image to show if loading fails
+                .placeholder(R.mipmap.ic_launcher)
+                .error(R.drawable.baseline_hide_image_24)
                 .into(binding.itemImage)
         } else {
             binding.itemImage.setImageResource(R.drawable.baseline_hide_image_24)
@@ -111,7 +111,7 @@ class RecommendationDetailsFragment : Fragment() {
             )
         }
 
-        setupCategoryText(item.category) // שולח את המזהים לפונקציה שתתרגם
+        setupCategoryText(item.category)
 
 
         if (item.address.isNullOrEmpty()) {
@@ -137,13 +137,13 @@ class RecommendationDetailsFragment : Fragment() {
         }
 
     private fun setupCategoryText(categoryString: String) {
-        val categoryIds = categoryString.split(",").mapNotNull { it.toIntOrNull() } // המרת מזהים לרשימה של מספרים
+        val categoryIds = categoryString.split(",").mapNotNull { it.toIntOrNull() }
         val localizedCategories = categoryIds.map { CategoryMapper.getLocalizedCategory(it, requireContext()) }
 
         val formattedCategories = if (localizedCategories.isEmpty()) {
             getString(R.string.no_category)
         } else {
-            localizedCategories.joinToString(" | ") // מציג שמות קטגוריות מופרדות עם "|"
+            localizedCategories.joinToString(" | ")
         }
         binding.itemCategory.text = formattedCategories
     }
@@ -154,10 +154,10 @@ class RecommendationDetailsFragment : Fragment() {
             val addCommentButton = binding.root.findViewById<Button>(R.id.add_comment_button)
 
             commentsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-            commentsAdapter = CommentsAdapter(item.comments.toMutableList()) // 🔥 אתחול עם רשימה מה-Item
+            commentsAdapter = CommentsAdapter(item.comments.toMutableList())
             commentsRecyclerView.adapter = commentsAdapter
 
-            // 🔥 הקשבה לתגובות בזמן אמת
+
             viewModel.getItemById(item.id).observe(viewLifecycleOwner) { updatedItem ->
                 val updatedComments = updatedItem?.comments ?: emptyList()
                 commentsAdapter.updateComments(updatedComments.toMutableList())
@@ -168,14 +168,14 @@ class RecommendationDetailsFragment : Fragment() {
                 if (newComment.isNotEmpty()) {
                     val currentItem = viewModel.chosenItem.value ?: return@setOnClickListener
 
-                    // 🔥 קבלת שם המשתמש מה-ViewModel
+
                     viewModel.getUsername().observe(viewLifecycleOwner) { userName ->
                         val commentsList = currentItem.comments.toMutableList()
 
-                        // 🔥 בדיקת שם המשתמש ב-Logcat
+
                         println("🔥 DEBUG: Username for comment: $userName")
 
-                        // 🔥 הוספת שם המשתמש לתגובה
+
                         val commentWithUserName = "${userName ?: "אנונימי"}: $newComment"
                         commentsList.add(commentWithUserName)
 
@@ -192,32 +192,13 @@ class RecommendationDetailsFragment : Fragment() {
             commentInput.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     commentsRecyclerView.postDelayed({
-                        commentsRecyclerView.scrollToPosition(commentsAdapter.itemCount - 1) // ✅ מבטיח שהגלילה תישמר
+                        commentsRecyclerView.scrollToPosition(commentsAdapter.itemCount - 1)
                     }, 200)
                 }
             }
         }
     }
 
-//    private fun setupCommentsSection(item: Item) {
-//        binding.commentsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-//        commentsAdapter = CommentsAdapter(mutableListOf())
-//        binding.commentsRecyclerView.adapter = commentsAdapter
-//
-//        viewModel.chosenItem.observe(viewLifecycleOwner) { itemData ->
-//            commentsAdapter.updateComments(itemData?.comments?.toMutableList() ?: mutableListOf())
-//        }
-//
-//        binding.addCommentButton.setOnClickListener {
-//            val newComment = binding.commentInput.text.toString().trim()
-//            if (newComment.isNotEmpty()) {
-//                val commentsList = item.comments.toMutableList().apply { add(newComment) }
-//                viewModel.updateItemComments(item, commentsList)
-//                commentsAdapter.updateComments(commentsList)
-//                binding.commentInput.text.clear()
-//            }
-//        }
-//    }
 
     override fun onDestroyView() {
         super.onDestroyView()

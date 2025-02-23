@@ -22,17 +22,7 @@ class ItemRepositoryFirebase @Inject constructor() {
     private val itemRef = FirebaseFirestore.getInstance().collection("items")
     private val auth = FirebaseAuth.getInstance()
 
-//    fun getItems(): Flow<List<Item>> = callbackFlow {
-//        val listener = itemRef.addSnapshotListener { snapshot, e ->
-//            if (snapshot != null) {
-//                val items = snapshot.toObjects(Item::class.java)
-//                trySend(items)
-//            } else {
-//                close(e)
-//            }
-//        }
-//        awaitClose { listener.remove() }
-//    }
+
 fun getItems(): Flow<List<Item>> = callbackFlow {
     val listener = itemRef.addSnapshotListener { snapshot, _ ->
         val items = snapshot?.toObjects(Item::class.java) ?: emptyList()
@@ -63,7 +53,7 @@ fun getItems(): Flow<List<Item>> = callbackFlow {
 
     suspend fun addItem(item: Item) = withContext(Dispatchers.IO) {
         val userId = auth.currentUser?.uid ?: return@withContext
-        val itemId = itemRef.document().id // 🔥 יצירת ID ייחודי בפיירבייס
+        val itemId = itemRef.document().id
 
         val newItem = item.copy(id = itemId, userId = userId) // 🔥 עכשיו ה-ID הוא String
 
@@ -134,15 +124,6 @@ fun getItems(): Flow<List<Item>> = callbackFlow {
 
 
 
-
-
-
-
-
-
-
-
-
     fun getUserFavorites(): Flow<List<Item>> = callbackFlow {
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser == null) {
@@ -153,7 +134,7 @@ fun getItems(): Flow<List<Item>> = callbackFlow {
         val itemRef = FirebaseFirestore.getInstance().collection("items")
 
         val listener = itemRef
-            .whereArrayContains("likedBy", currentUser.uid) // ✅ Only fetch items the user liked
+            .whereArrayContains("likedBy", currentUser.uid) //
             .addSnapshotListener { snapshot, e ->
                 if (e != null) {
                     println("❌ Firestore Error: ${e.message}")
@@ -169,25 +150,6 @@ fun getItems(): Flow<List<Item>> = callbackFlow {
 
         awaitClose { listener.remove() }
     }
-
-
-
-
-
-
-
-
-//    suspend fun addFavorite(itemId: Int, userId: String) = withContext(Dispatchers.IO) {
-//        updateLikeStatus(itemId, userId, true) // ✅ עדכון במועדפים
-//    }
-//
-//    suspend fun removeFavorite(itemId: Int, userId: String) = withContext(Dispatchers.IO) {
-//        updateLikeStatus(itemId, userId, false) // ✅ הסרת מהמועדפים
-//    }
-
-
-
-
 
 
 
@@ -213,14 +175,14 @@ fun getItems(): Flow<List<Item>> = callbackFlow {
     suspend fun updateItemComments(itemId: String, comments: List<String>) = withContext(Dispatchers.IO) {
         val documentRef = itemRef.document(itemId)
 
-        // 🔥 ודא שקיים פריט עם ה-ID
+
         val itemSnapshot = documentRef.get().await()
         if (!itemSnapshot.exists()) {
             println("⚠️ Error: Item does not exist in Firestore")
             return@withContext
         }
 
-        // 🔥 שמירת התגובות כ-Array בפיירבייס
+
         documentRef.update("comments", comments).await()
         println("✅ Comments updated successfully")
     }
@@ -228,12 +190,12 @@ fun getItems(): Flow<List<Item>> = callbackFlow {
     suspend fun getUsernameByUserId(userId: String): String? = withContext(Dispatchers.IO) {
         try {
             val userSnapshot = FirebaseFirestore.getInstance()
-                .collection("users") // 🔥 ודאי שהשם מדויק - בדיוק כמו ב-Firestore
+                .collection("users")
                 .document(userId)
                 .get()
                 .await()
 
-            // 🔥 בדיקת הנתונים שנשלפו מה-Database
+
             println("🔥 DEBUG: Document data: ${userSnapshot.data}")
             val username = userSnapshot.getString("name")
             println("🔥 DEBUG: Username: $username")

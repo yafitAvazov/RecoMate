@@ -31,10 +31,10 @@ class ItemAdapter(
     interface ItemListener {
         fun onItemClicked(index: Int)
         fun onItemLongClicked(index: Int)
-        fun onItemDeleted(item: Item) // ✅ פונקציה חדשה למחיקת פריט
-        fun onItemLiked(item: Item) // ✅ הוספת לפריטים אהובים
+        fun onItemDeleted(item: Item)
+        fun onItemLiked(item: Item)
 
-        fun onItemUnliked(item: Item) // ✅ הסרת פריטים אהובים
+        fun onItemUnliked(item: Item)
 
     }
 
@@ -47,7 +47,7 @@ class ItemAdapter(
 
             binding.editBtn.setOnClickListener {
                 val item = items[adapterPosition]
-                val bundle = bundleOf("item" to item) // ✅ Pass full Item object
+                val bundle = bundleOf("item" to item)
 
                 val navController = binding.root.findNavController()
                 val currentDestination = navController.currentDestination?.id
@@ -80,10 +80,10 @@ class ItemAdapter(
         override fun onClick(v: View?) {
             val navController = Navigation.findNavController(binding.root)
             val currentDestination = navController.currentDestination?.id
-            val item = items[adapterPosition] // 🔥 מקבל את הפריט שנלחץ
+            val item = items[adapterPosition]
             val bundle = bundleOf("itemId" to item.id)
 
-            // 🔥 מנווטים לפרטי הפריט רק בלחיצה רגילה
+
             when (currentDestination) {
                 R.id.allItemsFragment -> {
                     navController.navigate(R.id.action_allItemsFragment_to_itemDetailsFragment, bundle)
@@ -98,7 +98,7 @@ class ItemAdapter(
                     navController.navigate(R.id.action_favoritesFragment_to_itemDetailsFragment, bundle)
                 }
                 else -> {
-                    // במקרה שאין יעד מתאים (אופציונלי - רק לדיוג)
+
                     Toast.makeText(binding.root.context,
                         binding.root.context.getString(R.string.navigation_error_unknown_source_fragment),
                         Toast.LENGTH_SHORT
@@ -121,8 +121,8 @@ class ItemAdapter(
             if (!item.photo.isNullOrEmpty()) {
                 Glide.with(binding.root.context)
                     .load(item.photo)
-                    .placeholder(R.mipmap.ic_launcher) // Optional: Placeholder while loading
-                    .error(R.drawable.baseline_hide_image_24) // Image if loading fails
+                    .placeholder(R.mipmap.ic_launcher)
+                    .error(R.drawable.baseline_hide_image_24)
                     .into(binding.itemImage)
             } else {
                 binding.itemImage.setImageResource(R.drawable.baseline_hide_image_24)
@@ -145,9 +145,8 @@ class ItemAdapter(
                 )
             }
 
-            // ✅ Display correct buttons based on item ownership
+
             if (item.userId == currentUserId) {
-                // 🔥 If the logged-in user is the owner of the item
                 binding.itemCard.setCardBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.green))
                 binding.itemCard.setContentPadding(6, 6, 6, 6)
 
@@ -155,7 +154,6 @@ class ItemAdapter(
                 binding.deleteBtn.visibility = View.VISIBLE
                 binding.likeBtn.visibility = View.GONE
             } else {
-                // 🔥 If the item belongs to another user
                 binding.itemCard.setCardBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.light_blue))
 
                 binding.editBtn.visibility = View.GONE
@@ -163,28 +161,27 @@ class ItemAdapter(
                 binding.likeBtn.visibility = View.VISIBLE
             }
 
-            // ✅ Update Like Button State
+
             val isLiked = currentUserId?.let { item.likedBy.contains(it) } ?: false
             binding.likeBtn.setImageResource(
                 if (isLiked) R.drawable.baseline_favorite_24 else R.drawable.baseline_favorite_border_24
             )
 
-            // ✅ Handle Like Button Click
             binding.likeBtn.setOnClickListener {
-                if (currentUserId == null) return@setOnClickListener // Ensure user is logged in
+                if (currentUserId == null) return@setOnClickListener
 
                 val updatedLikedBy = if (isLiked) item.likedBy - currentUserId else item.likedBy + currentUserId
                 callBack.onItemLiked(item.copy(likedBy = updatedLikedBy))
             }
 
-            // ✅ Handle Delete Button Click
+
             binding.deleteBtn.setOnClickListener {
                 AlertDialog.Builder(binding.root.context)
                     .setTitle(binding.root.context.getString(R.string.delete_confirmation))
                     .setMessage(binding.root.context.getString(R.string.are_you_sure_you_want_to_delete_this_recommendation))
                     .setPositiveButton(binding.root.context.getString(R.string.yes)) { _, _ ->
                         deleteImageFromFirebaseStorage(item.photo) {
-                            callBack.onItemDeleted(item) // Delete item only after image is deleted
+                            callBack.onItemDeleted(item)
                         }
                     }
                     .setNegativeButton(binding.root.context.getString(R.string.no), null)
@@ -200,14 +197,14 @@ class ItemAdapter(
             storageReference.delete()
                 .addOnSuccessListener {
                     Log.d("FirebaseStorage", "Image deleted successfully")
-                    onSuccess() // ✅ Delete the item from Firestore after image deletion
+                    onSuccess()
                 }
                 .addOnFailureListener { exception ->
                     Log.e("FirebaseStorage", "Failed to delete image: ${exception.message}")
-                    onSuccess() // ✅ Continue deleting the item even if image deletion fails
+                    onSuccess()
                 }
         } else {
-            onSuccess() // ✅ If there is no image, proceed with item deletion
+            onSuccess()
         }
     }
 

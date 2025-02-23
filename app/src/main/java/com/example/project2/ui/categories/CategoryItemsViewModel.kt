@@ -29,8 +29,8 @@ class CategoryItemsViewModel @Inject constructor(
 
     fun signOut() {
         authRepository.logout()
-        _userItems.value = emptyList() // ✅ Clear user items on logout
-        _userFavorites.value = emptyList() // ✅ Clear favorites on logout
+        _userItems.value = emptyList()
+        _userFavorites.value = emptyList()
     }
 
 

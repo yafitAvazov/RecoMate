@@ -37,7 +37,7 @@ class RegisterFragment : Fragment(){
             val password = binding.edxtpassword.text.toString()
             val confirmPassword = binding.edxtConfirmPassword.text.toString()
 
-            // ✅ בדיקת אימייל בפורמט חוקי
+
             if (email.isNullOrEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 Toast.makeText(requireContext(),
                     getString(R.string.please_enter_a_valid_email_address), Toast.LENGTH_SHORT).show()
@@ -56,7 +56,7 @@ class RegisterFragment : Fragment(){
                 return@setOnClickListener
             }
 
-            // ✅ שליחה של אימייל נכון
+
             viewModel.createUser(username ?: "", email, password, confirmPassword ?: "")
         }
 

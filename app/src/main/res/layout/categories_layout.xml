@@ -10,7 +10,7 @@
 
 
 
-    <!-- כותרת -->
+
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
@@ -46,7 +46,7 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
 
-    <!-- רשימת הקטגוריות ב-RecyclerView -->
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"

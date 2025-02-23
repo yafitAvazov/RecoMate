@@ -8,12 +8,12 @@
     android:background="@color/blue"
     tools:context=".ui.categories.SpecificCategoryItemsFragment">
 
-    <!-- התוכן הראשי -->
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- אזור הכותרת והתמונה עם רקע -->
+
         <LinearLayout
             android:id="@+id/titles"
             android:layout_width="match_parent"
@@ -45,7 +45,7 @@
                 android:layout_marginTop="8dp"/>
         </LinearLayout>
 
-        <!-- כפתורי פעולה -->
+
         <Button
             android:id="@+id/top_items"
             android:layout_width="wrap_content"
@@ -80,7 +80,7 @@
             app:layout_constraintTop_toBottomOf="@id/titles"
             app:layout_constraintEnd_toStartOf="@id/filter_button"/>
 
-        <!-- רשימת הפריטים -->
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler"
             android:layout_width="match_parent"
@@ -92,7 +92,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:scrollbars="vertical"/>
 
-        <!-- ProgressBar לטעינה -->
+
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
@@ -102,7 +102,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <!-- הודעת שגיאה במקרה של תקלה -->
+
         <TextView
             android:id="@+id/errorTextView"
             android:layout_width="wrap_content"
@@ -117,7 +117,7 @@
             app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- חלון הצד לסינון -->
+
     <LinearLayout
         android:id="@+id/order_by_menu"
         android:layout_width="300dp"
@@ -147,7 +147,7 @@
                     android:gravity="center"
                     android:layout_marginBottom="16dp"/>
 
-                <!-- ⭐ Sorting Buttons -->
+
                 <Button
                     android:id="@+id/sort_price_asc_button"
                     android:layout_width="match_parent"
@@ -175,7 +175,7 @@
                     android:backgroundTint="@color/gray"
                     style="@style/Widget.MaterialComponents.Button.TextButton"/>
 
-                <!-- 🔹 Price Filter -->
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -214,7 +214,7 @@
                         android:layout_marginTop="16dp"/>
                 </RelativeLayout>
 
-                <!-- 🔥 Apply Filter Button -->
+
                 <Button
                     android:id="@+id/apply_button"
                     android:layout_width="wrap_content"

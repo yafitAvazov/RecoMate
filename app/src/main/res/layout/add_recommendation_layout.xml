@@ -215,12 +215,6 @@
             android:backgroundTint="@color/white"/>
 
     </GridLayout>
-<!--    <EditText-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:hint="Add address (Optional)"-->
-<!--        android:id="@+id/address_edt"-->
-<!--        android:padding="16dp"/>-->
 
     <TextView
         android:layout_width="match_parent"
@@ -260,14 +254,14 @@
         android:gravity="center_vertical"
         android:layout_marginTop="25dp">
 
-        <!-- מחיר: טקסט מעל שדה המחיר -->
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <!-- טקסט מעל שדה המחיר -->
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -276,7 +270,7 @@
                 android:textStyle="bold"
                 android:textSize="20sp" />
 
-            <!-- שדה המחיר -->
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
@@ -298,7 +292,7 @@
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
-        <!-- תמונה וכפתור -->
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

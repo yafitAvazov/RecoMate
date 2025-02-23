@@ -11,7 +11,7 @@ import com.example.project2.data.model.Category
 
 class CategoryAdapter(
     private val categories: List<Category>,
-    private val onCategoryClick: (Category) -> Unit // פונקציה שנקראת בעת לחיצה
+    private val onCategoryClick: (Category) -> Unit
 ) : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
 
     class CategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -29,7 +29,7 @@ class CategoryAdapter(
         holder.categoryName.text = category.name
         holder.categoryImage.setImageResource(category.imageResId)
 
-        // מאזין ללחיצות - קורא לפונקציה שהועברה אליו
+
         holder.itemView.setOnClickListener {
             onCategoryClick(category)
         }

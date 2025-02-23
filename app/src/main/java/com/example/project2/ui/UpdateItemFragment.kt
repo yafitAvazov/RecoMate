@@ -51,7 +51,7 @@ class UpdateItemFragment : Fragment() {
     ): View {
         _binding = UpdateRecommendationLayoutBinding.inflate(inflater, container, false)
 
-        // Retrieve the item using the fixed key
+
         val item = requireArguments().getParcelable<Item>("item")
 
         item?.let { populateFields(it) }
@@ -97,7 +97,7 @@ class UpdateItemFragment : Fragment() {
         selectedRating = item.rating
         selectedCategories.clear()
 
-        // ✅ המרת מזהי קטגוריות למילים בשפה המקומית
+
         val categoryIds = item.category.split(",").mapNotNull { it.toIntOrNull() }
         selectedCategories.addAll(categoryIds.mapNotNull { CategoryMapper.getLocalizedCategory(it, requireContext()) })
 
@@ -119,12 +119,12 @@ class UpdateItemFragment : Fragment() {
             val userId = viewModel.currentUserId ?: throw Exception("User not logged in.")
             val itemId = existingItemId ?: throw Exception("Item ID is missing.")
 
-            // ✅ הפעלת ProgressBar ונעילת כפתור
+
             binding.postProgressBar.visibility = View.VISIBLE
             binding.finishBtn.isEnabled = false
             binding.finishBtn.text = getString(R.string.updating)
 
-            // ✅ בדיקה האם יש תמונה חדשה להעלות
+
             if (imageUri != null && !imageUri.toString().startsWith("https")) {
                 uploadImageToFirebaseStorage(imageUri!!) { imageUrl ->
                     saveUpdatedItem(itemId, userId, title, comment, imageUrl, price, categoryString, link, selectedRating, address)
@@ -141,7 +141,7 @@ class UpdateItemFragment : Fragment() {
         }
     }
 
-    // ✅ פונקציה להעלאת תמונה לפיירבייס
+
     private fun uploadImageToFirebaseStorage(imageUri: Uri, onSuccess: (String) -> Unit) {
         val storageReference = com.google.firebase.storage.FirebaseStorage.getInstance().reference
         val fileRef = storageReference.child("images/${System.currentTimeMillis()}.jpg")
@@ -258,8 +258,8 @@ class UpdateItemFragment : Fragment() {
         try {
             Glide.with(this)
                 .load(imageUrl)
-                .placeholder(R.mipmap.ic_launcher) // ✅ תמונת טעינה זמנית
-                .error(R.drawable.baseline_hide_image_24) // ✅ במקרה של כישלון
+                .placeholder(R.mipmap.ic_launcher)
+                .error(R.drawable.baseline_hide_image_24)
                 .into(binding.imageBtn)
         } catch (e: Exception) {
             Toast.makeText(requireContext(), "Failed to load image: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -280,7 +280,7 @@ class UpdateItemFragment : Fragment() {
             price = price,
             link = link,
             comment = comment,
-            photo = if (photoUrl.isNullOrEmpty()) null else photoUrl, // ✅ שמירה של ה-URL החדש או null אם אין תמונה
+            photo = if (photoUrl.isNullOrEmpty()) null else photoUrl,
             rating = selectedRating,
             category = category,
             address = address,

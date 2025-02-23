@@ -51,7 +51,7 @@ class ItemRepository @Inject constructor(
     }
 
     suspend fun updateItem(item: Item) {
-        withContext(Dispatchers.IO) { // ✅ רץ ברקע
+        withContext(Dispatchers.IO) {
 
             itemRepositoryFirebase.updateItem(item)
             itemRepositoryLocal.updateItem(item)
@@ -63,8 +63,8 @@ class ItemRepository @Inject constructor(
     suspend fun deleteItem(item: Item) {
         withContext(Dispatchers.IO) {
             try {
-                itemRepositoryFirebase.deleteItem(item) // 🔥 מוחק מפיירבייס
-                itemRepositoryLocal.deleteItem(item)   // 🔥 מוחק מה-Local DB
+                itemRepositoryFirebase.deleteItem(item)
+                itemRepositoryLocal.deleteItem(item)
             } catch (e: Exception) {
                 println("❌ Error deleting item: ${e.message}")
             }
@@ -79,10 +79,10 @@ class ItemRepository @Inject constructor(
 
     suspend fun updateItemComments(itemId: String, comments: List<String>) {
         withContext(Dispatchers.IO) {
-            // עדכון ב-Firebase
+
             itemRepositoryFirebase.updateItemComments(itemId, comments)
 
-            // עדכון במסד הנתונים המקומי (Room)
+
             val commentsJson = com.google.gson.Gson().toJson(comments)
             itemRepositoryLocal.updateItemComments(itemId, commentsJson)
         }
@@ -91,11 +91,6 @@ class ItemRepository @Inject constructor(
         return itemRepositoryFirebase.getUsernameByUserId(userId)
     }
 
-//    // ✅ עדכון תגובות לפריט בפיירבייס ובמקומית
-//    suspend fun updateItemComments(itemId: String, comments: List<String>) {
-//        itemRepositoryFirebase.updateItemComments(itemId, comments)
-//        itemRepositoryLocal.updateItemComments(itemId, comments)
-//    }
 
     fun getItemById(itemId: String): Flow<Item?> = flow {
         val localItem = itemRepositoryLocal.getItemById(itemId).firstOrNull()
@@ -110,10 +105,10 @@ class ItemRepository @Inject constructor(
 
 
     fun getFilteredItems(selectedRating: Int, selectedMaxPrice: Double): Flow<List<Item>> = flow {
-        val firebaseItems = itemRepositoryFirebase.getItems() // ✅ Fetch all items from Firebase first
+        val firebaseItems = itemRepositoryFirebase.getItems()
             .firstOrNull()
             ?.filter { item ->
-                item.rating >= selectedRating && item.price <= selectedMaxPrice // ✅ Apply filtering
+                item.rating >= selectedRating && item.price <= selectedMaxPrice
             } ?: emptyList()
 
         if (firebaseItems.isEmpty()) {
@@ -122,7 +117,7 @@ class ItemRepository @Inject constructor(
             println("🔥 DEBUG: ${firebaseItems.size} items found after filtering!")
         }
 
-        emit(firebaseItems) // ✅ Emit filtered list from Firestore
+        emit(firebaseItems)
     }.flowOn(Dispatchers.IO)
 
 
@@ -136,7 +131,7 @@ class ItemRepository @Inject constructor(
             } else {
                 itemRepositoryFirebase.getItemsByCategory(selectedCategories).collect { firebaseItems ->
                     emit(firebaseItems)
-                    saveItemsLocally(firebaseItems) // Save fetched items in local DB
+                    saveItemsLocally(firebaseItems)
                 }
             }
         }.flowOn(Dispatchers.IO)
@@ -155,7 +150,7 @@ class ItemRepository @Inject constructor(
             val isAlreadyLiked = item.likedBy.contains(userId)
             val updatedLikedBy = if (isAlreadyLiked) item.likedBy - userId else item.likedBy + userId
 
-            // ✅ Only update if there's a change
+
             if (updatedLikedBy != item.likedBy) {
                 val likedByJson = Gson().toJson(updatedLikedBy)
 
@@ -178,10 +173,10 @@ class ItemRepository @Inject constructor(
             return@callbackFlow
         }
 
-        val itemRef = FirebaseFirestore.getInstance().collection("items") // ✅ Ensure Firestore reference is correct
+        val itemRef = FirebaseFirestore.getInstance().collection("items")
 
         val listener = itemRef
-            .whereArrayContains("likedBy", currentUser.uid) // ✅ Fetch only items liked by the logged-in user
+            .whereArrayContains("likedBy", currentUser.uid)
             .addSnapshotListener { snapshot, e ->
                 if (e != null) {
                     println("❌ Firestore Error: ${e.message}")

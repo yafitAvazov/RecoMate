@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- פריסת הכרטיסייה הראשית -->
+
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- כרטיס הפריט -->
+
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
                 android:padding="16dp"
                 android:background="@color/white">
 
-                <!-- תמונת הפריט -->
+
                 <ImageView
                     android:id="@+id/item_image"
                     android:layout_width="match_parent"
@@ -41,7 +41,7 @@
                     android:contentDescription="@string/items_image"
                     android:layout_marginBottom="16dp" />
 
-                <!-- כותרת ומחיר -->
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -49,7 +49,6 @@
                     android:gravity="center"
                     android:layout_marginBottom="16dp">
 
-                    <!-- מחיר הפריט -->
 
 
                     <TextView
@@ -62,7 +61,7 @@
                         android:textColor="@color/primaryText"
                         android:layout_weight="1"
                         android:gravity="start" />
-                    <!-- כותרת הפריט -->
+
                     <TextView
                         android:id="@+id/item_price"
                         android:layout_width="wrap_content"
@@ -79,8 +78,6 @@
 
 
 
-
-                <!-- דירוג כוכבים -->
                 <LinearLayout
                     android:id="@+id/stars_container"
                     android:layout_width="match_parent"
@@ -121,7 +118,7 @@
 
                 </LinearLayout>
 
-                <!-- קטגוריות -->
+
                 <TextView
                     android:id="@+id/item_category"
                     android:layout_width="wrap_content"
@@ -132,14 +129,14 @@
                     android:layout_marginBottom="16dp"
                     android:layout_gravity="start" />
 
-                <!-- מיקום וכפתור הצג כתובת -->
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="start|center_vertical"
                     android:layout_marginBottom="16dp">
-                    <!-- אייקון מיקום -->
+
                     <ImageView
                         android:id="@+id/locationIcon"
                         android:layout_width="30dp"
@@ -147,7 +144,7 @@
                         android:src="@drawable/baseline_location_pin_24"
                         android:contentDescription="@string/location_icon"
                         android:layout_marginEnd="8dp" />
-                    <!-- טקסט הכתובת -->
+
                     <TextView
                         android:id="@+id/address_textView"
                         android:layout_width="wrap_content"
@@ -160,7 +157,7 @@
                     <Space
                         android:layout_width="15dp"
                         android:layout_height="wrap_content" />
-                    <!-- כפתור הצגת הכתובת -->
+
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/show_address_button"
                         android:layout_width="wrap_content"
@@ -178,7 +175,7 @@
                 </LinearLayout>
 
 
-                <!-- הערה/תיאור הפריט -->
+
                 <TextView
                     android:id="@+id/item_comment"
                     android:layout_width="match_parent"

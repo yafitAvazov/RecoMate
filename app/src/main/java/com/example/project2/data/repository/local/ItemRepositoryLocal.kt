@@ -52,7 +52,7 @@ class ItemRepositoryLocal @Inject constructor(private val itemDao: ItemDao) {
         return itemDao.getFilteredItems(selectedRating, selectedMaxPrice)
     }
     suspend fun updateLikeStatus(itemId: String, likedByJson: String) = withContext(Dispatchers.IO) {
-        itemDao.updateLikeStatus(itemId, likedByJson) // ✅ Directly update the database
+        itemDao.updateLikeStatus(itemId, likedByJson)
     }
 
 

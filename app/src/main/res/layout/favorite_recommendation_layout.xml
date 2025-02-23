@@ -10,13 +10,13 @@
 
 
 
-    <!-- התוכן הראשי -->
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
 
-        <!-- כותרת -->
+
         <TextView
             android:id="@+id/title"
             android:textColor="@color/white"
@@ -32,21 +32,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:gravity="center" />
 
-<!--        <ImageView-->
-<!--            android:id="@+id/action_delete"-->
-<!--            android:layout_width="40dp"-->
-<!--            android:layout_height="40dp"-->
-<!--            android:src="@drawable/baseline_delete_24"-->
-<!--            android:layout_marginTop="8dp"-->
-<!--            android:layout_marginEnd="16dp"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/title"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            />-->
 
-
-
-
-        <!-- רשימה -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_my_fav"
             android:layout_width="0dp"

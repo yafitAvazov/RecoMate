@@ -23,7 +23,7 @@ object DatabaseModule {
             ItemDataBase::class.java,
             "items_db"
         )
-            .fallbackToDestructiveMigration() // ✅ הוספת פונקציה לטיפול בשינויים במסד הנתונים
+            .fallbackToDestructiveMigration()
             .build()
     }
 

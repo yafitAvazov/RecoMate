@@ -38,16 +38,16 @@ class AuthRepositoryFirebase : AuthRepository {
 
     override suspend fun createUser(
         userName: String,
-        email: String,  // ✅ שימוש נכון באימייל
+        email: String,
         userLoginPass: String,
         userLoginPassAgain: String
     ): Resource<User> {
         return withContext(Dispatchers.IO) {
             safeCall {
-                // ✅ לוודא שה- email נשלח, לא ה- userName
+
                 val registrationResult  = firebaseAuth.createUserWithEmailAndPassword(email, userLoginPass).await()
                 val userId = registrationResult.user?.uid!!
-                val newUser = User(userName, email) // ✅ משתמש עם שם ואימייל
+                val newUser = User(userName, email)
                 userRef.document(userId).set(newUser).await()
                 Resource.success(newUser)
             }

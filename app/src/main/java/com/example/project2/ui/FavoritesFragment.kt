@@ -41,7 +41,7 @@ class FavoritesFragment : Fragment() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true) // ✅ מאפשר הצגת תפריט
+        setHasOptionsMenu(true)
     }
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main_menu, menu)
@@ -60,9 +60,9 @@ class FavoritesFragment : Fragment() {
         initializeRecyclerView()
         observeFavoriteItems()
 
-        viewModel.fetchUserFavorites() // ✅ הבאת רשימת המועדפים
+        viewModel.fetchUserFavorites()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            // טיפול בלחיצה אחורה לעדכון הנוויגיישן באר וחזרה לכל ההמלצות
+
             findNavController().navigate(R.id.allItemsFragment)
 
             requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
@@ -91,12 +91,11 @@ class FavoritesFragment : Fragment() {
             }
 
             override fun onItemDeleted(item: Item) {
-                viewModel.deleteItem(item) // ✅ No category needed in FavoritesFragment
+                viewModel.deleteItem(item)
                 viewLifecycleOwner.lifecycleScope.launch {
-                    // 🔥 Wait for deletion to complete, then refresh the lists
-                    viewModel.fetchUserFavorites() // ✅ Ensure the favorites list updates
-                    viewModel.fetchItems() // ✅ Refresh all items to reflect changes
-                    viewModel.fetchUserItems() // ✅ Refresh user's items
+                    viewModel.fetchUserFavorites()
+                    viewModel.fetchItems()
+                    viewModel.fetchUserItems()
                 }
             }
 
@@ -105,36 +104,36 @@ class FavoritesFragment : Fragment() {
 
             override fun onItemLiked(item: Item) {
                 val currentUserId = viewModel.getCurrentUserId() ?: return
-                viewModel.updateLikeStatus(item.id, currentUserId) // ✅
+                viewModel.updateLikeStatus(item.id, currentUserId)
             }
 
             override fun onItemUnliked(item: Item) {
                 val currentUserId = viewModel.getCurrentUserId() ?: return
-                viewModel.updateLikeStatus(item.id, currentUserId) // ✅
+                viewModel.updateLikeStatus(item.id, currentUserId)
             }
 
         })
 
-        binding.recyclerMyFav.layoutManager = LinearLayoutManager(requireContext()) // ✅ Add LayoutManager
+        binding.recyclerMyFav.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerMyFav.adapter = adapter
     }
 
     private fun observeFavoriteItems() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.userFavorites.collectLatest { favoriteItems ->
-                adapter.updateList(favoriteItems) // ✅ Updates RecyclerView with only the current user's liked items
+                adapter.updateList(favoriteItems)
 
                 binding.recyclerMyFav.postDelayed({
                     val currentCount = adapter.itemCount
 
-                    if (currentCount == 0) { // ✅ Show toast only if no liked items exist
+                    if (currentCount == 0) {
                         println("🔥 DEBUG: No favorites found for current user in RecyclerView!")
                         Toast.makeText(requireContext(), "No favorites found!", Toast.LENGTH_SHORT).show()
                     } else {
                         println("🔥 DEBUG: ${currentCount} favorite items found in RecyclerView!")
                         Toast.makeText(requireContext(), "$currentCount favorite items found!", Toast.LENGTH_SHORT).show()
                     }
-                }, 800) // ✅ Ensures Firestore finishes loading before checking RecyclerView state
+                }, 800)
             }
         }
     }
