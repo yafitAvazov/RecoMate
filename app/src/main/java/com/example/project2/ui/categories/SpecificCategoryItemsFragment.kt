@@ -6,8 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -27,6 +30,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import android.widget.SeekBar
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
+
 
 @AndroidEntryPoint
 class SpecificCategoryItemsFragment : Fragment() {
@@ -40,6 +47,12 @@ class SpecificCategoryItemsFragment : Fragment() {
 
     private var categoryName: String? = null
     private var categoryImageResId = 0
+
+    private var selectedMaxPrice: Int = 1000
+    private var selectedRating: Int = 0
+    private var selectedSort: String? = null
+    private var selectedSortButton: Button? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,8 +73,150 @@ class SpecificCategoryItemsFragment : Fragment() {
         binding.categoryName.text = categoryName
 
         initializeRecyclerView()
+
+
+        setupDrawerFilters(view)
+
+
+
         loadItems(categoryName ?: "")
+
+        observeViewModel() // ✅ Make sure ViewModel observers are active
+
+
+        // ✅ Top Items Button Click Listener
+        binding.topItems.setOnClickListener {
+            val categoryKey = CategoryMapper.getCategoryId(categoryName ?: "", requireContext()).toString()
+            viewModel.fetchTopLikedItemsByCategory(categoryKey) // ✅ Fetch top 5 liked items for the category
+        }
     }
+
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                // ✅ Observe all items for the category
+                launch {
+                    viewModel.items.collectLatest { itemList ->
+                        binding.progressBar.visibility = View.GONE
+                        binding.recycler.visibility = View.VISIBLE
+                        adapter.updateList(itemList) // ✅ Update RecyclerView with all items
+                    }
+                }
+
+                // ✅ Observe top liked items for the category
+                launch {
+                    viewModel.topLikedItems.collectLatest { topItemList ->
+                        if (topItemList.isNotEmpty()) {
+                            adapter.updateList(topItemList) // ✅ Update RecyclerView with top 5 liked items
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    private fun setupDrawerFilters(view: View) {
+        val drawerLayout = view.findViewById<DrawerLayout>(R.id.drawer_layout)
+        val filterButton = view.findViewById<ImageView>(R.id.filter_button)
+        val resetFilterButton = view.findViewById<Button>(R.id.reset_filter_button)
+        val applyButton = view.findViewById<Button>(R.id.apply_button)
+
+        // Sorting buttons
+        val sortPriceAscButton = view.findViewById<Button>(R.id.sort_price_asc_button)
+        val sortPriceDescButton = view.findViewById<Button>(R.id.sort_price_desc_button)
+        val sortStarsDescButton = view.findViewById<Button>(R.id.sort_stars_desc_button)
+
+        // Track selected values
+        var selectedMaxPrice = 1000
+        var selectedRating = 0
+        var selectedSort: String? = null
+        var selectedSortButton: Button? = null
+
+        // Open drawer when filter button is clicked
+        filterButton.setOnClickListener {
+            drawerLayout.openDrawer(GravityCompat.END)
+        }
+
+        // SeekBar for price range
+        binding.priceSeekBar.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                selectedMaxPrice = progress
+                binding.minPrice.text = "$$progress"
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+
+        // Sorting actions
+        val sortButtons = mapOf(
+            sortPriceAscButton to "price_asc",
+            sortPriceDescButton to "price_desc",
+            sortStarsDescButton to "stars_desc"
+        )
+
+        sortButtons.forEach { (button, sortKey) ->
+            button.setOnClickListener {
+                selectedSort = sortKey
+                sortButtons.keys.forEach { it.setBackgroundColor(resources.getColor(R.color.gray)) }
+                button.setBackgroundColor(resources.getColor(R.color.purple_500))
+                selectedSortButton = button
+            }
+        }
+
+        // Apply filters
+        applyButton.setOnClickListener {
+            applyCategoryFilters(selectedRating, selectedMaxPrice.toDouble(), selectedSort)
+            drawerLayout.closeDrawer(GravityCompat.END)
+        }
+
+        // Reset filters
+        resetFilterButton.setOnClickListener {
+            resetCategoryFilters()
+        }
+    }
+
+    private fun applyCategoryFilters(minRating: Int, maxPrice: Double, sortBy: String?) {
+        val categoryKey = CategoryMapper.getCategoryId(categoryName ?: "", requireContext()).toString()
+
+        // Use RecommendationListViewModel instead of CategoryItemsViewModel
+        viewModel.fetchFilteredCategoryItems(categoryKey, minRating, maxPrice)
+
+        // Delay sorting to ensure filtering completes first
+        viewLifecycleOwner.lifecycleScope.launch {
+            kotlinx.coroutines.delay(300)
+            sortBy?.let { viewModel.fetchSortedCategoryItems(it, categoryKey) }
+        }
+    }
+
+
+    private fun resetCategoryFilters() {
+        val categoryKey = CategoryMapper.getCategoryId(categoryName ?: "", requireContext()).toString()
+        viewModel.fetchItemsByCategory(categoryKey) // ✅ Fetch all items in the category
+
+        // Reset UI selections
+        selectedRating = 0
+        selectedMaxPrice = 1000
+        binding.priceSeekBar.progress = 1000
+        binding.minPrice.text = getString(R.string._1000)
+
+        selectedSort = null
+        selectedSortButton = null
+
+        val sortButtons = listOf(
+            binding.sortPriceAscButton,
+            binding.sortPriceDescButton,
+            binding.sortStarsDescButton
+        )
+        sortButtons.forEach { it.setBackgroundColor(resources.getColor(R.color.gray)) }
+
+        viewModel.clearTopLikedItems() // ✅ Ensure top liked items are cleared
+    }
+
+
 
     private fun initializeRecyclerView() {
         adapter = ItemAdapter(emptyList(), object : ItemAdapter.ItemListener {
