@@ -31,7 +31,8 @@ class RecommendationListViewModel @Inject constructor(
     val userItems: StateFlow<List<Item>> get() = _userItems.asStateFlow()
 
     private val _topLikedItems = MutableStateFlow<List<Item>>(emptyList())
-    val topLikedItems: StateFlow<List<Item>> = _topLikedItems.asStateFlow()
+    val topLikedItems: StateFlow<List<Item>> = _topLikedItems
+
 
 
 
@@ -222,6 +223,46 @@ class RecommendationListViewModel @Inject constructor(
             }
         }
     }
+
+    fun clearTopLikedItems() {
+        viewModelScope.launch {
+            _topLikedItems.emit(emptyList()) // ✅ Clears the top items list
+        }
+    }
+
+    fun fetchFilteredCategoryItems(category: String, minRating: Int, maxPrice: Double) {
+        viewModelScope.launch {
+            repository.getItemsByCategory(category).collectLatest { allItems ->
+                val filteredItems = allItems.filter {
+                    it.rating >= minRating && it.price <= maxPrice
+                }
+                _items.value = filteredItems // ✅ Update UI with filtered items
+            }
+        }
+    }
+
+    fun fetchSortedCategoryItems(sortBy: String, category: String) {
+        viewModelScope.launch {
+            val sortedList = when (sortBy) {
+                "price_asc" -> _items.value.sortedBy { it.price }
+                "price_desc" -> _items.value.sortedByDescending { it.price }
+                "stars_desc" -> _items.value.sortedByDescending { it.rating }
+                else -> _items.value
+            }
+            _items.value = sortedList
+        }
+    }
+    fun fetchTopLikedItemsByCategory(category: String) {
+        viewModelScope.launch {
+            repository.getItemsByCategory(category).collectLatest { allItems ->
+                val topItems = allItems
+                    .sortedByDescending { it.likedBy.size } // ✅ Sort items by most likes
+                    .take(5) // ✅ Get only the top 5 items
+                _topLikedItems.value = topItems // ✅ Update the list in ViewModel
+            }
+        }
+    }
+
 
 
 

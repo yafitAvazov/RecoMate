@@ -365,6 +365,8 @@ class AllItemsFragment : Fragment() {
 
 
     private fun resetFilters() {
+        println("🔥 DEBUG: Remove Filter button clicked!")
+
         selectedRating = 0
         selectedMaxPrice = 1000
         binding.priceSeekBar.progress = 1000
@@ -375,15 +377,25 @@ class AllItemsFragment : Fragment() {
             binding.sortPriceDescButton,
             binding.sortStarsDescButton
         )
-
-        // Reset color for all sort buttons
         sortButtons.forEach { it.setBackgroundColor(resources.getColor(R.color.gray)) }
 
-        // Reset selected sort
         selectedSort = null
         selectedSortButton = null
-        viewModel.fetchItems()
+
+        viewModel.fetchItems() // ✅ Reload all items
+
+        // ✅ Force reset of _items to ensure UI updates after top items were displayed
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.items.collectLatest { itemList ->
+                adapter.updateList(itemList)
+                println("🔥 DEBUG: Adapter updated with ${itemList.size} items after reset")
+            }
+        }
+
+        // ✅ Explicitly clear top liked items to prevent interference
+        viewModel.clearTopLikedItems()
     }
+
 
 
     override fun onDestroyView() {
