@@ -11,6 +11,9 @@ import com.example.project2.data.repository.ItemRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,6 +25,9 @@ class RecommendationDetailViewModel @Inject constructor(
 
     private val _chosenItem = MutableLiveData<Item?>()
     val chosenItem: MutableLiveData<Item?> get() = _chosenItem
+
+    private val _items = MutableStateFlow<List<Item>>(emptyList())
+    val items: StateFlow<List<Item>> = _items.asStateFlow()
 
     val currentUserId: String?
         get() = FirebaseAuth.getInstance().currentUser?.uid
@@ -115,6 +121,17 @@ class RecommendationDetailViewModel @Inject constructor(
         }
         return liveData
     }
+    fun fetchItemsByCategory(category: String) {
+        viewModelScope.launch {
+            repository.getItemsByCategory(category).collect { itemList ->
+                // ✅ התאמת החיפוש למזהים מספריים במקום שמות
+                _items.value = itemList.filter {
+                    it.category.split(",").contains(category)
+                }
+            }
+        }
+    }
+
 
 
 

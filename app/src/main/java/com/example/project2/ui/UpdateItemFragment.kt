@@ -13,9 +13,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.project2.R
+import com.example.project2.data.model.CategoryMapper
 import com.example.project2.data.model.Item
 import com.example.project2.databinding.UpdateRecommendationLayoutBinding
 import com.example.project2.ui.recommendation_detail.RecommendationDetailViewModel
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +27,8 @@ class UpdateItemFragment : Fragment() {
     private var _binding: UpdateRecommendationLayoutBinding? = null
     private val binding get() = _binding!!
     private val viewModel: RecommendationDetailViewModel by activityViewModels()
+    private val itemRef = FirebaseFirestore.getInstance().collection("items")
+
 
     private var existingItemId: String? = null
     private var selectedRating: Int = 0
@@ -81,12 +85,9 @@ class UpdateItemFragment : Fragment() {
             binding.imageBtn.setImageResource(R.drawable.baseline_hide_image_24)
         } else {
             imageUri = Uri.parse(item.photo)
-
             if (item.photo.startsWith("https")) {
-                // ✅ אם התמונה נמצאת בפיירבייס, נוריד אותה מהשרת
                 loadImageFromFirebase(item.photo)
             } else {
-                // ✅ אם מדובר בקישור מקומי, נשתמש בו ישירות
                 binding.imageBtn.setImageURI(imageUri)
             }
         }
@@ -95,41 +96,70 @@ class UpdateItemFragment : Fragment() {
 
         selectedRating = item.rating
         selectedCategories.clear()
-        selectedCategories.addAll(item.category.split(getString(R.string.separator)))
+
+        // ✅ המרת מזהי קטגוריות למילים בשפה המקומית
+        val categoryIds = item.category.split(",").mapNotNull { it.toIntOrNull() }
+        selectedCategories.addAll(categoryIds.mapNotNull { CategoryMapper.getLocalizedCategory(it, requireContext()) })
+
         updateStarDisplay(selectedRating - 1)
         updateCategoryButtons()
     }
 
 
     private fun updateItem() {
-        val title = binding.itemTitle.text.toString()
-        val price = binding.price.text.toString().toDoubleOrNull() ?: 0.0
-        val link = binding.itemLink.text.toString()
-        val comment = binding.itemComment.text.toString()
-        val photoUriString = imageUri?.toString() ?: ""
-        val address = binding.editAddressEditText.text.toString()
+        try {
+            val title = binding.itemTitle.text.toString().trim()
+            val comment = binding.itemComment.text.toString().trim()
+            val priceText = binding.price.text.toString()
+            val address = binding.editAddressEditText.text.toString().trim()
+            val link = binding.itemLink.text.toString().trim()
+            val categoryIds = selectedCategories.mapNotNull { CategoryMapper.getCategoryId(it, requireContext()) }
+            val categoryString = categoryIds.joinToString(",")
+            val price = priceText.toDoubleOrNull() ?: 0.0
+            val userId = viewModel.currentUserId ?: throw Exception("User not logged in.")
+            val itemId = existingItemId ?: throw Exception("Item ID is missing.")
 
-        val updatedItem = Item(
-            id = existingItemId ?: "",
-            title = title,
-            price = price,
-            link = link,
-            comment = comment,
-            photo = if (photoUriString.isEmpty()) null else photoUriString,
-            rating = selectedRating,
-            category = selectedCategories.joinToString(getString(R.string.separator)),
-            address = address,
-            userId = viewModel.currentUserId ?: "" // ✅ שימוש ב- userId מהמשתמש המחובר
-        )
+            // ✅ הפעלת ProgressBar ונעילת כפתור
+            binding.postProgressBar.visibility = View.VISIBLE
+            binding.finishBtn.isEnabled = false
+            binding.finishBtn.text = getString(R.string.updating)
 
-        CoroutineScope(Dispatchers.Main).launch {
-            viewModel.updateItem(updatedItem)
-            Toast.makeText(requireContext(), getString(R.string.item_updated_successfully), Toast.LENGTH_SHORT).show()
-            findNavController().navigate(R.id.action_updateItemFragment_to_allItemsFragment)
+            // ✅ בדיקה האם יש תמונה חדשה להעלות
+            if (imageUri != null && !imageUri.toString().startsWith("https")) {
+                uploadImageToFirebaseStorage(imageUri!!) { imageUrl ->
+                    saveUpdatedItem(itemId, userId, title, comment, imageUrl, price, categoryString, link, selectedRating, address)
+                }
+            } else {
+                saveUpdatedItem(itemId, userId, title, comment, imageUri?.toString(), price, categoryString, link, selectedRating, address)
+            }
+
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            binding.postProgressBar.visibility = View.GONE
+            binding.finishBtn.isEnabled = true
+            binding.finishBtn.text = getString(R.string.finish)
         }
-
-
     }
+
+    // ✅ פונקציה להעלאת תמונה לפיירבייס
+    private fun uploadImageToFirebaseStorage(imageUri: Uri, onSuccess: (String) -> Unit) {
+        val storageReference = com.google.firebase.storage.FirebaseStorage.getInstance().reference
+        val fileRef = storageReference.child("images/${System.currentTimeMillis()}.jpg")
+
+        fileRef.putFile(imageUri)
+            .addOnSuccessListener {
+                fileRef.downloadUrl.addOnSuccessListener { uri ->
+                    onSuccess(uri.toString())
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "Image upload failed", Toast.LENGTH_SHORT).show()
+                binding.postProgressBar.visibility = View.GONE
+                binding.finishBtn.isEnabled = true
+                binding.finishBtn.text = getString(R.string.finish)
+            }
+    }
+
 
 
     private fun removeImage() {
@@ -235,6 +265,80 @@ class UpdateItemFragment : Fragment() {
             Toast.makeText(requireContext(), "Failed to load image: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
+    private fun saveUpdatedItem(
+        title: String,
+        price: Double,
+        link: String,
+        comment: String,
+        photoUrl: String?,
+        category: String,
+        address: String
+    ) {
+        val updatedItem = Item(
+            id = existingItemId ?: "",
+            title = title,
+            price = price,
+            link = link,
+            comment = comment,
+            photo = if (photoUrl.isNullOrEmpty()) null else photoUrl, // ✅ שמירה של ה-URL החדש או null אם אין תמונה
+            rating = selectedRating,
+            category = category,
+            address = address,
+            userId = viewModel.currentUserId ?: ""
+        )
+
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                viewModel.updateItem(updatedItem)
+                viewModel.fetchItemsByCategory(category)
+
+                Toast.makeText(requireContext(), getString(R.string.item_updated_successfully), Toast.LENGTH_SHORT).show()
+                findNavController().navigate(R.id.action_updateItemFragment_to_allItemsFragment)
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Error updating item: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    private fun saveUpdatedItem(
+        itemId: String,
+        userId: String,
+        title: String,
+        comment: String,
+        photoUrl: String?,
+        price: Double,
+        category: String,
+        link: String,
+        rating: Int,
+        address: String
+    ) {
+        val updatedItem = Item(
+            id = itemId,
+            userId = userId,
+            title = title,
+            comment = comment,
+            photo = if (photoUrl.isNullOrEmpty()) null else photoUrl,
+            price = price,
+            category = category,
+            link = link,
+            rating = rating,
+            address = address
+        )
+
+        itemRef.document(itemId).set(updatedItem)
+            .addOnSuccessListener {
+                Toast.makeText(requireContext(), getString(R.string.item_updated_successfully), Toast.LENGTH_SHORT).show()
+                findNavController().navigate(R.id.action_updateItemFragment_to_allItemsFragment)
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(requireContext(), "Error updating item: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+            .addOnCompleteListener {
+                binding.postProgressBar.visibility = View.GONE
+                binding.finishBtn.isEnabled = true
+                binding.finishBtn.text = getString(R.string.finish)
+            }
+    }
+
 
 
     override fun onDestroyView() {

@@ -382,6 +382,14 @@
                 android:hint="@string/add_a_comment" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/post_progress_bar"/>
+
         <Button
             android:id="@+id/finish_btn"
             android:layout_width="wrap_content"

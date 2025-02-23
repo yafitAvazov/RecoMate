@@ -137,7 +137,7 @@ class AddItemFragment : Fragment() {
         address: String
     ) {
         try {
-                          val item = Item(
+            val item = Item(
                 id = itemId,
                 userId = userId,
                 title = title,
