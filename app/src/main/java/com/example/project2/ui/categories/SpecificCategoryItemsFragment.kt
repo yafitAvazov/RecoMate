@@ -10,7 +10,9 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -73,19 +75,23 @@ class SpecificCategoryItemsFragment : Fragment() {
             }
 
             override fun onItemDeleted(item: Item) {
-                val currentUserId = viewModel.getCurrentUserId() ?: return
+                try {
+                    viewModel.deleteItem(item) // Deletes from Firestore & Local DB
 
-                viewModel.deleteItem(item) // 🔥 מוחק מה-DB
-                viewModel.updateLikeStatus(item.id, currentUserId)
-                lifecycleScope.launch {
-                    // 🔥 מחכים שהמחיקה תסתיים ואז מרעננים את הרשימה
-                    categoryName?.let {
-                        loadItems(categoryName?:"")
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        try {
+                            viewModel.fetchItems()
+                            viewModel.fetchUserItems()
+                        } catch (e: Exception) {
+                            Toast.makeText(requireContext(), "Error updating list: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                }
 
-                Toast.makeText(requireContext(), getString(R.string.item_deleted_successfully), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.item_deleted_successfully), Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "Failed to delete item: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
+            }
             override fun onItemLiked(item: Item) {
                 val currentUserId = viewModel.getCurrentUserId() ?: return
                 viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Pass userId instead of "true"
@@ -105,14 +111,29 @@ class SpecificCategoryItemsFragment : Fragment() {
     }
 
     private fun loadItems(category: String) {
-        val categoryKey = CategoryMapper.getCategoryId(category,requireContext())
-        lifecycleScope.launch {
-            viewModel.fetchItemsByCategory(categoryKey.toString()) // ✅ Uses universal key
-            viewModel.items.collectLatest { items ->
-                adapter.updateList(items)
+        val categoryKey = CategoryMapper.getCategoryId(category, requireContext())
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                viewModel.fetchItemsByCategory(categoryKey.toString())
+
+                viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED)
+                    //coroutine paused when not visible
+                {
+                    viewModel.items.collectLatest { items ->
+                        adapter.updateList(items)
+                    }
+                }
+            } catch (e: Exception) {
+                if (isAdded) { // Ensures the Fragment is still attached before showing Toast
+                    Toast.makeText(requireContext(), "Error loading items: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
+
+
+
     private fun setupCommentsSection(item: Item) {
         binding?.let { binding -> // ✅ בדיקה שה-Binding עדיין קיים
             val commentsRecyclerView = binding.root.findViewById<RecyclerView>(R.id.comments_recycler_view)

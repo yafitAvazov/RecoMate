@@ -32,7 +32,6 @@ class MyRecommendationsFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: RecommendationListViewModel by viewModels()
     private lateinit var adapter: ItemAdapter // ✅ משתנה לשמירת המתאם
-    private var lastSelectedItem: Item? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -99,37 +98,52 @@ class MyRecommendationsFragment : Fragment() {
     private fun initializeRecyclerView() {
         adapter = ItemAdapter(emptyList(), object : ItemAdapter.ItemListener {
             override fun onItemClicked(index: Int) {
-                val clickedItem = adapter.items[index]
-                Toast.makeText(requireContext(), clickedItem.title, Toast.LENGTH_SHORT).show()
-            }
-
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.long_click_for_details),
+                    Toast.LENGTH_SHORT).show()}
             override fun onItemLongClicked(index: Int) {
                 val item = adapter.items[index]
                 val bundle = bundleOf("itemId" to item.id)
-                findNavController().navigate(R.id.action_myRecommendationsFragment_to_itemDetailsFragment, bundle)
+                findNavController().navigate(R.id.action_allItemsFragment_to_itemDetailsFragment, bundle)
             }
+
             override fun onItemDeleted(item: Item) {
-                viewModel.deleteItem(item) // 🔥 מוחק מה-DB המקומי ומה-Firebase
+                try {
+                    viewModel.deleteItem(item) // 🔥 Deletes from Firestore & Local DB
 
-                viewLifecycleOwner.lifecycleScope.launch {
-                    // 🔥 מחכים שהמחיקה תסתיים ואז מעדכנים את הרשימה
-                    viewModel.fetchItems()
-                    viewModel.fetchUserItems()
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        try {
+                            viewModel.fetchItems()
+                            viewModel.fetchUserItems()
+                        } catch (e: Exception) {
+                            Toast.makeText(requireContext(), "Error updating list: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    Toast.makeText(requireContext(), getString(R.string.item_deleted_successfully), Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "Failed to delete item: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
-
-                Toast.makeText(requireContext(),
-                    getString(R.string.recommendation_deleted), Toast.LENGTH_SHORT).show()
+            }
 
 
-        }
             override fun onItemLiked(item: Item) {
-                val currentUserId = viewModel.getCurrentUserId() ?: return
-                viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Pass userId instead of "true"
+                try {
+                    val currentUserId = viewModel.getCurrentUserId() ?: throw Exception("User not logged in")
+                    viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Update Firestore
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "Failed to like item: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
             }
 
             override fun onItemUnliked(item: Item) {
-                val currentUserId = viewModel.getCurrentUserId() ?: return
-                viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Pass userId instead of "false"
+                try {
+                    val currentUserId = viewModel.getCurrentUserId() ?: throw Exception("User not logged in")
+                    viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Update Firestore
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "Failed to unlike item: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
             }
 
 

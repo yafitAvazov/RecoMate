@@ -77,7 +77,7 @@ class AllItemsFragment : Fragment() {
 
             requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
                 ?.selectedItemId = R.id.nav_categories
-            }
+        }
     }
 
     override fun onResume() {
@@ -226,27 +226,43 @@ class AllItemsFragment : Fragment() {
             }
 
             override fun onItemDeleted(item: Item) {
-                viewModel.deleteItem(item) // 🔥 מוחק מה-DB המקומי ומה-Firebase
+                try {
+                    viewModel.deleteItem(item) // 🔥 Deletes from Firestore & Local DB
 
-                viewLifecycleOwner.lifecycleScope.launch {
-                    // 🔥 מחכים שהמחיקה תסתיים ואז מעדכנים את הרשימה
-                    viewModel.fetchItems()
-                    viewModel.fetchUserItems()
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        try {
+                            viewModel.fetchItems()
+                            viewModel.fetchUserItems()
+                        } catch (e: Exception) {
+                            Toast.makeText(requireContext(), "Error updating list: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    Toast.makeText(requireContext(), getString(R.string.item_deleted_successfully), Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "Failed to delete item: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
-
-                Toast.makeText(requireContext(), getString(R.string.item_deleted_successfully), Toast.LENGTH_SHORT)
-                    .show()
             }
 
+
             override fun onItemLiked(item: Item) {
-                val currentUserId = viewModel.getCurrentUserId() ?: return
-                viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Pass userId instead of "true"
+                try {
+                    val currentUserId = viewModel.getCurrentUserId() ?: throw Exception("User not logged in")
+                    viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Update Firestore
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "Failed to like item: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
             }
 
             override fun onItemUnliked(item: Item) {
-                val currentUserId = viewModel.getCurrentUserId() ?: return
-                viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Pass userId instead of "false"
+                try {
+                    val currentUserId = viewModel.getCurrentUserId() ?: throw Exception("User not logged in")
+                    viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Update Firestore
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "Failed to unlike item: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
             }
+
         })
 
         binding.recycler.adapter = adapter

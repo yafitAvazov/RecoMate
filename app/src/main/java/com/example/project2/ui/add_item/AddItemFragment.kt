@@ -2,6 +2,8 @@ package com.example.project2.ui.add_item
 
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -10,25 +12,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.example.project2.data.model.Item
 import com.example.project2.R
 import com.example.project2.data.model.CategoryMapper
+import com.example.project2.data.model.Item
 import com.example.project2.databinding.AddRecommendationLayoutBinding
-import java.io.File
 import com.example.project2.ui.all_recommendation.RecommendationListViewModel
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 
 @AndroidEntryPoint
 class AddItemFragment : Fragment() {
@@ -83,30 +82,42 @@ class AddItemFragment : Fragment() {
     }
 
     private fun addNewItem() {
-        val title = binding.itemTitle.text.toString().takeIf { it.isNotBlank() } ?: ""
-        val comment = binding.itemComment.text.toString().takeIf { it.isNotBlank() } ?: ""
-        val priceText = binding.price.text.toString()
-        val address = binding.addressEdt.text.toString().takeIf { it.isNotBlank() } ?: ""
-        val link = binding.itemLink.text.toString().takeIf { it.isNotBlank() } ?: ""
-        val categoryIds = selectedCategories.mapNotNull { CategoryMapper.getCategoryId(it, requireContext()) }
-        val categoryString = categoryIds.joinToString(",") // Store in "1,3,5" format
-        val price = priceText.toDoubleOrNull() ?: 0.0
-        val userId = viewModel.getCurrentUserId()
+        try {
+            val title = binding.itemTitle.text.toString().takeIf { it.isNotBlank() } ?: ""
+            val comment = binding.itemComment.text.toString().takeIf { it.isNotBlank() } ?: ""
+            val priceText = binding.price.text.toString()
+            val address = binding.addressEdt.text.toString().takeIf { it.isNotBlank() } ?: ""
+            val link = binding.itemLink.text.toString().takeIf { it.isNotBlank() } ?: ""
+            val categoryIds = selectedCategories.mapNotNull { CategoryMapper.getCategoryId(it, requireContext()) }
+            val categoryString = categoryIds.joinToString(",")
+            val price = priceText.toDoubleOrNull() ?: 0.0
+            val userId = viewModel.getCurrentUserId() ?: throw Exception("User not logged in.")
 
-        if (userId == null) {
-            Toast.makeText(requireContext(), getString(R.string.error_user_not_logged_in), Toast.LENGTH_SHORT).show()
-            return
-        }
+            val itemId = itemRef.document().id
 
-        val itemId = itemRef.document().id // Create a unique Firestore ID
+            // ✅ Show ProgressBar & Disable Button
+            binding.postProgressBar.visibility = View.VISIBLE
+            binding.finishBtn.isEnabled = false
+            binding.finishBtn.text = getString(R.string.uploading)
 
-        // ✅ Check if there's an image to upload
-        imageUri?.let { uri ->
-            uploadImageToFirebaseStorage(uri) { imageUrl ->
-                saveItemToFirestore(itemId, userId, title, comment, imageUrl, price, categoryString, link, selectedRating, address)
+            // ✅ Upload image if available
+            if (imageUri != null) {
+                uploadImageToFirebaseStorage(imageUri!!) { imageUrl ->
+                    saveItemToFirestore(itemId, userId, title, comment, imageUrl, price, categoryString, link, selectedRating, address)
+                }
+            } else {
+                saveItemToFirestore(itemId, userId, title, comment, null, price, categoryString, link, selectedRating, address)
             }
-        } ?: saveItemToFirestore(itemId, userId, title, comment, null, price, categoryString, link, selectedRating, address)
+
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            binding.postProgressBar.visibility = View.GONE
+            binding.finishBtn.isEnabled = true
+            binding.finishBtn.text = getString(R.string.finish)
+        }
     }
+
+
 
     // ✅ Save Item in Firestore After Uploading Image
     private fun saveItemToFirestore(
@@ -121,28 +132,40 @@ class AddItemFragment : Fragment() {
         rating: Int,
         address: String
     ) {
-        val item = Item(
-            id = itemId,
-            userId = userId,
-            title = title,
-            comment = comment,
-            photo = photoUrl, // ✅ Save Firebase Storage URL
-            price = price,
-            category = category,
-            link = link,
-            rating = rating,
-            address = address
-        )
+        try {
+            val item = Item(
+                id = itemId,
+                userId = userId,
+                title = title,
+                comment = comment,
+                photo = photoUrl,
+                price = price,
+                category = category,
+                link = link,
+                rating = rating,
+                address = address
+            )
 
-        itemRef.document(itemId).set(item)
-            .addOnSuccessListener {
-                Toast.makeText(requireContext(), getString(R.string.recommendation_published), Toast.LENGTH_SHORT).show()
-                findNavController().navigate(R.id.action_addItemFragment_to_allItemsFragment)
-            }
-            .addOnFailureListener {
-                Toast.makeText(requireContext(), "Failed to add item", Toast.LENGTH_SHORT).show()
-            }
+            itemRef.document(itemId).set(item)
+                .addOnSuccessListener {
+                    binding.postProgressBar.visibility = View.GONE
+                    binding.finishBtn.isEnabled = true
+                    binding.finishBtn.text = getString(R.string.finish)
+                    Toast.makeText(requireContext(), getString(R.string.recommendation_published), Toast.LENGTH_SHORT).show()
+                    findNavController().navigate(R.id.action_addItemFragment_to_allItemsFragment)
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(requireContext(), "Failed to add item: ${e.message}", Toast.LENGTH_SHORT).show()
+                    binding.postProgressBar.visibility = View.GONE
+                    binding.finishBtn.isEnabled = true
+                    binding.finishBtn.text = getString(R.string.finish)
+                }
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "Firestore error: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
     }
+
+
 
 
 
@@ -271,18 +294,41 @@ class AddItemFragment : Fragment() {
         }
     }
     private fun uploadImageToFirebaseStorage(imageUri: Uri, onSuccess: (String) -> Unit) {
-        val storageReference = FirebaseStorage.getInstance().reference
-        val fileRef = storageReference.child("images/${System.currentTimeMillis()}.jpg")
+        try {
+            // ✅ Check for internet connection first
+            if (!isInternetAvailable()) {
+                Toast.makeText(requireContext(), "No internet connection. Please try again later.", Toast.LENGTH_SHORT).show()
+                binding.postProgressBar.visibility = View.GONE
+                binding.finishBtn.isEnabled = true
+                binding.finishBtn.text = getString(R.string.finish)
+                return
+            }
 
-        fileRef.putFile(imageUri)
-            .addOnSuccessListener { taskSnapshot ->
-                fileRef.downloadUrl.addOnSuccessListener { uri ->
-                    onSuccess(uri.toString()) // Get the image URL
+            val storageReference = FirebaseStorage.getInstance().reference
+            val fileRef = storageReference.child("images/${System.currentTimeMillis()}.jpg")
+
+            fileRef.putFile(imageUri)
+                .addOnSuccessListener {
+                    fileRef.downloadUrl.addOnSuccessListener { uri ->
+                        onSuccess(uri.toString()) // Return Image URL
+                    }
                 }
-            }
-            .addOnFailureListener {
-                Toast.makeText(requireContext(), "Image upload failed", Toast.LENGTH_SHORT).show()
-            }
+                .addOnFailureListener {
+                    Toast.makeText(requireContext(), "Image upload failed", Toast.LENGTH_SHORT).show()
+                    binding.postProgressBar.visibility = View.GONE
+                    binding.finishBtn.isEnabled = true
+                    binding.finishBtn.text = getString(R.string.finish)
+                }
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "Upload error: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun isInternetAvailable(): Boolean {
+        val connectivityManager = requireContext().getSystemService(ConnectivityManager::class.java)
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
 
 

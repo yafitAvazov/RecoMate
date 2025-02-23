@@ -123,5 +123,6 @@
     <string name="minimum_rating_set">דירוג מינימלי: %1$s ⭐</string>
     <string name="sort_selected">מיון נבחר: %s</string>
     <string name="error_user_not_logged_in">שגיאה: משתמש לא מחובר!</string>
+    <string name="uploading">מעלה</string>
 
 </resources>

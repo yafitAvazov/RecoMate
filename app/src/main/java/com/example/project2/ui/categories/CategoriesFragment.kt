@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -19,7 +20,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.project2.R
 import com.example.project2.databinding.CategoriesLayoutBinding
-import com.example.project2.ui.model.Category
+import com.example.project2.data.model.Category
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.example.project2.ui.recommendation_detail.RecommendationDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -113,7 +114,10 @@ class CategoriesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            requireActivity().finish() // ✅ סוגר את האפליקציה לחלוטין
 
+        }
 
 
 

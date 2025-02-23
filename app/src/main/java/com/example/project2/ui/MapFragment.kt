@@ -1,17 +1,24 @@
 package com.example.project2.ui
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.*
+import android.webkit.JavascriptInterface
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.project2.databinding.MapviewBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MapFragment : Fragment() {
@@ -56,27 +63,26 @@ class MapFragment : Fragment() {
                 useWideViewPort = true
                 loadWithOverviewMode = true
             }
+
             setOnTouchListener { v, event ->
                 v.parent.requestDisallowInterceptTouchEvent(true)
-
                 if (event.action == MotionEvent.ACTION_UP) {
-                    v.performClick() // ✅ קריאה ל-performClick עבור נגישות
+                    v.performClick()
                 }
-
                 v.onTouchEvent(event)
                 true
             }
 
-
             WebView.setWebContentsDebuggingEnabled(true)
-            addJavascriptInterface(this@MapFragment, "Android") //השגיאה בגלל שיש העברה של הפרגמנט לפונקציה של ג'אווה סקריפט
+
+            // ✅ Use WebAppInterface instead of passing Fragment
+            addJavascriptInterface(this@MapFragment, "Android")
 
             webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
                     Log.d("MapFragment", "WebView loaded: $url")
 
-                    // כאשר המפה מוכנה, אנו מנסים להתמקד בכתובת
                     address?.let {
                         focusOnAddress(it)
                     }
@@ -94,9 +100,17 @@ class MapFragment : Fragment() {
             }
         }
 
-        // טעינת הקובץ רק פעם אחת
+        // Load the map file once
         binding.mapWebView.loadUrl("file:///android_asset/map.html")
     }
+
+    @JavascriptInterface
+    fun onSearchError(message: String) {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

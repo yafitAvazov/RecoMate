@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.project2.R
-import com.example.project2.ui.model.Category
+import com.example.project2.data.model.Category
 
 class CategoryAdapter(
     private val categories: List<Category>,

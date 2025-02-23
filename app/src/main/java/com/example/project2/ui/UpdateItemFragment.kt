@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.example.project2.R
 import com.example.project2.data.model.Item
 import com.example.project2.databinding.UpdateRecommendationLayoutBinding
@@ -75,25 +76,30 @@ class UpdateItemFragment : Fragment() {
         binding.price.setText(item.price.toString())
         binding.itemLink.setText(item.link)
         binding.itemComment.setText(item.comment)
+
         if (item.photo.isNullOrEmpty()) {
             binding.imageBtn.setImageResource(R.drawable.baseline_hide_image_24)
         } else {
-            binding.imageBtn.setImageURI(Uri.parse(item.photo))
             imageUri = Uri.parse(item.photo)
+
+            if (item.photo.startsWith("https")) {
+                // ✅ אם התמונה נמצאת בפיירבייס, נוריד אותה מהשרת
+                loadImageFromFirebase(item.photo)
+            } else {
+                // ✅ אם מדובר בקישור מקומי, נשתמש בו ישירות
+                binding.imageBtn.setImageURI(imageUri)
+            }
         }
-        if (item.address.isNullOrEmpty()){
-            binding.editAddressEditText.setText(context?.getString(R.string.no_address))
-        }
-        else
-        {
-            binding.editAddressEditText.setText(item.address)
-        }
+
+        binding.editAddressEditText.setText(item.address ?: context?.getString(R.string.no_address))
+
         selectedRating = item.rating
         selectedCategories.clear()
         selectedCategories.addAll(item.category.split(getString(R.string.separator)))
         updateStarDisplay(selectedRating - 1)
         updateCategoryButtons()
     }
+
 
     private fun updateItem() {
         val title = binding.itemTitle.text.toString()
@@ -218,6 +224,18 @@ class UpdateItemFragment : Fragment() {
             }
         }
     }
+    private fun loadImageFromFirebase(imageUrl: String) {
+        try {
+            Glide.with(this)
+                .load(imageUrl)
+                .placeholder(R.mipmap.ic_launcher) // ✅ תמונת טעינה זמנית
+                .error(R.drawable.baseline_hide_image_24) // ✅ במקרה של כישלון
+                .into(binding.imageBtn)
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "Failed to load image: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

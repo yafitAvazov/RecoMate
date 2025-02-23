@@ -81,7 +81,7 @@
     <string name="beauty">Beauty</string>
     <string name="enter_adress">Enter Address</string>
     <string name="sort_options">Sort Options</string>
-    <string name="item_deleted_successfully">item_deleted_successfully</string>
+    <string name="item_deleted_successfully">item deleted successfully</string>
     <string name="categories_layout_categories_text">CATEGORIES</string>
     <string name="categories_layout_all_text">ALL</string>
     <string name="all_rec_layout_all_recommendations_text">All Recommendations</string>
@@ -133,5 +133,7 @@
     <string name="minimum_rating_set">Minimum rating set: %1$s ⭐</string>
     <string name="sort_selected">Sort selected: %s</string>
     <string name="error_user_not_logged_in">Error: User not logged in!</string>
+    <string name="uploading">uploading</string>
+
 
 </resources>

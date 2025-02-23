@@ -24,37 +24,15 @@ class CategoryItemsViewModel @Inject constructor(
 
     ViewModel() {
     private val _userItems = MutableStateFlow<List<Item>>(emptyList())
-    val userItems: StateFlow<List<Item>> get() = _userItems.asStateFlow()
-
-
-
     private val _userFavorites = MutableStateFlow<List<Item>>(emptyList())
-    val userFavorites: StateFlow<List<Item>> = _userFavorites.asStateFlow()
 
-    private val _items = MutableStateFlow<List<Item>>(emptyList())
-    val items: StateFlow<List<Item>> get() = _items
 
-    fun fetchItemsByCategory(category: String) {
-        viewModelScope.launch {
-            repository.getItemsByCategory(category).collectLatest { itemList ->
-                _items.value = itemList
-            }
-        }
-    }
     fun signOut() {
         authRepository.logout()
         _userItems.value = emptyList() // ✅ Clear user items on logout
         _userFavorites.value = emptyList() // ✅ Clear favorites on logout
     }
 
-    fun getItemById(itemId: String): LiveData<Item?> {
-        val liveData = MutableLiveData<Item?>()
-        viewModelScope.launch {
-            repository.getItemById(itemId).collect { item ->
-                liveData.postValue(item)
-            }
-        }
-        return liveData
-    }
+
 
 }
