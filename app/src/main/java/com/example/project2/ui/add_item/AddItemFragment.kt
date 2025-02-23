@@ -37,8 +37,8 @@ class AddItemFragment : Fragment() {
     private var _binding: AddRecommendationLayoutBinding? = null
     private val binding get() = _binding!!
     private var imageUri: Uri? = null
-    private var selectedRating: Int = 0
-    private val selectedCategories = mutableSetOf<String>()
+    private var selectedRating: Int = 0 // שומר את הדירוג הנבחר
+    private val selectedCategories = mutableSetOf<String>() // רשימת קטגוריות שנבחרו
     private val itemRef = FirebaseFirestore.getInstance().collection("items")
 
     private val viewModel: RecommendationListViewModel by activityViewModels()
@@ -70,7 +70,7 @@ class AddItemFragment : Fragment() {
         _binding = AddRecommendationLayoutBinding.inflate(inflater, container, false)
         setupCategoryButtons()
 
-
+        // הגדרת כפתור Finish להוספת פריט
         binding.finishBtn.setOnClickListener {
             addNewItem()
         }
@@ -178,8 +178,8 @@ class AddItemFragment : Fragment() {
             .setTitle(getString(R.string.select_option))
             .setItems(options) { _, which ->
                 when (which) {
-                    0 -> requestCameraPermission()
-                    1 -> pickImageLauncher.launch(arrayOf("image/*"))
+                    0 -> requestCameraPermission() // בקשת הרשאה לפני צילום תמונה
+                    1 -> pickImageLauncher.launch(arrayOf("image/*")) // בחירת תמונה מהמכשיר
                 }
             }
             .setCancelable(true)

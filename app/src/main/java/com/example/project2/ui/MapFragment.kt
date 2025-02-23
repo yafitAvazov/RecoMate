@@ -15,6 +15,7 @@ import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.example.project2.R
 import com.example.project2.databinding.MapviewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -95,7 +96,8 @@ class MapFragment : Fragment() {
                 ) {
                     super.onReceivedError(view, request, error)
                     Log.e("MapFragment", "WebView error: ${error?.description}")
-                    Toast.makeText(requireContext(), "Error loading map", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        context.getString(R.string.error_loading_map), Toast.LENGTH_SHORT).show()
                 }
             }
         }

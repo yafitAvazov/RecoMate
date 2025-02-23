@@ -80,11 +80,13 @@ class SpecificCategoryItemsFragment : Fragment() {
 
         loadItems(categoryName ?: "")
 
-        observeViewModel()
+        observeViewModel() // ✅ Make sure ViewModel observers are active
+
+
 
         binding.topItems.setOnClickListener {
             val categoryKey = CategoryMapper.getCategoryId(categoryName ?: "", requireContext()).toString()
-            viewModel.fetchTopLikedItemsByCategory(categoryKey)
+            viewModel.fetchTopLikedItemsByCategory(categoryKey) // ✅ Fetch top 5 liked items for the category
         }
     }
 
@@ -92,20 +94,20 @@ class SpecificCategoryItemsFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-
+                // ✅ Observe all items for the category
                 launch {
                     viewModel.items.collectLatest { itemList ->
                         binding.progressBar.visibility = View.GONE
                         binding.recycler.visibility = View.VISIBLE
-                        adapter.updateList(itemList)
+                        adapter.updateList(itemList) // ✅ Update RecyclerView with all items
                     }
                 }
 
-
+                // ✅ Observe top liked items for the category
                 launch {
                     viewModel.topLikedItems.collectLatest { topItemList ->
                         if (topItemList.isNotEmpty()) {
-                            adapter.updateList(topItemList)
+                            adapter.updateList(topItemList) // ✅ Update RecyclerView with top 5 liked items
                         }
                     }
                 }
@@ -120,23 +122,23 @@ class SpecificCategoryItemsFragment : Fragment() {
         val resetFilterButton = view.findViewById<Button>(R.id.reset_filter_button)
         val applyButton = view.findViewById<Button>(R.id.apply_button)
 
-
+        // Sorting buttons
         val sortPriceAscButton = view.findViewById<Button>(R.id.sort_price_asc_button)
         val sortPriceDescButton = view.findViewById<Button>(R.id.sort_price_desc_button)
         val sortStarsDescButton = view.findViewById<Button>(R.id.sort_stars_desc_button)
 
-
+        // Track selected values
         var selectedMaxPrice = 1000
         var selectedRating = 0
         var selectedSort: String? = null
         var selectedSortButton: Button? = null
 
-
+        // Open drawer when filter button is clicked
         filterButton.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.END)
         }
 
-
+        // SeekBar for price range
         binding.priceSeekBar.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -148,7 +150,7 @@ class SpecificCategoryItemsFragment : Fragment() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
-
+        // Sorting actions
         val sortButtons = mapOf(
             sortPriceAscButton to "price_asc",
             sortPriceDescButton to "price_desc",
@@ -164,13 +166,13 @@ class SpecificCategoryItemsFragment : Fragment() {
             }
         }
 
-
+        // Apply filters
         applyButton.setOnClickListener {
             applyCategoryFilters(selectedRating, selectedMaxPrice.toDouble(), selectedSort)
             drawerLayout.closeDrawer(GravityCompat.END)
         }
 
-
+        // Reset filters
         resetFilterButton.setOnClickListener {
             resetCategoryFilters()
         }
@@ -179,10 +181,10 @@ class SpecificCategoryItemsFragment : Fragment() {
     private fun applyCategoryFilters(minRating: Int, maxPrice: Double, sortBy: String?) {
         val categoryKey = CategoryMapper.getCategoryId(categoryName ?: "", requireContext()).toString()
 
-
+        // Use RecommendationListViewModel instead of CategoryItemsViewModel
         viewModel.fetchFilteredCategoryItems(categoryKey, minRating, maxPrice)
 
-
+        // Delay sorting to ensure filtering completes first
         viewLifecycleOwner.lifecycleScope.launch {
             kotlinx.coroutines.delay(300)
             sortBy?.let { viewModel.fetchSortedCategoryItems(it, categoryKey) }
@@ -192,8 +194,9 @@ class SpecificCategoryItemsFragment : Fragment() {
 
     private fun resetCategoryFilters() {
         val categoryKey = CategoryMapper.getCategoryId(categoryName ?: "", requireContext()).toString()
-        viewModel.fetchItemsByCategory(categoryKey)
+        viewModel.fetchItemsByCategory(categoryKey) // ✅ Fetch all items in the category
 
+        // Reset UI selections
         selectedRating = 0
         selectedMaxPrice = 1000
         binding.priceSeekBar.progress = 1000
@@ -209,7 +212,7 @@ class SpecificCategoryItemsFragment : Fragment() {
         )
         sortButtons.forEach { it.setBackgroundColor(resources.getColor(R.color.gray)) }
 
-        viewModel.clearTopLikedItems()
+        viewModel.clearTopLikedItems() // ✅ Ensure top liked items are cleared
     }
 
 
@@ -227,7 +230,7 @@ class SpecificCategoryItemsFragment : Fragment() {
 
             override fun onItemDeleted(item: Item) {
                 try {
-                    viewModel.deleteItem(item)
+                    viewModel.deleteItem(item) // Deletes from Firestore & Local DB
 
                     viewLifecycleOwner.lifecycleScope.launch {
                         try {
@@ -245,12 +248,12 @@ class SpecificCategoryItemsFragment : Fragment() {
             }
             override fun onItemLiked(item: Item) {
                 val currentUserId = viewModel.getCurrentUserId() ?: return
-                viewModel.updateLikeStatus(item.id, currentUserId)
+                viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Pass userId instead of "true"
             }
 
             override fun onItemUnliked(item: Item) {
                 val currentUserId = viewModel.getCurrentUserId() ?: return
-                viewModel.updateLikeStatus(item.id, currentUserId)
+                viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Pass userId instead of "false"
             }
 
         })
@@ -269,7 +272,7 @@ class SpecificCategoryItemsFragment : Fragment() {
                 viewModel.fetchItemsByCategory(categoryKey.toString())
 
                 viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED)
-
+                    //coroutine paused when not visible
                 {
                     viewModel.items.collectLatest { items ->
                         adapter.updateList(items)
@@ -313,12 +316,12 @@ class SpecificCategoryItemsFragment : Fragment() {
                         val currentItem = viewModel.items.value.find { it.id == itemId } ?: return@launch
                         val commentsList = currentItem.comments.toMutableList().apply { add(newComment) }
 
-                        viewModel.updateItemComments(currentItem, commentsList)
+                        viewModel.updateItemComments(currentItem, commentsList) // ✅ מעדכן במסד הנתונים
 
                         categoryName?.let {
-                            viewModel.fetchItemsByCategory(CategoryMapper.getCategoryId(it, requireContext()).toString())
+                            viewModel.fetchItemsByCategory(CategoryMapper.getCategoryId(it, requireContext()).toString()) // ✅ רענון הרשימה
                         }
-                        commentsAdapter.updateComments(commentsList)
+                        commentsAdapter.updateComments(commentsList) // ✅ עדכון התצוגה
                         commentInput.text.clear()
                     }
                 }

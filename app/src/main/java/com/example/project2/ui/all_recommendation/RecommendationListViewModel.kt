@@ -22,7 +22,8 @@ class RecommendationListViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-
+    //    private val _items = MutableStateFlow<List<Item>>(emptyList())
+//    val items: StateFlow<List<Item>> get() = _items.asStateFlow()
     private val _items = MutableStateFlow<List<Item>>(emptyList())
     val items: StateFlow<List<Item>> = _items.asStateFlow()
 
@@ -45,20 +46,20 @@ class RecommendationListViewModel @Inject constructor(
     init {
         fetchItems()
         fetchUserItems()
-        fetchUserFavorites()
+        fetchUserFavorites() // ✅ Ensure favorites load when ViewModel initializes
     }
 
     fun signOut() {
         authRepository.logout()
-        _userItems.value = emptyList()
-        _userFavorites.value = emptyList()
+        _userItems.value = emptyList() // ✅ Clear user items on logout
+        _userFavorites.value = emptyList() // ✅ Clear favorites on logout
     }
 
 
     fun fetchItems() {
         viewModelScope.launch {
             repository.getItems().collectLatest { newItems ->
-                _items.emit(newItems)
+                _items.emit(newItems) // ✅ Emits new data so UI updates
             }
         }
     }
@@ -71,11 +72,6 @@ class RecommendationListViewModel @Inject constructor(
         viewModelScope.launch {
             repository.getFilteredItems(selectedRating, selectedMaxPrice)
                 .collectLatest { filteredItems ->
-                    if (filteredItems.isEmpty()) {
-                        println("🔥 DEBUG: No matching items found!")
-                    } else {
-                        println("🔥 DEBUG: ${filteredItems.size} items found!")
-                    }
                     _items.value = filteredItems
                 }
         }
@@ -135,7 +131,7 @@ class RecommendationListViewModel @Inject constructor(
 
     fun deleteItem(item: Item, category: String? = null) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteItem(item)
+            repository.deleteItem(item) // 🔥 Deletes from Firebase and Local DB
 
             withContext(Dispatchers.Main) {
                 if (category != null) {
@@ -159,6 +155,14 @@ class RecommendationListViewModel @Inject constructor(
         }
     }
 
+
+
+
+//    fun updateLikeStatus(item: Item) {
+//        viewModelScope.launch {
+//            repository.updateLikeStatus(item.id, item.isLiked)
+//        }
+//    }
 
     fun deleteAllUserItems() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -190,9 +194,9 @@ class RecommendationListViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val item = repository.getItemById(itemId).firstOrNull()
-                _items.value = listOfNotNull(item)
+                _items.value = listOfNotNull(item) // ✅ מעדכן את ה-StateFlow
             } catch (e: Exception) {
-                _items.value = emptyList()
+                _items.value = emptyList() // ✅ במקרה של שגיאה מחזיר רשימה ריקה
             }
         }
     }
@@ -200,7 +204,7 @@ class RecommendationListViewModel @Inject constructor(
     fun updateItemComments(item: Item, newComments: List<String>) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateItemComments(item.id, newComments)
-            fetchItemById(item.id)
+            fetchItemById(item.id) // ✅ מעביר String
         }
     }
 
@@ -215,7 +219,7 @@ class RecommendationListViewModel @Inject constructor(
 
     fun clearTopLikedItems() {
         viewModelScope.launch {
-            _topLikedItems.emit(emptyList())
+            _topLikedItems.emit(emptyList()) // ✅ Clears the top items list
         }
     }
 
@@ -225,7 +229,7 @@ class RecommendationListViewModel @Inject constructor(
                 val filteredItems = allItems.filter {
                     it.rating >= minRating && it.price <= maxPrice
                 }
-                _items.value = filteredItems
+                _items.value = filteredItems // ✅ Update UI with filtered items
             }
         }
     }
@@ -245,9 +249,9 @@ class RecommendationListViewModel @Inject constructor(
         viewModelScope.launch {
             repository.getItemsByCategory(category).collectLatest { allItems ->
                 val topItems = allItems
-                    .sortedByDescending { it.likedBy.size }
-                    .take(5)
-                _topLikedItems.value = topItems
+                    .sortedByDescending { it.likedBy.size } // ✅ Sort items by most likes
+                    .take(5) // ✅ Get only the top 5 items
+                _topLikedItems.value = topItems // ✅ Update the list in ViewModel
             }
         }
     }
