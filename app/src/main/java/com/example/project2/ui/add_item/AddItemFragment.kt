@@ -286,6 +286,7 @@ class AddItemFragment : Fragment() {
     }
 
 
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
