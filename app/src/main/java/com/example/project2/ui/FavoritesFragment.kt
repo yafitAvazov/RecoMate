@@ -1,6 +1,7 @@
 package com.example.project2.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -78,8 +79,13 @@ class FavoritesFragment : Fragment() {
 
             override fun onItemLongClicked(index: Int) {
                 val item = adapter.items[index]
+
+                // Debugging logs
+                Log.d("FavoritesFragment", "Long click detected for item ID: ${item.id}")
+                Toast.makeText(requireContext(), "Long Click: ${item.title}", Toast.LENGTH_SHORT).show()
+
                 val bundle = Bundle().apply {
-                    putParcelable("item", item)
+                    putString("itemId", item.id)
                 }
                 findNavController().navigate(R.id.action_favoritesFragment_to_itemDetailsFragment, bundle)
             }

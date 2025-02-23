@@ -1,6 +1,7 @@
 package com.example.project2.ui.recommendation_detail
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -27,10 +28,21 @@ class RecommendationDetailViewModel @Inject constructor(
     val commentsMap = MutableLiveData<MutableMap<String, MutableList<String>>>().apply {
         value = mutableMapOf()
     }
+
+
     fun fetchItemById(itemId: String) {
         viewModelScope.launch {
-            repository.getItemById(itemId).collect { item ->
-                _chosenItem.value = item
+            try {
+                repository.getItemById(itemId).collect { item ->
+                    if (item != null) {
+                        _chosenItem.value = item
+                        Log.d("ViewModel", "Item fetched successfully: ${item.title}")
+                    } else {
+                        Log.e("ViewModel", "Failed to fetch item, item is null")
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("ViewModel", "Error fetching item by ID", e)
             }
         }
     }
@@ -103,6 +115,9 @@ class RecommendationDetailViewModel @Inject constructor(
         }
         return liveData
     }
+
+
+
 
 
 

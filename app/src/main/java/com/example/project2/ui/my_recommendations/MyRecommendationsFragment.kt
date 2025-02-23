@@ -105,9 +105,12 @@ class MyRecommendationsFragment : Fragment() {
 
             override fun onItemLongClicked(index: Int) {
                 val item = adapter.items[index]
-                val bundle = bundleOf("itemId" to item.id)
-                findNavController().navigate(R.id.action_myRecommendationsFragment_to_itemDetailsFragment, bundle)
+                val bundle = Bundle().apply {
+                    putString("itemId", item.id)
+                }
+                findNavController().navigate(R.id.action_favoritesFragment_to_itemDetailsFragment, bundle)
             }
+
             override fun onItemDeleted(item: Item) {
                 viewModel.deleteItem(item) // 🔥 מוחק מה-DB המקומי ומה-Firebase
 

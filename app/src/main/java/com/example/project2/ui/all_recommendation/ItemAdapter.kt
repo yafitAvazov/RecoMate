@@ -94,6 +94,9 @@ class ItemAdapter(
                 R.id.specificCategoryItemsFragment -> {
                     navController.navigate(R.id.action_specificCategoryItemsFragment_to_itemDetailsFragment, bundle)
                 }
+                R.id.favoritesFragment -> {
+                    navController.navigate(R.id.action_favoritesFragment_to_itemDetailsFragment, bundle)
+                }
                 else -> {
                     // במקרה שאין יעד מתאים (אופציונלי - רק לדיוג)
                     Toast.makeText(binding.root.context,

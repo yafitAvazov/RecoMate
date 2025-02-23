@@ -3,6 +3,7 @@ package com.example.project2.ui.recommendation_detail
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,15 +48,17 @@ class RecommendationDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        itemId = arguments?.getString("itemId") // ✅ ה-ID מתקבל כמחרוזת ישירות
-        itemId?.let {
-
-            viewModel.fetchItemById(it)
+        val itemId = arguments?.getString("itemId")
+        if (itemId != null) {
+            Log.d("RecommendationDetailsFragment", "Item ID received: $itemId")
+            viewModel.fetchItemById(itemId)
             setupCommentsAdapter()
-
-            observeViewModel(it) // 🔥 מעבירה את ה-ID לפונקציה
+            observeViewModel(itemId)
+        } else {
+            Log.e("RecommendationDetailsFragment", "No item ID received")
         }
     }
+
     private fun setupCommentsAdapter() {
         commentsAdapter = CommentsAdapter(mutableListOf()) // 🔥 אתחול פעם אחת בלבד עם רשימה ריקה
     }

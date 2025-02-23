@@ -55,10 +55,9 @@ class MainActivity : AppCompatActivity() {
 
         // מאזין לשינויים בניווט ומסתיר את ה-BottomNavigationView אם המשתמש ב-StartFragment
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            bottomNavigationView.visibility = if (destination.id == R.id.startFragment) {
-                android.view.View.GONE
-            } else {
-                android.view.View.VISIBLE
+            bottomNavigationView.visibility = when (destination.id) {
+                R.id.startFragment, R.id.loginFragment, R.id.registerFragment -> View.GONE
+                else -> View.VISIBLE
             }
         }
 
