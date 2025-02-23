@@ -85,9 +85,16 @@ class FavoritesFragment : Fragment() {
             }
 
             override fun onItemDeleted(item: Item) {
-                val currentUserId = viewModel.getCurrentUserId() ?: return
-                viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Pass `userId` instead
+                viewModel.deleteItem(item) // ✅ No category needed in FavoritesFragment
+                viewLifecycleOwner.lifecycleScope.launch {
+                    // 🔥 Wait for deletion to complete, then refresh the lists
+                    viewModel.fetchUserFavorites() // ✅ Ensure the favorites list updates
+                    viewModel.fetchItems() // ✅ Refresh all items to reflect changes
+                    viewModel.fetchUserItems() // ✅ Refresh user's items
+                }
             }
+
+
 
 
             override fun onItemLiked(item: Item) {

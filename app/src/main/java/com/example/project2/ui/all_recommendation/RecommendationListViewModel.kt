@@ -133,18 +133,35 @@ class RecommendationListViewModel @Inject constructor(
         }
     }
 
-    fun deleteItem(item: Item) {
+    fun deleteItem(item: Item, category: String? = null) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteItem(item) // 🔥 מוחק מה-Firebase ומה-Local DB
+            repository.deleteItem(item) // 🔥 Deletes from Firebase and Local DB
 
             withContext(Dispatchers.Main) {
-                _items.value = _items.value.filterNot { it.id == item.id }
-                _userItems.value = _userItems.value.filterNot { it.id == item.id }
-                _userFavorites.value = _userFavorites.value.filterNot { it.id == item.id } // ✅ Remove from favorites too
-            }
+                if (category != null) {
+                    // ✅ If category is provided, filter by it
+                    _items.value = _items.value
+                        .filterNot { it.id == item.id }
+                        .filter { it.category == category }
 
+                    _userItems.value = _userItems.value
+                        .filterNot { it.id == item.id }
+                        .filter { it.category == category }
+
+                    _userFavorites.value = _userFavorites.value
+                        .filterNot { it.id == item.id }
+                        .filter { it.category == category }
+                } else {
+                    // ✅ If no category, just remove the item from all lists
+                    _items.value = _items.value.filterNot { it.id == item.id }
+                    _userItems.value = _userItems.value.filterNot { it.id == item.id }
+                    _userFavorites.value = _userFavorites.value.filterNot { it.id == item.id }
+                }
+            }
         }
     }
+
+
 
 
 //    fun updateLikeStatus(item: Item) {

@@ -73,9 +73,10 @@ class SpecificCategoryItemsFragment : Fragment() {
             }
 
             override fun onItemDeleted(item: Item) {
-                val currentUserId = viewModel.getCurrentUserId() ?: return
-                viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Pass userId instead of "false"
+                viewModel.deleteItem(item) // ✅ No category needed in FavoritesFragment
             }
+
+
 
             override fun onItemLiked(item: Item) {
                 val currentUserId = viewModel.getCurrentUserId() ?: return
