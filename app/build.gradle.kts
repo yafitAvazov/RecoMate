@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.androidx.coordinatorlayout)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.storage)
+    implementation(libs.firebase.storage.ktx)
 
     // Room Database
     val room_version = "2.6.1"

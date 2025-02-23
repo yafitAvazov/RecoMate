@@ -18,7 +18,8 @@ firebaseAuthKtx = "22.2.0"
 coordinatorlayout = "1.2.0"
 firebaseFirestoreKtx = "24.9.0"
 firebaseBom = "33.1.0"
-firebaseStorage = "21.0.1" # ✅ גרסה יציבה
+firebaseStorage = "21.0.1"
+firebaseStorageKtx = "21.0.1" # ✅ גרסה יציבה
 
 
 [libraries]
@@ -39,6 +40,7 @@ firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx",
 androidx-coordinatorlayout = { group = "androidx.coordinatorlayout", name = "coordinatorlayout", version.ref = "coordinatorlayout" }
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
+firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
 
 
 [plugins]

@@ -12,8 +12,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -24,6 +26,7 @@ import com.example.project2.data.model.CategoryMapper
 import com.example.project2.data.model.Item
 import com.example.project2.databinding.AddRecommendationLayoutBinding
 import com.example.project2.ui.all_recommendation.RecommendationListViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
@@ -119,6 +122,7 @@ class AddItemFragment : Fragment() {
 
 
 
+
     // ✅ Save Item in Firestore After Uploading Image
     private fun saveItemToFirestore(
         itemId: String,
@@ -133,7 +137,7 @@ class AddItemFragment : Fragment() {
         address: String
     ) {
         try {
-            val item = Item(
+                          val item = Item(
                 id = itemId,
                 userId = userId,
                 title = title,
@@ -164,8 +168,6 @@ class AddItemFragment : Fragment() {
             Toast.makeText(requireContext(), "Firestore error: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
-
-
 
 
 
@@ -294,41 +296,18 @@ class AddItemFragment : Fragment() {
         }
     }
     private fun uploadImageToFirebaseStorage(imageUri: Uri, onSuccess: (String) -> Unit) {
-        try {
-            // ✅ Check for internet connection first
-            if (!isInternetAvailable()) {
-                Toast.makeText(requireContext(), "No internet connection. Please try again later.", Toast.LENGTH_SHORT).show()
-                binding.postProgressBar.visibility = View.GONE
-                binding.finishBtn.isEnabled = true
-                binding.finishBtn.text = getString(R.string.finish)
-                return
+        val storageReference = FirebaseStorage.getInstance().reference
+        val fileRef = storageReference.child("images/${System.currentTimeMillis()}.jpg")
+
+        fileRef.putFile(imageUri)
+            .addOnSuccessListener {
+                fileRef.downloadUrl.addOnSuccessListener { uri ->
+                    onSuccess(uri.toString()) // Get the image URL
+                }
             }
-
-            val storageReference = FirebaseStorage.getInstance().reference
-            val fileRef = storageReference.child("images/${System.currentTimeMillis()}.jpg")
-
-            fileRef.putFile(imageUri)
-                .addOnSuccessListener {
-                    fileRef.downloadUrl.addOnSuccessListener { uri ->
-                        onSuccess(uri.toString()) // Return Image URL
-                    }
-                }
-                .addOnFailureListener {
-                    Toast.makeText(requireContext(), "Image upload failed", Toast.LENGTH_SHORT).show()
-                    binding.postProgressBar.visibility = View.GONE
-                    binding.finishBtn.isEnabled = true
-                    binding.finishBtn.text = getString(R.string.finish)
-                }
-        } catch (e: Exception) {
-            Toast.makeText(requireContext(), "Upload error: ${e.message}", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun isInternetAvailable(): Boolean {
-        val connectivityManager = requireContext().getSystemService(ConnectivityManager::class.java)
-        val network = connectivityManager.activeNetwork ?: return false
-        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
-        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "Image upload failed", Toast.LENGTH_SHORT).show()
+            }
     }
 
 
