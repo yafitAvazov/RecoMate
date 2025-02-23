@@ -80,10 +80,10 @@ class SpecificCategoryItemsFragment : Fragment() {
 
         loadItems(categoryName ?: "")
 
-        observeViewModel() // ✅ Make sure ViewModel observers are active
+        observeViewModel()
 
 
-        // ✅ Top Items Button Click Listener
+
         binding.topItems.setOnClickListener {
             val categoryKey = CategoryMapper.getCategoryId(categoryName ?: "", requireContext()).toString()
             viewModel.fetchTopLikedItemsByCategory(categoryKey) // ✅ Fetch top 5 liked items for the category
@@ -94,27 +94,26 @@ class SpecificCategoryItemsFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-                // ✅ Observe all items for the category
+
                 launch {
                     viewModel.items.collectLatest { itemList ->
                         binding.progressBar.visibility = View.GONE
                         binding.recycler.visibility = View.VISIBLE
-                        adapter.updateList(itemList) // ✅ Update RecyclerView with all items
+                        adapter.updateList(itemList)
                     }
                 }
 
-                // ✅ Observe top liked items for the category
+
                 launch {
                     viewModel.topLikedItems.collectLatest { topItemList ->
                         if (topItemList.isNotEmpty()) {
-                            adapter.updateList(topItemList) // ✅ Update RecyclerView with top 5 liked items
+                            adapter.updateList(topItemList)
                         }
                     }
                 }
             }
         }
     }
-
 
     private fun setupDrawerFilters(view: View) {
         val drawerLayout = view.findViewById<DrawerLayout>(R.id.drawer_layout)
@@ -194,7 +193,7 @@ class SpecificCategoryItemsFragment : Fragment() {
 
     private fun resetCategoryFilters() {
         val categoryKey = CategoryMapper.getCategoryId(categoryName ?: "", requireContext()).toString()
-        viewModel.fetchItemsByCategory(categoryKey) // ✅ Fetch all items in the category
+        viewModel.fetchItemsByCategory(categoryKey)
 
         // Reset UI selections
         selectedRating = 0
@@ -212,7 +211,7 @@ class SpecificCategoryItemsFragment : Fragment() {
         )
         sortButtons.forEach { it.setBackgroundColor(resources.getColor(R.color.gray)) }
 
-        viewModel.clearTopLikedItems() // ✅ Ensure top liked items are cleared
+        viewModel.clearTopLikedItems()
     }
 
 
@@ -237,23 +236,25 @@ class SpecificCategoryItemsFragment : Fragment() {
                             viewModel.fetchItems()
                             viewModel.fetchUserItems()
                         } catch (e: Exception) {
-                            Toast.makeText(requireContext(), "Error updating list: ${e.message}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(),
+                                getString(R.string.error_updating_list, e.message), Toast.LENGTH_SHORT).show()
                         }
                     }
 
                     Toast.makeText(requireContext(), getString(R.string.item_deleted_successfully), Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
-                    Toast.makeText(requireContext(), "Failed to delete item: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.failed_to_delete_item, e.message), Toast.LENGTH_SHORT).show()
                 }
             }
             override fun onItemLiked(item: Item) {
                 val currentUserId = viewModel.getCurrentUserId() ?: return
-                viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Pass userId instead of "true"
+                viewModel.updateLikeStatus(item.id, currentUserId)
             }
 
             override fun onItemUnliked(item: Item) {
                 val currentUserId = viewModel.getCurrentUserId() ?: return
-                viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Pass userId instead of "false"
+                viewModel.updateLikeStatus(item.id, currentUserId)
             }
 
         })
@@ -280,7 +281,8 @@ class SpecificCategoryItemsFragment : Fragment() {
                 }
             } catch (e: Exception) {
                 if (isAdded) { // Ensures the Fragment is still attached before showing Toast
-                    Toast.makeText(requireContext(), "Error loading items: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.error_loading_items, e.message), Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -289,7 +291,7 @@ class SpecificCategoryItemsFragment : Fragment() {
 
 
     private fun setupCommentsSection(item: Item) {
-        binding?.let { binding -> // ✅ בדיקה שה-Binding עדיין קיים
+        binding?.let { binding -> //  בדיקה שה-Binding עדיין קיים
             val commentsRecyclerView = binding.root.findViewById<RecyclerView>(R.id.comments_recycler_view)
             val commentInput = binding.root.findViewById<EditText>(R.id.comment_input)
             val addCommentButton = binding.root.findViewById<Button>(R.id.add_comment_button)
@@ -300,7 +302,7 @@ class SpecificCategoryItemsFragment : Fragment() {
 
             viewLifecycleOwner.lifecycleScope.launch {
                 viewModel.items.collectLatest { itemList ->
-                    val currentItem = itemList.find { it.id == item.id } // ✅ מחפש את הפריט ברשימה לפי ID
+                    val currentItem = itemList.find { it.id == item.id } //  מחפש את הפריט ברשימה לפי ID
                     val commentsList = currentItem?.comments ?: emptyList()
                     commentsAdapter.updateComments(commentsList.toMutableList())
                 }

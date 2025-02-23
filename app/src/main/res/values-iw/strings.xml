@@ -124,5 +124,18 @@
     <string name="sort_selected">מיון נבחר: %s</string>
     <string name="error_user_not_logged_in">שגיאה: משתמש לא מחובר!</string>
     <string name="uploading">מעלה</string>
+    <string name="updating">מעדכן</string>
+    <string name="error_loading_map">שגיאה בטעינת המפה</string>
+    <string name="error_updating_list">שגיאה בעדכון הרשימה: %1$s</string>
+    <string name="failed_to_delete_item">מחיקת פריט נכשלה: %1$s</string>
+    <string name="error_loading_items">שגיאה בטעינת הפריטים: %1$s</string>
+    <string name="failed_to_add_item">הוספת פריט נכשלה: %1$s</string>
+    <string name="image_upload_failed">העלאת תמונה נכשלה</string>
+    <string name="user_not_logged_in">משתמש אינו מחובר</string>
+    <string name="failed_to_load_image">טעינת תמונה נכשלה: %1$s</string>
+    <string name="error_updating_item">שגייאה בעדכון פריט: %1$s</string>
+    <string name="failed_to_like_item">לייק נכשל: %1$s</string>
+    <string name="failed_to_unlike_item">ביטול לייק נכשל: %1$s</string>
+    <string name="hello">היי, %1$s</string>
 
 </resources>

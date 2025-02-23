@@ -31,10 +31,10 @@ class ItemAdapter(
     interface ItemListener {
         fun onItemClicked(index: Int)
         fun onItemLongClicked(index: Int)
-        fun onItemDeleted(item: Item) // ✅ פונקציה חדשה למחיקת פריט
-        fun onItemLiked(item: Item) // ✅ הוספת לפריטים אהובים
+        fun onItemDeleted(item: Item)
+        fun onItemLiked(item: Item)
 
-        fun onItemUnliked(item: Item) // ✅ הסרת פריטים אהובים
+        fun onItemUnliked(item: Item)
 
     }
 
@@ -47,7 +47,7 @@ class ItemAdapter(
 
             binding.editBtn.setOnClickListener {
                 val item = items[adapterPosition]
-                val bundle = bundleOf("item" to item) // ✅ Pass full Item object
+                val bundle = bundleOf("item" to item)
 
                 val navController = binding.root.findNavController()
                 val currentDestination = navController.currentDestination?.id
@@ -80,7 +80,7 @@ class ItemAdapter(
         override fun onClick(v: View?) {
             val navController = Navigation.findNavController(binding.root)
             val currentDestination = navController.currentDestination?.id
-            val item = items[adapterPosition] // 🔥 מקבל את הפריט שנלחץ
+            val item = items[adapterPosition]
             val bundle = bundleOf("itemId" to item.id)
 
             // 🔥 מנווטים לפרטי הפריט רק בלחיצה רגילה
@@ -145,7 +145,7 @@ class ItemAdapter(
                 )
             }
 
-            // ✅ Display correct buttons based on item ownership
+            //  Display correct buttons based on item ownership
             if (item.userId == currentUserId) {
                 // 🔥 If the logged-in user is the owner of the item
                 binding.itemCard.setCardBackgroundColor(ContextCompat.getColor(binding.root.context, R.color.green))

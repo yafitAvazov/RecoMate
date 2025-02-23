@@ -135,6 +135,19 @@
     <string name="error_user_not_logged_in">Error: User not logged in!</string>
     <string name="uploading">uploading</string>
     <string name="updating">updating</string>
+    <string name="error_loading_map">Error loading map</string>
+    <string name="error_updating_list">Error updating list: %1$s</string>
+    <string name="failed_to_delete_item">Failed to delete item: %1$s</string>
+    <string name="error_loading_items">Error loading items: %1$s</string>
+    <string name="failed_to_add_item">Failed to add item: %1$s</string>
+    <string name="firestore_error" translatable="false">Firestore error: %1$s</string>
+    <string name="image_upload_failed">Image upload failed</string>
+    <string name="user_not_logged_in">User not logged in.</string>
+    <string name="failed_to_load_image">Failed to load image: %1$s</string>
+    <string name="error_updating_item">Error updating item: %1$s</string>
+    <string name="failed_to_like_item">Failed to like item: %1$s</string>
+    <string name="failed_to_unlike_item">Failed to unlike item: %1$s</string>
+    <string name="hello">Hello, %1$s!</string>
 
 
 </resources>

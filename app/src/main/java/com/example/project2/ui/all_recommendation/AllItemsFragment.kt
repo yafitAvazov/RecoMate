@@ -234,32 +234,34 @@ class AllItemsFragment : Fragment() {
                             viewModel.fetchItems()
                             viewModel.fetchUserItems()
                         } catch (e: Exception) {
-                            Toast.makeText(requireContext(), "Error updating list: ${e.message}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), getString(R.string.error_updating_list,e.message), Toast.LENGTH_SHORT).show()
                         }
                     }
 
                     Toast.makeText(requireContext(), getString(R.string.item_deleted_successfully), Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
-                    Toast.makeText(requireContext(), "Failed to delete item: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.failed_to_delete_item,e.message), Toast.LENGTH_SHORT).show()
                 }
             }
 
 
             override fun onItemLiked(item: Item) {
                 try {
-                    val currentUserId = viewModel.getCurrentUserId() ?: throw Exception("User not logged in")
+                    val currentUserId = viewModel.getCurrentUserId() ?: throw Exception(getString(R.string.user_not_logged_in))
                     viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Update Firestore
                 } catch (e: Exception) {
-                    Toast.makeText(requireContext(), "Failed to like item: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.failed_to_like_item, e.message), Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onItemUnliked(item: Item) {
                 try {
-                    val currentUserId = viewModel.getCurrentUserId() ?: throw Exception("User not logged in")
+                    val currentUserId = viewModel.getCurrentUserId() ?: throw Exception(getString(R.string.user_not_logged_in))
                     viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Update Firestore
                 } catch (e: Exception) {
-                    Toast.makeText(requireContext(), "Failed to unlike item: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.failed_to_unlike_item, e.message), Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -343,6 +345,7 @@ class AllItemsFragment : Fragment() {
         applyButton.setOnClickListener {
             applyFilters()
             drawerLayout.closeDrawer(GravityCompat.END)
+            Toast.makeText(context, getString(R.string.sort_selected, selectedSort), Toast.LENGTH_SHORT).show()
         }
 
         resetFilterButton.setOnClickListener {
@@ -381,7 +384,6 @@ class AllItemsFragment : Fragment() {
 
 
     private fun resetFilters() {
-        println("🔥 DEBUG: Remove Filter button clicked!")
 
         selectedRating = 0
         selectedMaxPrice = 1000
@@ -404,7 +406,6 @@ class AllItemsFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.items.collectLatest { itemList ->
                 adapter.updateList(itemList)
-                println("🔥 DEBUG: Adapter updated with ${itemList.size} items after reset")
             }
         }
 

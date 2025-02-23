@@ -94,16 +94,16 @@ class AddItemFragment : Fragment() {
             val categoryIds = selectedCategories.mapNotNull { CategoryMapper.getCategoryId(it, requireContext()) }
             val categoryString = categoryIds.joinToString(",")
             val price = priceText.toDoubleOrNull() ?: 0.0
-            val userId = viewModel.getCurrentUserId() ?: throw Exception("User not logged in.")
+            val userId = viewModel.getCurrentUserId() ?: throw Exception(getString(R.string.user_not_logged_in))
 
             val itemId = itemRef.document().id
 
-            // ✅ Show ProgressBar & Disable Button
+            //  Show ProgressBar & Disable Button
             binding.postProgressBar.visibility = View.VISIBLE
             binding.finishBtn.isEnabled = false
             binding.finishBtn.text = getString(R.string.uploading)
 
-            // ✅ Upload image if available
+            //  Upload image if available
             if (imageUri != null) {
                 uploadImageToFirebaseStorage(imageUri!!) { imageUrl ->
                     saveItemToFirestore(itemId, userId, title, comment, imageUrl, price, categoryString, link, selectedRating, address)
@@ -111,6 +111,7 @@ class AddItemFragment : Fragment() {
             } else {
                 saveItemToFirestore(itemId, userId, title, comment, null, price, categoryString, link, selectedRating, address)
             }
+
 
         } catch (e: Exception) {
             Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -123,7 +124,7 @@ class AddItemFragment : Fragment() {
 
 
 
-    // ✅ Save Item in Firestore After Uploading Image
+    //  Save Item in Firestore After Uploading Image
     private fun saveItemToFirestore(
         itemId: String,
         userId: String,
@@ -159,13 +160,15 @@ class AddItemFragment : Fragment() {
                     findNavController().navigate(R.id.action_addItemFragment_to_allItemsFragment)
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(requireContext(), "Failed to add item: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.failed_to_add_item, e.message), Toast.LENGTH_SHORT).show()
                     binding.postProgressBar.visibility = View.GONE
                     binding.finishBtn.isEnabled = true
                     binding.finishBtn.text = getString(R.string.finish)
                 }
         } catch (e: Exception) {
-            Toast.makeText(requireContext(), "Firestore error: ${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.firestore_error, e.message), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -306,7 +309,8 @@ class AddItemFragment : Fragment() {
                 }
             }
             .addOnFailureListener {
-                Toast.makeText(requireContext(), "Image upload failed", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.image_upload_failed), Toast.LENGTH_SHORT).show()
             }
     }
 

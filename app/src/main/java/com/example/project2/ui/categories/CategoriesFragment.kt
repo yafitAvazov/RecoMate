@@ -49,7 +49,7 @@ class CategoriesFragment : Fragment() {
         val popupView = inflater.inflate(R.layout.popup_welcome, null)
         val popupText = popupView.findViewById<TextView>(R.id.welcomeText)
 
-        popupText.text = "Hello, $username!"
+        popupText.text = getString(R.string.hello, username)
 
         val popupWindow = PopupWindow(
             popupView,
@@ -93,7 +93,7 @@ class CategoriesFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true) // ✅ מאפשר הצגת תפריט
+        setHasOptionsMenu(true)
     }
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main_menu, menu)
@@ -116,7 +116,7 @@ class CategoriesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            requireActivity().finish() // ✅ סוגר את האפליקציה לחלוטין
+            requireActivity().finish()
 
         }
 
@@ -159,11 +159,8 @@ class CategoriesFragment : Fragment() {
         recyclerView.adapter = categoryAdapter
     }
 
-
-    // 🟢 שחרור ה-Binding כדי למנוע Memory Leaks
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
 }

@@ -133,6 +133,7 @@ class UpdateItemFragment : Fragment() {
                 saveUpdatedItem(itemId, userId, title, comment, imageUri?.toString(), price, categoryString, link, selectedRating, address)
             }
 
+
         } catch (e: Exception) {
             Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             binding.postProgressBar.visibility = View.GONE
@@ -153,7 +154,8 @@ class UpdateItemFragment : Fragment() {
                 }
             }
             .addOnFailureListener {
-                Toast.makeText(requireContext(), "Image upload failed", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.image_upload_failed), Toast.LENGTH_SHORT).show()
                 binding.postProgressBar.visibility = View.GONE
                 binding.finishBtn.isEnabled = true
                 binding.finishBtn.text = getString(R.string.finish)
@@ -262,7 +264,8 @@ class UpdateItemFragment : Fragment() {
                 .error(R.drawable.baseline_hide_image_24) // ✅ במקרה של כישלון
                 .into(binding.imageBtn)
         } catch (e: Exception) {
-            Toast.makeText(requireContext(), "Failed to load image: ${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                getString(R.string.failed_to_load_image, e.message), Toast.LENGTH_SHORT).show()
         }
     }
     private fun saveUpdatedItem(
@@ -295,7 +298,8 @@ class UpdateItemFragment : Fragment() {
                 Toast.makeText(requireContext(), getString(R.string.item_updated_successfully), Toast.LENGTH_SHORT).show()
                 findNavController().navigate(R.id.action_updateItemFragment_to_allItemsFragment)
             } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Error updating item: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.error_updating_item, e.message), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -330,7 +334,7 @@ class UpdateItemFragment : Fragment() {
                 findNavController().navigate(R.id.action_updateItemFragment_to_allItemsFragment)
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Error updating item: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.error_updating_item), Toast.LENGTH_SHORT).show()
             }
             .addOnCompleteListener {
                 binding.postProgressBar.visibility = View.GONE
