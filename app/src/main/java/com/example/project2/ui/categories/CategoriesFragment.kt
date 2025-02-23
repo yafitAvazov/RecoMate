@@ -101,6 +101,7 @@ class CategoriesFragment : Fragment() {
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_sign_out) {
+            findNavController().navigate(R.id.action_categoriesFragment_to_loginFragment)
             viewModel.signOut()
             val sharedPreferences = requireContext().getSharedPreferences(PREFS_NAME, 0)
             sharedPreferences.edit().putInt(KEY_POPUP_COUNTER, 0).apply()
@@ -157,6 +158,7 @@ class CategoriesFragment : Fragment() {
 
         recyclerView.adapter = categoryAdapter
     }
+
 
     // 🟢 שחרור ה-Binding כדי למנוע Memory Leaks
     override fun onDestroyView() {

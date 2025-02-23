@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_categoriesFragment_to_specificCategoryItemsFragment"
             app:destination="@id/specificCategoryItemsFragment" />
+        <action
+            android:id="@+id/action_categoriesFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
 
 
