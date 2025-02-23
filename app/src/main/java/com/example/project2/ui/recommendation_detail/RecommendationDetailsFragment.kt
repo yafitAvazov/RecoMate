@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.project2.R
 import com.example.project2.data.model.CategoryMapper
 import com.example.project2.data.model.Item
@@ -89,11 +90,16 @@ class RecommendationDetailsFragment : Fragment() {
             binding.itemTitle.setOnClickListener(null)
         }
 
-        if (item.photo.isNullOrEmpty()) {
-            binding.itemImage.setImageResource(R.drawable.baseline_hide_image_24)
+        if (!item.photo.isNullOrEmpty()) {
+            Glide.with(this)
+                .load(item.photo)
+                .placeholder(R.mipmap.ic_launcher) // Optional: Placeholder image while loading
+                .error(R.drawable.baseline_hide_image_24) // Optional: Image to show if loading fails
+                .into(binding.itemImage)
         } else {
-            binding.itemImage.setImageURI(Uri.parse(item.photo))
+            binding.itemImage.setImageResource(R.drawable.baseline_hide_image_24)
         }
+
 
         val stars = listOf(binding.star1, binding.star2, binding.star3, binding.star4, binding.star5)
         stars.forEachIndexed { index, imageView ->

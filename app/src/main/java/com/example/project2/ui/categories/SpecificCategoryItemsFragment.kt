@@ -74,9 +74,18 @@ class SpecificCategoryItemsFragment : Fragment() {
 
             override fun onItemDeleted(item: Item) {
                 val currentUserId = viewModel.getCurrentUserId() ?: return
-                viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Pass userId instead of "false"
-            }
 
+                viewModel.deleteItem(item) // 🔥 מוחק מה-DB
+                viewModel.updateLikeStatus(item.id, currentUserId)
+                lifecycleScope.launch {
+                    // 🔥 מחכים שהמחיקה תסתיים ואז מרעננים את הרשימה
+                    categoryName?.let {
+                        loadItems(categoryName?:"")
+                    }
+                }
+
+                Toast.makeText(requireContext(), getString(R.string.item_deleted_successfully), Toast.LENGTH_SHORT).show()
+                }
             override fun onItemLiked(item: Item) {
                 val currentUserId = viewModel.getCurrentUserId() ?: return
                 viewModel.updateLikeStatus(item.id, currentUserId) // ✅ Pass userId instead of "true"

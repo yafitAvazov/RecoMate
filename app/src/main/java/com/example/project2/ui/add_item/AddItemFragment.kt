@@ -27,6 +27,7 @@ import java.io.File
 import com.example.project2.ui.all_recommendation.RecommendationListViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -84,64 +85,65 @@ class AddItemFragment : Fragment() {
     private fun addNewItem() {
         val title = binding.itemTitle.text.toString().takeIf { it.isNotBlank() } ?: ""
         val comment = binding.itemComment.text.toString().takeIf { it.isNotBlank() } ?: ""
-        val photo = imageUri?.toString()
         val priceText = binding.price.text.toString()
         val address = binding.addressEdt.text.toString().takeIf { it.isNotBlank() } ?: ""
         val link = binding.itemLink.text.toString().takeIf { it.isNotBlank() } ?: ""
-
-        // המרת שמות קטגוריות למספרים
         val categoryIds = selectedCategories.mapNotNull { CategoryMapper.getCategoryId(it, requireContext()) }
-        val categoryString = categoryIds.joinToString(",") // נשמור בפורמט "1,3,5"
-
+        val categoryString = categoryIds.joinToString(",") // Store in "1,3,5" format
         val price = priceText.toDoubleOrNull() ?: 0.0
         val userId = viewModel.getCurrentUserId()
 
         if (userId == null) {
-            Toast.makeText(requireContext(),
-                getString(R.string.error_user_not_logged_in), Toast.LENGTH_SHORT)
-                .show()
+            Toast.makeText(requireContext(), getString(R.string.error_user_not_logged_in), Toast.LENGTH_SHORT).show()
             return
         }
 
-        val itemId = itemRef.document().id // יצירת ID ייחודי בפיירבייס
+        val itemId = itemRef.document().id // Create a unique Firestore ID
 
+        // ✅ Check if there's an image to upload
+        imageUri?.let { uri ->
+            uploadImageToFirebaseStorage(uri) { imageUrl ->
+                saveItemToFirestore(itemId, userId, title, comment, imageUrl, price, categoryString, link, selectedRating, address)
+            }
+        } ?: saveItemToFirestore(itemId, userId, title, comment, null, price, categoryString, link, selectedRating, address)
+    }
+
+    // ✅ Save Item in Firestore After Uploading Image
+    private fun saveItemToFirestore(
+        itemId: String,
+        userId: String,
+        title: String,
+        comment: String,
+        photoUrl: String?,
+        price: Double,
+        category: String,
+        link: String,
+        rating: Int,
+        address: String
+    ) {
         val item = Item(
             id = itemId,
             userId = userId,
             title = title,
             comment = comment,
-            photo = photo,
+            photo = photoUrl, // ✅ Save Firebase Storage URL
             price = price,
-            category = categoryString, // ✅ עכשיו תומך בכמה קטגוריות
+            category = category,
             link = link,
-            rating = selectedRating,
+            rating = rating,
             address = address
         )
 
-        viewModel.addItem(item)
-
-        Toast.makeText(
-            requireContext(),
-            getString(R.string.recommendation_published),
-            Toast.LENGTH_SHORT
-        ).show()
-
-        findNavController().navigate(R.id.action_addItemFragment_to_allItemsFragment)
-        requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView).selectedItemId = R.id.nav_all_recommendation
+        itemRef.document(itemId).set(item)
+            .addOnSuccessListener {
+                Toast.makeText(requireContext(), getString(R.string.recommendation_published), Toast.LENGTH_SHORT).show()
+                findNavController().navigate(R.id.action_addItemFragment_to_allItemsFragment)
+            }
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "Failed to add item", Toast.LENGTH_SHORT).show()
+            }
     }
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            // טיפול בלחיצה אחורה לעדכון הנוויגיישן באר וחזרה לכל ההמלצות
-            findNavController().navigate(R.id.allItemsFragment)
-
-            requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-                ?.selectedItemId = R.id.nav_all_recommendation
-        }
-    }
 
 
     private fun showImagePickerDialog() {
@@ -268,6 +270,21 @@ class AddItemFragment : Fragment() {
             }
         }
     }
+    private fun uploadImageToFirebaseStorage(imageUri: Uri, onSuccess: (String) -> Unit) {
+        val storageReference = FirebaseStorage.getInstance().reference
+        val fileRef = storageReference.child("images/${System.currentTimeMillis()}.jpg")
+
+        fileRef.putFile(imageUri)
+            .addOnSuccessListener { taskSnapshot ->
+                fileRef.downloadUrl.addOnSuccessListener { uri ->
+                    onSuccess(uri.toString()) // Get the image URL
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "Image upload failed", Toast.LENGTH_SHORT).show()
+            }
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

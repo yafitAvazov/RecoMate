@@ -17,7 +17,8 @@ hilt = "2.48"
 firebaseAuthKtx = "22.2.0"
 coordinatorlayout = "1.2.0"
 firebaseFirestoreKtx = "24.9.0"
-firebaseBom = "33.1.0" # ✅ גרסה יציבה
+firebaseBom = "33.1.0"
+firebaseStorage = "21.0.1" # ✅ גרסה יציבה
 
 
 [libraries]
@@ -37,6 +38,7 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.r
 firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 androidx-coordinatorlayout = { group = "androidx.coordinatorlayout", name = "coordinatorlayout", version.ref = "coordinatorlayout" }
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 
 
 [plugins]

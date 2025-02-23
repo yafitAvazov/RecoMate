@@ -14,6 +14,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.project2.R
 import com.example.project2.data.model.Item
 import com.example.project2.databinding.RecommendationLayoutBinding
@@ -112,11 +113,16 @@ class ItemAdapter(
         fun bind(item: Item, currentUserId: String?) {
             binding.itemTitle.text = if (item.title.isBlank()) binding.root.context.getString(R.string.no_title) else item.title
 
-            if (item.photo.isNullOrEmpty()) {
-                binding.itemImage.setImageResource(R.drawable.baseline_hide_image_24)
+            if (!item.photo.isNullOrEmpty()) {
+                Glide.with(binding.root.context)
+                    .load(item.photo)
+                    .placeholder(R.mipmap.ic_launcher) // Optional: Placeholder while loading
+                    .error(R.drawable.baseline_hide_image_24) // Image if loading fails
+                    .into(binding.itemImage)
             } else {
-                binding.itemImage.setImageURI(Uri.parse(item.photo))
+                binding.itemImage.setImageResource(R.drawable.baseline_hide_image_24)
             }
+
 
             binding.priceTitle.text = if (item.price == 0.0) binding.root.context.getString(R.string.no_price) else "$${item.price}"
 
