@@ -2,6 +2,7 @@ package com.example.project2.ui.all_recommendation
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,7 @@ import com.example.project2.data.model.Item
 import com.example.project2.databinding.RecommendationLayoutBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 
 class ItemAdapter(
     var items: List<Item>,
@@ -178,7 +180,9 @@ class ItemAdapter(
                     .setTitle(binding.root.context.getString(R.string.delete_confirmation))
                     .setMessage(binding.root.context.getString(R.string.are_you_sure_you_want_to_delete_this_recommendation))
                     .setPositiveButton(binding.root.context.getString(R.string.yes)) { _, _ ->
-                        callBack.onItemDeleted(item)
+                        deleteImageFromFirebaseStorage(item.photo) {
+                            callBack.onItemDeleted(item) // Delete item only after image is deleted
+                        }
                     }
                     .setNegativeButton(binding.root.context.getString(R.string.no), null)
                     .show()
@@ -187,6 +191,23 @@ class ItemAdapter(
 
 
     }
+    private fun deleteImageFromFirebaseStorage(photoUrl: String?, onSuccess: () -> Unit) {
+        if (!photoUrl.isNullOrEmpty()) {
+            val storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(photoUrl)
+            storageReference.delete()
+                .addOnSuccessListener {
+                    Log.d("FirebaseStorage", "Image deleted successfully")
+                    onSuccess() // ✅ Delete the item from Firestore after image deletion
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("FirebaseStorage", "Failed to delete image: ${exception.message}")
+                    onSuccess() // ✅ Continue deleting the item even if image deletion fails
+                }
+        } else {
+            onSuccess() // ✅ If there is no image, proceed with item deletion
+        }
+    }
+
 
 
 
