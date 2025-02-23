@@ -133,5 +133,6 @@
     <string name="minimum_rating_set">Minimum rating set: %1$s ⭐</string>
     <string name="sort_selected">Sort selected: %s</string>
     <string name="error_user_not_logged_in">Error: User not logged in!</string>
+    <string name="uploading">uploading</string>
 
 </resources>

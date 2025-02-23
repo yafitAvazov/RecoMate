@@ -89,7 +89,7 @@ class AddItemFragment : Fragment() {
         val address = binding.addressEdt.text.toString().takeIf { it.isNotBlank() } ?: ""
         val link = binding.itemLink.text.toString().takeIf { it.isNotBlank() } ?: ""
         val categoryIds = selectedCategories.mapNotNull { CategoryMapper.getCategoryId(it, requireContext()) }
-        val categoryString = categoryIds.joinToString(",") // Store in "1,3,5" format
+        val categoryString = categoryIds.joinToString(",") // קטגוריות בפורמט "1,3,5"
         val price = priceText.toDoubleOrNull() ?: 0.0
         val userId = viewModel.getCurrentUserId()
 
@@ -98,15 +98,21 @@ class AddItemFragment : Fragment() {
             return
         }
 
-        val itemId = itemRef.document().id // Create a unique Firestore ID
+        val itemId = itemRef.document().id // יצירת מזהה ייחודי לפריט
 
-        // ✅ Check if there's an image to upload
+        // ✅ הצגת הבאפר ונעילת הכפתור
+        binding.postProgressBar.visibility = View.VISIBLE
+        binding.finishBtn.isEnabled = false
+        binding.finishBtn.text = getString(R.string.uploading) // שינוי טקסט הכפתור בזמן ההעלאה
+
+        // אם יש תמונה, נעלה אותה תחילה
         imageUri?.let { uri ->
             uploadImageToFirebaseStorage(uri) { imageUrl ->
                 saveItemToFirestore(itemId, userId, title, comment, imageUrl, price, categoryString, link, selectedRating, address)
             }
         } ?: saveItemToFirestore(itemId, userId, title, comment, null, price, categoryString, link, selectedRating, address)
     }
+
 
     // ✅ Save Item in Firestore After Uploading Image
     private fun saveItemToFirestore(
@@ -126,7 +132,7 @@ class AddItemFragment : Fragment() {
             userId = userId,
             title = title,
             comment = comment,
-            photo = photoUrl, // ✅ Save Firebase Storage URL
+            photo = photoUrl, // ✅ שמירת כתובת התמונה בפיירבייס
             price = price,
             category = category,
             link = link,
@@ -136,13 +142,21 @@ class AddItemFragment : Fragment() {
 
         itemRef.document(itemId).set(item)
             .addOnSuccessListener {
+                // ✅ הסתרת הבאפר והפעלת הכפתור מחדש
+                binding.postProgressBar.visibility = View.GONE
+                binding.finishBtn.isEnabled = true
+                binding.finishBtn.text = getString(R.string.finish) // החזרת טקסט הכפתור
                 Toast.makeText(requireContext(), getString(R.string.recommendation_published), Toast.LENGTH_SHORT).show()
                 findNavController().navigate(R.id.action_addItemFragment_to_allItemsFragment)
             }
             .addOnFailureListener {
+                binding.postProgressBar.visibility = View.GONE // ✅ הסתרת הבאפר במקרה של כישלון
+                binding.finishBtn.isEnabled = true // ✅ הפעלת הכפתור מחדש
+                binding.finishBtn.text = getString(R.string.finish) // החזרת טקסט הכפתור
                 Toast.makeText(requireContext(), "Failed to add item", Toast.LENGTH_SHORT).show()
             }
     }
+
 
 
 
