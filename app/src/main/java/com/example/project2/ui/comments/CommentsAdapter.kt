@@ -1,4 +1,4 @@
-package com.example.project2.ui
+package com.example.project2.ui.comments
 
 import android.view.LayoutInflater
 import android.view.View

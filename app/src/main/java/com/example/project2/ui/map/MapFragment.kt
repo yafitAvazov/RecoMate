@@ -1,4 +1,4 @@
-package com.example.project2.ui
+package com.example.project2.ui.map
 
 import android.os.Bundle
 import android.util.Log

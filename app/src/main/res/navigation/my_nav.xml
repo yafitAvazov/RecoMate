@@ -89,7 +89,7 @@
     </fragment>
     <fragment
         android:id="@+id/updateItemFragment"
-        android:name="com.example.project2.ui.UpdateItemFragment"
+        android:name="com.example.project2.ui.update.UpdateItemFragment"
         android:label="update_recommendation_layout"
         tools:layout="@layout/update_recommendation_layout">
         <action
@@ -119,7 +119,7 @@
     </fragment>
     <fragment
         android:id="@+id/mapFragment"
-        android:name="com.example.project2.ui.MapFragment"
+        android:name="com.example.project2.ui.map.MapFragment"
         android:label="mapview"
         tools:layout="@layout/mapview" />
     <fragment
@@ -160,7 +160,7 @@
     </fragment>
     <fragment
         android:id="@+id/favoritesFragment"
-        android:name="com.example.project2.ui.FavoritesFragment"
+        android:name="com.example.project2.ui.favorites.FavoritesFragment"
         android:label="Favorites"
         tools:layout="@layout/favorite_recommendation_layout">
 

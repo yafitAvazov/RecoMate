@@ -22,7 +22,7 @@ import com.example.project2.R
 import com.example.project2.data.model.CategoryMapper
 import com.example.project2.data.model.Item
 import com.example.project2.databinding.SpecificCategoryItemsBinding
-import com.example.project2.ui.CommentsAdapter
+import com.example.project2.ui.comments.CommentsAdapter
 import com.example.project2.ui.all_recommendation.ItemAdapter
 import com.example.project2.ui.all_recommendation.RecommendationListViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import android.widget.SeekBar
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
 
 
 @AndroidEntryPoint

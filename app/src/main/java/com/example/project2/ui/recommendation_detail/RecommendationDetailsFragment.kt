@@ -23,7 +23,7 @@ import com.example.project2.R
 import com.example.project2.data.model.CategoryMapper
 import com.example.project2.data.model.Item
 import com.example.project2.databinding.FragmentItemDetailsBinding
-import com.example.project2.ui.CommentsAdapter
+import com.example.project2.ui.comments.CommentsAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
