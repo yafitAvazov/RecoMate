@@ -137,5 +137,7 @@
     <string name="failed_to_like_item">לייק נכשל: %1$s</string>
     <string name="failed_to_unlike_item">ביטול לייק נכשל: %1$s</string>
     <string name="hello">היי, %1$s</string>
+    <string name="no_favorites_found">לא נמצאו מועדפים!</string>
+    <string name="favorite_items_found">%1$s מועדפים נמצאו</string>
 
 </resources>

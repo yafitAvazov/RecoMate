@@ -148,6 +148,8 @@
     <string name="failed_to_like_item">Failed to like item: %1$s</string>
     <string name="failed_to_unlike_item">Failed to unlike item: %1$s</string>
     <string name="hello">Hello, %1$s!</string>
+    <string name="no_favorites_found">No favorites found!</string>
+    <string name="favorite_items_found">%1$s favorite items found!</string>
 
 
 </resources>

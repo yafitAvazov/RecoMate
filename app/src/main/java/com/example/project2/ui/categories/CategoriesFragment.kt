@@ -49,7 +49,7 @@ class CategoriesFragment : Fragment() {
         val popupView = inflater.inflate(R.layout.popup_welcome, null)
         val popupText = popupView.findViewById<TextView>(R.id.welcomeText)
 
-        popupText.text = "Hello, $username!"
+        popupText.text =getString(R.string.hello, username)
 
         val popupWindow = PopupWindow(
             popupView,

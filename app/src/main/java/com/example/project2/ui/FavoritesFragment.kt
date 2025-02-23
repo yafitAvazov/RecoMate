@@ -127,11 +127,11 @@ class FavoritesFragment : Fragment() {
                     val currentCount = adapter.itemCount
 
                     if (currentCount == 0) {
-                        println("🔥 DEBUG: No favorites found for current user in RecyclerView!")
-                        Toast.makeText(requireContext(), "No favorites found!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.no_favorites_found), Toast.LENGTH_SHORT).show()
                     } else {
-                        println("🔥 DEBUG: ${currentCount} favorite items found in RecyclerView!")
-                        Toast.makeText(requireContext(), "$currentCount favorite items found!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.favorite_items_found, currentCount.toString()), Toast.LENGTH_SHORT).show()
                     }
                 }, 800)
             }
