@@ -67,7 +67,7 @@ The app is especially useful for students, travelers, and anyone looking to disc
 
 - 🖼️ **View Project Poster:**  
 
- [‏‏RecoMate Poster](‏‏RecoMate Poster.pdf).
+ [RecoMate Poster](‏‏RecoMate Poster.pdf).
 
 
 
