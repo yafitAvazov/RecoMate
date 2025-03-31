@@ -63,9 +63,18 @@ The app is especially useful for students, travelers, and anyone looking to disc
   - Coroutines (asynchronous operations)
 
 ---
+### 📊 Presentation & Poster
 
+- 🖼️ **View Project Poster:**  
+
+ [Poster](‏‏RecoMate Poster.pdf).
+
+
+
+---
 ## 🚀 Getting Started
 
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/your-username/RecoMate.git
+
